@@ -1,0 +1,9 @@
+# It's not possible to include the file when parent directory is excluded
+/*
+!/Assets/
+/Assets/*
+!/Assets/Shaders
+!/Assets/Scripts
+
+*.meta
+!.gitignore
