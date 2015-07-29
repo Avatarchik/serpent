@@ -8,6 +8,7 @@ public class Planet : MonoBehaviour {
 
     public int subdivisionLevel = 4;
     public float radius = 25;
+    public double noiseScale = 0.5;
 
     //[HideInInspector]
     public Cubemap heightMap;
@@ -26,15 +27,41 @@ public class Planet : MonoBehaviour {
 
         Icosphere.Create(gameObject, subdivisionLevel, radius);
 
-        heightMap = GenerateHeightmap(123);
+        // Measure generation time
+        float time = Time.realtimeSinceStartup;
 
-        // Test
+        heightMap = GenerateHeightmap(12345);
+
+        ApplyDisplacementMap(5);
+
+        time = Time.realtimeSinceStartup - time;
+        string text = string.Format("Generated in {0:N3} seconds", time);
+        GameObject.Find("Debug Text").GetComponent<UnityEngine.UI.Text>().text = text;
+
+        // Apply as texture
         Renderer renderer = gameObject.GetComponent<Renderer>();
         Material testMaterial = renderer.sharedMaterial;
         testMaterial.SetTexture("_HeightCubemap", heightMap);
 
         System.GC.Collect();
 	}
+
+    void ApplyDisplacementMap(float power) {
+        Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
+        // Don't need to do error checks on MeshFilter and Mesh existence here
+
+        Vector3[] vertices = mesh.vertices;
+        for (int i = 0; i < vertices.Length; ++i) {
+            Color pixel = CubemapProjection.ReadPixel(heightMap, vertices[i]);
+            float height = power * pixel.r;
+            vertices[i] += vertices[i].normalized * height;
+        }
+
+        mesh.vertices = vertices;
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        mesh.Optimize();
+    }
 
     void CheckAndCorrectInputs() {
         bool warn = false;
@@ -66,20 +93,21 @@ public class Planet : MonoBehaviour {
         Color[] pixels = new Color[size * size];
         Color pixel = new Color();
 
-        LibNoise.ModuleBase generator = new LibNoise.Generator.Perlin();
+        LibNoise.Generator.Perlin generator = new LibNoise.Generator.Perlin();
+        generator.Frequency = this.noiseScale;
 
         // Iterate through all enum values (cube faces)
         foreach (CubemapFace face in System.Enum.GetValues(typeof(CubemapFace))) {
             for (int y = 0; y < size; ++y) {
                 for (int x = 0; x < size; ++x) {
                     Vector2 uv = new Vector2((float) x / (size-1), (float) y / (size-1));
-                    Vector3 radius = CubemapUtils.CalculateRadiusFromFaceCoords(face, uv);
+                    Vector3 radiusVec = CubemapProjection.GetRadiusVectorFromFace(face, uv);
 
                     /*pixel.r = (radius.x + 1) * 0.5f;
                     pixel.g = (radius.y + 1) * 0.5f;
                     pixel.b = (radius.z + 1) * 0.5f;*/
 
-                    float height = (float) generator.GetValue(radius);
+                    float height = (float) generator.GetValue(radiusVec * this.radius);
                     height = (height + 1) * 0.5f;
                     pixel.r = pixel.g = pixel.b = height;
 
