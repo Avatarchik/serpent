@@ -30,9 +30,9 @@ public class Planet : MonoBehaviour {
         // Measure generation time
         float time = Time.realtimeSinceStartup;
 
-        heightMap = GenerateHeightmap(12345);
+        heightMap = GenerateHeightmap(123456);
 
-        ApplyDisplacementMap(5);
+        ApplyDisplacementMap(2, 2);
 
         time = Time.realtimeSinceStartup - time;
         string text = string.Format("Generated in {0:N3} seconds", time);
@@ -46,14 +46,14 @@ public class Planet : MonoBehaviour {
         System.GC.Collect();
 	}
 
-    void ApplyDisplacementMap(float power) {
+    void ApplyDisplacementMap(float oceanDepth, float mountainHeight) {
         Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
         // Don't need to do error checks on MeshFilter and Mesh existence here
 
         Vector3[] vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; ++i) {
             Color pixel = CubemapProjection.ReadPixel(heightMap, vertices[i]);
-            float height = power * pixel.r;
+            float height = pixel.r * (oceanDepth + mountainHeight) - oceanDepth;
             vertices[i] += vertices[i].normalized * height;
         }
 

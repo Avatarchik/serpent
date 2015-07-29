@@ -52,7 +52,7 @@ public static class CubemapProjection {
             } else {
                 // -X
                 face = CubemapFace.NegativeX;
-                uv.Set(r.z, r.y);
+                uv.Set(r.z, -r.y);
             }
         } else if (absR.y >= absR.x && absR.y >= absR.z) {
             majorAxis = absR.y;
