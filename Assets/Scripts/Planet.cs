@@ -65,23 +65,30 @@ public class Planet : MonoBehaviour {
         // Pixels are laid out right to left, top to bottom
         Color[] pixels = new Color[size * size];
         Color pixel = new Color();
-        for (int y = 0; y < size; ++y) {
-            for (int x = 0; x < size; ++x) {
-                pixel.r = (float)x / size;
-                pixel.g = (float)y / size;
-                pixel.b = 0;
-                pixels[x + y * size] = pixel;
+
+        // Iterate through all enum values (cube faces)
+        foreach (CubemapFace face in System.Enum.GetValues(typeof(CubemapFace))) {
+            for (int y = 0; y < size; ++y) {
+                for (int x = 0; x < size; ++x) {
+                    Vector2 uv = new Vector2((float) x / (size-1), (float) y / (size-1));
+                    Vector3 radius = CubemapUtils.CalculateRadiusFromFaceCoords(face, uv);
+
+                    /*pixel.r = (float)x / size;
+                    pixel.g = (float)y / size;
+                    pixel.b = 0;*/
+
+                    pixel.r = (radius.x + 1) * 0.5f;
+                    pixel.g = (radius.y + 1) * 0.5f;
+                    pixel.b = (radius.z + 1) * 0.5f;
+
+                    pixels[x + y * size] = pixel;
+                }
             }
+
+            heightMap.SetPixels(pixels, face);
+            heightMap.Apply();
         }
 
-        heightMap.SetPixels(pixels, CubemapFace.NegativeX);
-        heightMap.SetPixels(pixels, CubemapFace.NegativeY);
-        heightMap.SetPixels(pixels, CubemapFace.NegativeZ);
-        heightMap.SetPixels(pixels, CubemapFace.PositiveX);
-        heightMap.SetPixels(pixels, CubemapFace.PositiveY);
-        heightMap.SetPixels(pixels, CubemapFace.PositiveZ);
-
-        heightMap.Apply();
 
         Random.seed = savedSeed;
 
