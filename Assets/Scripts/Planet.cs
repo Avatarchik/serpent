@@ -1,23 +1,66 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode]
 public class Planet : MonoBehaviour {
 
-    public Mesh sourceMesh;
-    public Cubemap cubeMap;
+    public const int kMaxSubdivisionLevel = 5;
 
-    public GameObject testObject;
+    public int subdivisionLevel = 4;
+    public float radius = 25;
+
+    //[HideInInspector]
+    public Cubemap heightMap;
+
+    void Reset() {
+        Resources.UnloadUnusedAssets();
+        if (heightMap != null)
+            Object.DestroyImmediate(heightMap);
+
+        Start();
+    }
 
 	// Use this for initialization
-	void Start () {
-        GenerateHeightmap(123);
+    void Start() {
+        CheckAndCorrectInputs();
+
+        Icosphere.Create(gameObject, subdivisionLevel, radius);
+
+        heightMap = GenerateHeightmap(123);
+
+        // Test
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+        Material testMaterial = renderer.sharedMaterial;
+        testMaterial.SetTexture("_HeightCubemap", heightMap);
+
+        System.GC.Collect();
 	}
 
-    void GenerateHeightmap(int seed) {
+    void CheckAndCorrectInputs() {
+        bool warn = false;
+        if (subdivisionLevel < 0) {
+            subdivisionLevel = 0;
+            warn = true;
+        } else if (subdivisionLevel > kMaxSubdivisionLevel) {
+            subdivisionLevel = kMaxSubdivisionLevel;
+            warn = true;
+        }
+        if (warn)
+            Debug.LogWarning(string.Format("Subdivision Level must be in [0; {0}]", kMaxSubdivisionLevel));
+    }
+
+    Cubemap GenerateHeightmap(int seed) {
+        /*
+         * Шаги:
+         *   Для каждой из шести сторон:
+         *     Сгенерировать шум
+         *     cubemap.SetPixels();
+         */
+
         int savedSeed = Random.seed;
 
         int size = 128;
-        cubeMap = new Cubemap(size, TextureFormat.RGB24, false);
+        Cubemap heightMap = new Cubemap(size, TextureFormat.RGB24, false);
 
         // Pixels are laid out right to left, top to bottom
         Color[] pixels = new Color[size * size];
@@ -31,24 +74,38 @@ public class Planet : MonoBehaviour {
             }
         }
 
-        cubeMap.SetPixels(pixels, CubemapFace.NegativeX);
-        cubeMap.SetPixels(pixels, CubemapFace.NegativeY);
-        cubeMap.SetPixels(pixels, CubemapFace.NegativeZ);
-        cubeMap.SetPixels(pixels, CubemapFace.PositiveX);
-        cubeMap.SetPixels(pixels, CubemapFace.PositiveY);
-        cubeMap.SetPixels(pixels, CubemapFace.PositiveZ);
+        heightMap.SetPixels(pixels, CubemapFace.NegativeX);
+        heightMap.SetPixels(pixels, CubemapFace.NegativeY);
+        heightMap.SetPixels(pixels, CubemapFace.NegativeZ);
+        heightMap.SetPixels(pixels, CubemapFace.PositiveX);
+        heightMap.SetPixels(pixels, CubemapFace.PositiveY);
+        heightMap.SetPixels(pixels, CubemapFace.PositiveZ);
 
-        cubeMap.Apply();
-
-        Renderer renderer = testObject.GetComponent<Renderer>();
-        Material testMaterial = renderer.material;
-        testMaterial.SetTexture("_HeightCubemap", cubeMap);
+        heightMap.Apply();
 
         Random.seed = savedSeed;
+
+        return heightMap;
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+#if UNITY_EDITOR
+    // Watch for properties change in editor
+
+    private int _lastSubdivisionLevel;
+    private bool _lastValuesInitialized = false;
+
+    void Update () {
+        if (!_lastValuesInitialized) {
+            _lastValuesInitialized = true;
+            _lastSubdivisionLevel = subdivisionLevel;
+            return;
+        }
+
+        if (_lastSubdivisionLevel != subdivisionLevel) {
+            Reset();
+
+            _lastSubdivisionLevel = subdivisionLevel;
+        }
+    }
+#endif // UNITY_EDITOR
 }
