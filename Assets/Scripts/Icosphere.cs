@@ -8,6 +8,9 @@ public static class Icosphere {
         if (meshFilter == null)
             meshFilter = gameObject.AddComponent<MeshFilter>();
 
+        if (meshFilter.sharedMesh == null)
+            meshFilter.sharedMesh = new Mesh();
+
         Mesh mesh = meshFilter.sharedMesh;
         mesh.Clear();
 
