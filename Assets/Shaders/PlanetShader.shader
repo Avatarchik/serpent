@@ -1,6 +1,8 @@
-Shader "Example/Diffuse Simple" {
+Shader "Snake 3D/Planet" {
 	Properties {
+		[NoScaleOffset]
 		_HeightCubemap ("Height Cubemap", Cube) = "white" {}
+		_AlbedoColor ("Albedo Color", Color) = (1, 1, 1, 1)
 	}
 
 	SubShader {
@@ -9,7 +11,7 @@ Shader "Example/Diffuse Simple" {
 		}
 
 		CGPROGRAM
-		#pragma surface surf Standard vertex:vert
+		#pragma surface surf Lambert vertex:vert
 		
 		struct Input {
 			float4 color : COLOR;
@@ -22,9 +24,10 @@ Shader "Example/Diffuse Simple" {
 		}
 
 		samplerCUBE _HeightCubemap;
+		float4 _AlbedoColor;
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
-			o.Albedo = texCUBE(_HeightCubemap, IN.position).rgb;
+		void surf (Input IN, inout SurfaceOutput o) {
+			o.Albedo = _AlbedoColor.rgb * texCUBE(_HeightCubemap, IN.position).rgb;
 		}
 		ENDCG
 	}
