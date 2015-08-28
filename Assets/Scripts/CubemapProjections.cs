@@ -8,7 +8,7 @@ namespace Snake3D {
      * For detailed info about calculations used here, see any modern OpenGL specification.
      */
 
-    public static class CubemapProjection {
+    public static class CubemapProjections {
 
         public static Vector3 GetRadiusVectorFromFace(CubemapFace face, Vector2 uv) {
             Vector3 radius = new Vector3();

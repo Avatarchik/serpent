@@ -4,7 +4,7 @@ using System.Collections;
 namespace Snake3D.Geometry {
 
     //[ExecuteInEditMode]
-    public class Planet : MonoBehaviour {
+    public class PlanetGeometry : MonoBehaviour {
 
         public const int kMaxSubdivisionLevel = 5;
 
@@ -12,12 +12,22 @@ namespace Snake3D.Geometry {
 
         public int subdivisionLevel = 4;
         public float radius = 25;
+        public float oceanDepth = 2, mountainHeight = 2;
         public double noiseScale = 0.5;
         public int seed = 123321;
 
         //[HideInInspector]
         public Cubemap heightMap;
 
+
+        public float GetHeightAt(Vector3 radiusVector) {
+            Color pixel = CubemapProjections.ReadPixel(heightMap, radiusVector);
+
+            // Altitude above water level
+            float heightDelta = pixel.r * (oceanDepth + mountainHeight) - oceanDepth;
+
+            return radius + heightDelta;
+        }
 
         void Reset() {
             Resources.UnloadUnusedAssets();
@@ -28,7 +38,7 @@ namespace Snake3D.Geometry {
         }
 
         // Use this for initialization
-        void Start() {
+        void Awake() {
             GeneratePlanet();
         }
 
@@ -42,7 +52,7 @@ namespace Snake3D.Geometry {
 
             heightMap = GenerateHeightmap(seed);
 
-            ApplyDisplacementMap(2, 2);
+            ApplyDisplacementMap();
 
             time = Time.realtimeSinceStartup - time;
             string text = string.Format("Generated in {0:N3} seconds", time);
@@ -57,15 +67,14 @@ namespace Snake3D.Geometry {
             System.GC.Collect();
         }
 
-        void ApplyDisplacementMap(float oceanDepth, float mountainHeight) {
+        void ApplyDisplacementMap() {
             Mesh mesh = GetComponent<MeshFilter>().mesh;
             // Don't need to do error checks on MeshFilter and Mesh existence here
 
             Vector3[] vertices = mesh.vertices;
             for (int i = 0; i < vertices.Length; ++i) {
-                Color pixel = CubemapProjection.ReadPixel(heightMap, vertices[i]);
-                float height = pixel.r * (oceanDepth + mountainHeight) - oceanDepth;
-                vertices[i] += vertices[i].normalized * height;
+                float height = GetHeightAt(vertices[i]);
+                vertices[i] = vertices[i].normalized * height;
             }
 
             mesh.vertices = vertices;
@@ -112,7 +121,7 @@ namespace Snake3D.Geometry {
                 for (int y = 0; y < size; ++y) {
                     for (int x = 0; x < size; ++x) {
                         Vector2 uv = new Vector2((float)x / (size - 1), (float)y / (size - 1));
-                        Vector3 radiusVec = CubemapProjection.GetRadiusVectorFromFace(face, uv);
+                        Vector3 radiusVec = CubemapProjections.GetRadiusVectorFromFace(face, uv);
 
                         /*pixel.r = (radius.x + 1) * 0.5f;
                         pixel.g = (radius.y + 1) * 0.5f;
