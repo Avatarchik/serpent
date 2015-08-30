@@ -3,6 +3,12 @@ using System.Collections;
 
 namespace Snake3D.Geometry {
 
+    /*
+     * TODO:
+     *   Properly dispose resources
+     *   Interpolate height value in GetHeightAt()
+     */
+
     //[ExecuteInEditMode]
     public class PlanetGeometry : MonoBehaviour {
 
@@ -13,6 +19,8 @@ namespace Snake3D.Geometry {
         public int subdivisionLevel = 4;
         public float radius = 25;
         public float oceanDepth = 2, mountainHeight = 2;
+
+        public int heightCubemapSize = 64;
         public double noiseScale = 0.5;
         public int seed = 123321;
 
@@ -47,7 +55,7 @@ namespace Snake3D.Geometry {
 
             Icosphere.Create(gameObject, subdivisionLevel, radius);
 
-            // Measure generation time
+            // Generate and measure generation time
             float time = Time.realtimeSinceStartup;
 
             heightMap = GenerateHeightmap(seed);
@@ -106,7 +114,7 @@ namespace Snake3D.Geometry {
 
             int savedSeed = Random.seed;
 
-            int size = 128;
+            int size = heightCubemapSize;
             Cubemap heightMap = new Cubemap(size, TextureFormat.RGB24, false);
 
             // Pixels are laid out right to left, top to bottom
@@ -145,7 +153,7 @@ namespace Snake3D.Geometry {
             return heightMap;
         }
 
-#if true || UNITY_EDITOR
+#if UNITY_EDITOR
         // Watch for properties change in editor
 
         private int _lastSubdivisionLevel;
