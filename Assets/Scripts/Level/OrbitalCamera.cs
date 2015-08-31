@@ -3,11 +3,11 @@ using System.Collections;
 
 namespace Snake3D {
 
-    public class TestOrbitCamera : MonoBehaviour {
+    public class OrbitalCamera : MonoBehaviour {
 
         // Speed in degrees
         public float speed = 60;
-        public UI.Joystick joystick;
+        public Joystick joystick;
 
         Vector3 _eulerRotation = new Vector3();
 

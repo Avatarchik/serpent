@@ -5,8 +5,8 @@ namespace Snake3D {
 
     public class HeadController : MonoBehaviour {
 
-        public UI.Joystick joystick;
-        public Geometry.PlanetGeometry planetGeometry;
+        public Joystick joystick;
+        public PlanetGeometry planetGeometry;
 
         void Start() {
             CastToSurface();

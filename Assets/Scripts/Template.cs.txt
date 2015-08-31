@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D.UI {
+namespace Snake3D {
 
-    public class MainController : MonoBehaviour {
+    public class MyClass! : MonoBehaviour {
 
         void Start() {
 
@@ -14,4 +14,4 @@ namespace Snake3D.UI {
         }
     }
 
-} // namespace Snake3D.UI
+} // namespace Snake3D

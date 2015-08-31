@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D.Geometry {
+namespace Snake3D {
 
     /*
      * TODO:
@@ -175,4 +175,4 @@ namespace Snake3D.Geometry {
 #endif // UNITY_EDITOR
     }
 
-} // namespace Snake3D.Geometry
+} // namespace Snake3D

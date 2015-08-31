@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Snake3D.Geometry {
+namespace Snake3D {
 
     public static class Icosphere {
         public static void Create(GameObject gameObject, int recursionLevel = 3, float radius = 1) {
@@ -156,4 +156,4 @@ namespace Snake3D.Geometry {
         }
     }
 
-} // namespace Snake3D.Geometry
+} // namespace Snake3D

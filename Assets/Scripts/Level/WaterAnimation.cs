@@ -5,7 +5,7 @@ namespace Snake3D {
 
     public class WaterAnimation : MonoBehaviour {
 
-        public float speed1 = 0.1f;
+        public float speed1 = 0.05f;
         public float speed2 = 0.001f;
         public float angle1 = -15;
         public float angle2 = 45;
