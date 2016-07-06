@@ -9,7 +9,7 @@ namespace Snake3D {
         public float speed = 60;
         public Joystick joystick;
 
-        Vector3 _eulerRotation = new Vector3();
+        Vector3 eulerRotation = new Vector3();
 
         void Start() {
 
@@ -17,14 +17,14 @@ namespace Snake3D {
 
         void Update() {
             Vector3 rotationDelta = new Vector3();
-            rotationDelta.y = -joystick.value.x;
-            rotationDelta.x = joystick.value.y;
+            rotationDelta.y = -joystick.Value.x;
+            rotationDelta.x = joystick.Value.y;
             rotationDelta *= speed * Time.deltaTime;
 
-            _eulerRotation += rotationDelta;
-            _eulerRotation.x = Mathf.Clamp(_eulerRotation.x, -90, 90);
+            eulerRotation += rotationDelta;
+            eulerRotation.x = Mathf.Clamp(eulerRotation.x, -90, 90);
 
-            transform.rotation = Quaternion.Euler(_eulerRotation);
+            transform.rotation = Quaternion.Euler(eulerRotation);
         }
     }
 

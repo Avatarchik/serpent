@@ -7,40 +7,37 @@ namespace Snake3D {
     public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler {
 
         // Normalized vector
-        public Vector2 value {
-            get { return _value; }
-        }
+        public Vector2 Value { get; private set; }
         public float maxStickDistance = 58;
-
-
-        Vector2 _value = new Vector2();
-        UnityEngine.UI.Image _joystickBackground;
-        UnityEngine.UI.Image _joystickCenter;
-        Camera _myCamera;
+        
+        UnityEngine.UI.Image joystickBackground;
+        UnityEngine.UI.Image joystickCenter;
+        Camera myCamera;
 
 
         void Start() {
-            _joystickBackground = GetComponent<UnityEngine.UI.Image>();
-            _joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();
+            Value = Vector2.zero;
+            joystickBackground = GetComponent<UnityEngine.UI.Image>();
+            joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();
 
             // What camera to use?
             Canvas canvas = Utilities.FindNearestParentWithComponent<Canvas>(transform);
             if (canvas.renderMode == RenderMode.WorldSpace || canvas.renderMode == RenderMode.ScreenSpaceCamera)
-                _myCamera = canvas.worldCamera;
+                myCamera = canvas.worldCamera;
             else
-                _myCamera = null;
+                myCamera = null;
         }
 
         public void OnPointerDown(PointerEventData eventData) {
             // Checks if click is out of joystick area
             Vector2 stickPosition = new Vector2();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _joystickBackground.rectTransform,
+                joystickBackground.rectTransform,
                 eventData.position,
-                _myCamera,
+                myCamera,
                 out stickPosition
             );
-            if (stickPosition.magnitude > _joystickBackground.rectTransform.rect.width / 2) {
+            if (stickPosition.magnitude > joystickBackground.rectTransform.rect.width / 2) {
                 // Ignore event
                 return;
             }
@@ -53,17 +50,17 @@ namespace Snake3D {
         }
 
         public void OnPointerUp(PointerEventData eventData) {
-            _value.Set(0, 0);
-            _joystickCenter.rectTransform.anchoredPosition = _value;
+            Value = Vector2.zero;
+            joystickCenter.rectTransform.anchoredPosition = Value;
         }
 
 
         void UpdateValue(Vector2 pointerCoords) {
             Vector2 stickPosition = new Vector2();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _joystickBackground.rectTransform,
+                joystickBackground.rectTransform,
                 pointerCoords,
-                _myCamera,
+                myCamera,
                 out stickPosition
             );
 
@@ -73,8 +70,8 @@ namespace Snake3D {
             if (magnitude > maxStickDistance) {
                 magnitude = maxStickDistance;
             }
-            _joystickCenter.rectTransform.anchoredPosition = direction * magnitude;
-            _value = direction * magnitude / maxStickDistance;
+            joystickCenter.rectTransform.anchoredPosition = direction * magnitude;
+            Value = direction * magnitude / maxStickDistance;
         }
     }
 
