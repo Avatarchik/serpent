@@ -126,6 +126,9 @@ namespace Snake3D {
 
             // Iterate through all enum values (cube faces)
             foreach (CubemapFace face in System.Enum.GetValues(typeof(CubemapFace))) {
+                if (face == CubemapFace.Unknown)
+                    continue;
+
                 for (int y = 0; y < size; ++y) {
                     for (int x = 0; x < size; ++x) {
                         Vector2 uv = new Vector2((float)x / (size - 1), (float)y / (size - 1));
