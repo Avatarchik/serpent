@@ -22,6 +22,7 @@ namespace Snake3D {
 
         public int heightCubemapSize = 64;
         public double noiseScale = 0.5;
+        public int octaves = 3;
         public int seed = 123321;
 
         //[HideInInspector]
@@ -121,8 +122,10 @@ namespace Snake3D {
             Color[] pixels = new Color[size * size];
             Color pixel = new Color();
 
-            LibNoise.Generator.Perlin generator = new LibNoise.Generator.Perlin();
-            generator.Frequency = this.noiseScale;
+            var generator = new LibNoise.Generator.Perlin();
+            generator.Frequency = noiseScale;
+            generator.OctaveCount = octaves;
+            generator.Seed = seed;
 
             // Iterate through all enum values (cube faces)
             foreach (CubemapFace face in System.Enum.GetValues(typeof(CubemapFace))) {
