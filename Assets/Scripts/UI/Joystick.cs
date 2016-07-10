@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using System;
 
 namespace Snake3D {
 
@@ -8,6 +9,7 @@ namespace Snake3D {
 
         // Normalized vector
         public Vector2 Value { get; private set; }
+        public float Angle { get; private set; }
         public float maxStickDistance = 58;
         
         UnityEngine.UI.Image joystickBackground;
@@ -72,6 +74,16 @@ namespace Snake3D {
             }
             joystickCenter.rectTransform.anchoredPosition = direction * magnitude;
             Value = direction * magnitude / maxStickDistance;
+
+            UpdateAngle();
+        }
+
+        private void UpdateAngle() {
+            float angle = Vector2.Angle(Vector2.right, Value);
+            if (Value.y < 0)
+                angle = 360 - angle;
+
+            Angle = angle;
         }
     }
 
