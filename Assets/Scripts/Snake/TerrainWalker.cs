@@ -9,10 +9,11 @@ namespace Snake3D {
 
         public Joystick joystick;
         public float offsetFromSurface = 1;
-        public float speed = 2;
+        public float speed = 5;
         public float rotationSpeed = 100; // degrees per second
 
         private Terrain terrain;
+        private float currentAngle = 0;
 
         void Start() {
             terrain = FindObjectOfType<Terrain>();
@@ -23,13 +24,29 @@ namespace Snake3D {
         }
 
         void Update() {
-            float angle = joystick.Value.x * rotationSpeed * Time.deltaTime;
-            transform.Rotate(0, angle, 0);
+            // Rotate
+            float rotationStep = rotationSpeed * Time.deltaTime;
+            RotateUpToAngle(-joystick.Angle + 90, rotationStep);
 
+            // Translate
             float step = speed * Time.deltaTime;
             transform.Translate(0, 0, step);
 
             CastToSurface();
+        }
+
+        /**
+         * <param name="target">Target angle</param>
+         * <param name="absoluteStep">Step without sign</param>
+         */
+        private void RotateUpToAngle(float target, float absoluteStep) {
+            float delta = Mathf.DeltaAngle(currentAngle, target);
+            float sign = Mathf.Sign(delta);
+            
+            float step = sign * Mathf.Min(Mathf.Abs(delta), absoluteStep);
+
+            currentAngle += step;
+            transform.eulerAngles = new Vector3(0, currentAngle, 0);
         }
 
         private void CastToSurface() {
