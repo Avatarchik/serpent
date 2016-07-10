@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace Snake3D {
 
@@ -9,6 +10,7 @@ namespace Snake3D {
         public Joystick joystick;
         public float offsetFromSurface = 1;
         public float speed = 2;
+        public float rotationSpeed = 100; // degrees per second
 
         private Terrain terrain;
 
@@ -16,33 +18,41 @@ namespace Snake3D {
             terrain = FindObjectOfType<Terrain>();
             if (terrain == null)
                 throw new UnityException("Terrain object not found in current scene");
+
+            CastToSurface();
         }
 
         void Update() {
-            const float kSpeed = 5;
+            float angle = joystick.Value.x * rotationSpeed * Time.deltaTime;
+            transform.Rotate(0, angle, 0);
 
-            // Update position
-            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            //if (Application.isMobilePlatform) {
-                direction.x = joystick.Value.x;
-                direction.z = joystick.Value.y;
-            //}
-            Vector3 newPosition = transform.position + direction * kSpeed * Time.deltaTime;
+            float step = speed * Time.deltaTime;
+            transform.Translate(0, 0, step);
 
-            // Normalized terrain coordinates
+            CastToSurface();
+        }
+
+        private void CastToSurface() {
+            Vector3 pos = transform.position;
+
+            // Get normalized terrain coordinates
             Vector3 size = terrain.terrainData.size;
-            float x = newPosition.x / size.x;
-            float y = newPosition.z / size.z;
+            float x = pos.x / size.x;
+            float y = pos.z / size.z;
 
             // Update height
-            newPosition.y = terrain.terrainData.GetInterpolatedHeight(x, y) + offsetFromSurface;
-            transform.position = newPosition;
+            pos.y = terrain.terrainData.GetInterpolatedHeight(x, y) + offsetFromSurface;
+            transform.position = pos;
 
             // Update normal
-            transform.up = terrain.terrainData.GetInterpolatedNormal(x, y);
+            Vector3 normal = terrain.terrainData.GetInterpolatedNormal(x, y);
+            Vector3 forward = Vector3.Cross(transform.forward, normal).normalized;
+            forward = Vector3.Cross(normal, forward);
+            transform.LookAt(transform.position + forward, normal);
+            //Debug.DrawLine(transform.position, transform.position + forward, Color.red);
+            //Debug.DrawLine(transform.position, transform.position + normal, Color.yellow);
         }
     }
-
 }
 
 
