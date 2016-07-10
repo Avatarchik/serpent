@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 namespace Snake3D {
@@ -45,7 +46,7 @@ namespace Snake3D {
         IEnumerator LoadLevel() {
             yield return new WaitForSeconds(1);
 
-            AsyncOperation asyncOperation = Application.LoadLevelAdditiveAsync("Level");
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync("Level", LoadSceneMode.Additive);
 
             for(;;) {
                 // Getting the value once at start of loop iteration
