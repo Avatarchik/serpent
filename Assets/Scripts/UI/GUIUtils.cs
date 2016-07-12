@@ -12,12 +12,15 @@ public class GUIUtils : MonoBehaviour {
     }
 
     void Start() {
+        // Display FPS
         debugText = GameObject.FindWithTag("Debug text").GetComponent<Text>();
         StartCoroutine(UpdateFPS());
-    }
 
-    void Update() {
-
+        // Adjust UI scale
+#if !UNITY_EDITOR
+        CanvasScaler scaler = GameObject.Find("Play Canvas").GetComponent<CanvasScaler>();
+        scaler.scaleFactor = 1;
+#endif
     }
 
     IEnumerator UpdateFPS() {
