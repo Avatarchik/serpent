@@ -22,6 +22,7 @@ namespace JetBlack.Core.Collections.Generic {
         T[] RawBuffer { get; }
         int Head { get; }
         int Tail { get; }
+        T Last { get; }
     }
 
     public class BufferOverflowException : Exception {
@@ -63,6 +64,10 @@ namespace JetBlack.Core.Collections.Generic {
                 Head = count - 1;
                 Tail = 0;
             }
+        }
+
+        public T Last {
+            get { return this[Count - 1]; }
         }
 
         public T Enqueue(T item) {
