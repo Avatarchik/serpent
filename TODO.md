@@ -1,16 +1,15 @@
 # TODO
-- **[CURRENT 2]** Merge old and new projects
-- Refactor
-    - ~~SnakeKernel.Grow() - transfer distanceTraveled as argument~~
-    - GrowController.Update(): // Grow if needed
 
-- Replace existing terrain by low-poly styled one
+## Code
+- Refactor
+    - GrowController.Update(): // Grow if needed
 
 - Snake body mesh
     - Body mesh
-        - **[CURRENT]** Refactor and cleanup
-        - Length control
-        - Implement smooth endings and caps
+        - **[CURRENT]** Length control
+            - Rename GrowController to GrowController_OLD
+            - Rename SnakeMesh.Grow/Shrink to Increment/Decrement (for contrast with new continuous Grow/Shrink methods)
+        - CappedSnakeMesh
         - Mesh partitioning
         - Collision detection
     - Plain terrain
@@ -21,3 +20,11 @@
 - Algorithms visualization
 - Separate development and production assets
 - Establish more modular, manageable workflow
+
+## Art
+- Replace existing terrain by low-poly styled one
+- Snake head
+- Decorations
+    - Spruce
+    - Flowers
+    - Mushrooms
