@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using JetBlack.Core.Collections.Generic;
 
-public class SnakeMesh : MonoBehaviour, IInitializable, IPointChain {
+public class SnakeMesh : MonoBehaviour, IInitializable {
 
     public SnakeKernel kernel;
     public float radius = 0.5f;
@@ -22,31 +22,31 @@ public class SnakeMesh : MonoBehaviour, IInitializable, IPointChain {
     public void Init() {
         Debug.Assert(kernel != null);
 
-        int verticesNum = kernel.pointsNum * pointsPerRing;
-        vertices = new CircularBuffer<Vector3>(verticesNum);
-        normals = new CircularBuffer<Vector3>(verticesNum);
-        int trianglesNum = (kernel.pointsNum - 1) * trianglesPerSegment;
-        triangles = new CircularBuffer<int>(trianglesNum * 3);
+        AllocateBuffers();
 
 #if UNITY_EDITOR
         SetupVertexLabels();
 #endif
-
-        UpdateMesh();
     }
-    
-    public void Grow(Vector3 dest, Matrix4x4 localToWorld) {
-        kernel.Grow(dest, localToWorld);
+
+    public void Grow(Vector3 dest, Matrix4x4 localToWorld, float distanceTraveled) {
+        kernel.Grow(dest);
 
         // Vertices and normals
+        float ringLength = 2 * Mathf.PI * radius;
         for (int i = 0; i < pointsPerRing; ++i) {
             float angle = (2 * Mathf.PI) * i / pointsPerRing;
             var normal = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle));
             normal = localToWorld * normal;
             Vector3 vertex = normal * radius + dest;
 
+            Vector2 uv = new Vector2();
+            uv.x = 0.75f - (float)i / pointsPerRing;
+            uv.y = distanceTraveled / ringLength;
+
             vertices.Enqueue(vertex);
             normals.Enqueue(normal);
+            uvs.Enqueue(uv);
 
 #if UNITY_EDITOR
             UpdateVertexDebugInfo(vertices.Count - 1);
@@ -61,6 +61,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, IPointChain {
     public void Shrink() {
         vertices.Dequeue(pointsPerRing);
         normals.Dequeue(pointsPerRing);
+        uvs.Dequeue(pointsPerRing);
 
         // Make deleted triangles degenerate
         for (int i = 0; i < trianglesPerSegment; ++i) {
@@ -73,9 +74,23 @@ public class SnakeMesh : MonoBehaviour, IInitializable, IPointChain {
         kernel.Shrink();
     }
 
+
     #region Private part
 
     private int trianglesPerSegment { get { return pointsPerRing * 2; } }
+
+
+    private void AllocateBuffers() {
+        int verticesNum = kernel.pointsNum * pointsPerRing;
+        vertices = new CircularBuffer<Vector3>(verticesNum);
+        normals = new CircularBuffer<Vector3>(verticesNum);
+        uvs = new CircularBuffer<Vector2>(verticesNum);
+        int trianglesNum = (kernel.pointsNum - 1) * trianglesPerSegment;
+        triangles = new CircularBuffer<int>(trianglesNum * 3);
+        
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        mesh.MarkDynamic();
+    }
 
     private void AddSegmentTriangles() {
         ICircularBuffer<Vector3> path = kernel.Path;
@@ -103,6 +118,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, IPointChain {
         mesh.Clear();
         mesh.vertices = vertices.RawBuffer;
         mesh.normals = normals.RawBuffer;
+        mesh.uv = uvs.RawBuffer;
         mesh.triangles = triangles.RawBuffer;
     }
 

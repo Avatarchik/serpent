@@ -1,12 +1,7 @@
 using UnityEngine;
 using JetBlack.Core.Collections.Generic;
 
-public interface IPointChain {
-    void Grow(Vector3 dest, Matrix4x4 localToWorldMatrix);
-    void Shrink();
-}
-
-public class SnakeKernel : MonoBehaviour, IInitializable, IPointChain {
+public class SnakeKernel : MonoBehaviour, IInitializable {
     
     public int pointsNum = 64;
     public bool showDebugInfo = false;
@@ -23,7 +18,7 @@ public class SnakeKernel : MonoBehaviour, IInitializable, IPointChain {
         Path = new CircularBuffer<Vector3>(pointsNum);
     }
 
-    public void Grow(Vector3 dest, Matrix4x4 localToWorldMatrix) {
+    public void Grow(Vector3 dest) {
         Path.Enqueue(dest);
     }
 
