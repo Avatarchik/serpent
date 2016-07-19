@@ -1,9 +1,9 @@
-# It's not possible to include the file when parent directory is excluded
-/*
-!/Assets/
-/Assets/*
-!/Assets/Shaders
-!/Assets/Scripts
+/.vs
+/Library
+/ProjectSettings
+/*.csproj
+/*.sln
+/Temp
+/Build
 
-*.meta
-!.gitignore
+*.swp
