@@ -1,25 +1,11 @@
-───────────────────────────────────────────────────────────────────────────────
-
-							Refactoring
-
-  • 
-
-
-───────────────────────────────────────────────────────────────────────────────
-
 Utility for finding hidden objects
-
-Loading screen
-  • More interesting moving pattern
-  • Flowers etc. on grass
-
 
 class PlanetGeometry:
   • Properly dispose resources
   • Interpolate height value in GetHeightAt()
 
 
-  • Frenel shader (water and other objects)
+  • Fresnel shader (water and other objects)
   • Cloudy skybox
   • Hierarchical log system
 
@@ -34,4 +20,3 @@ class PlanetGeometry:
 							Before the release
 
   • Include license texts for font and other resources
-  • Ask the author of grass tile for loading screen for permission (http://goo.gl/SmE7my)
