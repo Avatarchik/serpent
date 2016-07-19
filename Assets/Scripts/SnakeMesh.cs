@@ -5,7 +5,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
 
     public SnakeKernel kernel;
     public float radius = 0.5f;
-    public int pointsPerRing = 16;
+    public int visiblePointsPerRing = 16; // Visible points per ring (as opposed to real number)
     public GameObject vertexLabelPrefab;
     public bool showDebugInfo = false;
 
@@ -14,6 +14,9 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
     private ICircularBuffer<Vector2> uvs;
     private ICircularBuffer<int> triangles;
     private Transform[] vertexLabels;
+
+    // There is additional row of vertices because we need correct UVs
+    private int RealPointsPerRing { get { return visiblePointsPerRing + 1; } }
 
     void Update() {
         // Empty Update() just to activate component checkbox in the editor
@@ -34,14 +37,14 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
 
         // Vertices and normals
         float ringLength = 2 * Mathf.PI * radius;
-        for (int i = 0; i < pointsPerRing; ++i) {
-            float angle = (2 * Mathf.PI) * i / pointsPerRing;
+        for (int i = 0; i < RealPointsPerRing; ++i) {
+            float angle = (2 * Mathf.PI) * i / visiblePointsPerRing;
             var normal = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle));
             normal = localToWorld * normal;
             Vector3 vertex = normal * radius + dest;
 
             Vector2 uv = new Vector2();
-            uv.x = 0.75f - (float)i / pointsPerRing;
+            uv.x = 0.75f - (float)i / visiblePointsPerRing;
             uv.y = distanceTraveled / ringLength;
 
             vertices.Enqueue(vertex);
@@ -59,9 +62,9 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
     }
 
     public void Shrink() {
-        vertices.Dequeue(pointsPerRing);
-        normals.Dequeue(pointsPerRing);
-        uvs.Dequeue(pointsPerRing);
+        vertices.Dequeue(RealPointsPerRing);
+        normals.Dequeue(RealPointsPerRing);
+        uvs.Dequeue(RealPointsPerRing);
 
         // Make deleted triangles degenerate
         for (int i = 0; i < trianglesPerSegment; ++i) {
@@ -77,11 +80,11 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
 
     #region Private part
 
-    private int trianglesPerSegment { get { return pointsPerRing * 2; } }
+    private int trianglesPerSegment { get { return visiblePointsPerRing * 2; } }
 
 
     private void AllocateBuffers() {
-        int verticesNum = kernel.pointsNum * pointsPerRing;
+        int verticesNum = kernel.pointsNum * RealPointsPerRing;
         vertices = new CircularBuffer<Vector3>(verticesNum);
         normals = new CircularBuffer<Vector3>(verticesNum);
         uvs = new CircularBuffer<Vector2>(verticesNum);
@@ -95,15 +98,15 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
     private void AddSegmentTriangles() {
         ICircularBuffer<Vector3> path = kernel.Path;
         if (path.Count >= 2) {
-            int ring1Offset = path.RawPosition(path.Count - 2) * pointsPerRing;
-            int ring2Offset = path.RawPosition(path.Count - 1) * pointsPerRing;
+            int ring1Offset = path.RawPosition(path.Count - 2) * RealPointsPerRing;
+            int ring2Offset = path.RawPosition(path.Count - 1) * RealPointsPerRing;
 
             int[] quadIndices = new int[4];
             int[] triangleIndices = new int[6];
-            for (int i = 0; i < pointsPerRing; ++i) {
+            for (int i = 0; i < visiblePointsPerRing; ++i) {
                 quadIndices[0] = ring1Offset + i;
-                quadIndices[1] = ring1Offset + (i + 1) % pointsPerRing;
-                quadIndices[2] = ring2Offset + (i + 1) % pointsPerRing;
+                quadIndices[1] = ring1Offset + i + 1;
+                quadIndices[2] = ring2Offset + i + 1;
                 quadIndices[3] = ring2Offset + i;
 
                 MeshUtils.ConvertQuadToTriangles(quadIndices, triangleIndices);
@@ -134,7 +137,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
         if (!showDebugInfo)
             return;
 
-        int verticesNum = kernel.pointsNum * pointsPerRing;
+        int verticesNum = kernel.pointsNum * RealPointsPerRing;
 
         vertexLabels = new Transform[verticesNum];
         for (int i = 0; i < verticesNum; ++i) {
