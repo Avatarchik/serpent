@@ -4,7 +4,7 @@ using System.Collections;
 /// <summary>
 /// Mediator for SnakeMesh and Walker.
 /// </summary>
-public class GrowController : MonoBehaviour, IInitializable {
+public class GrowController_OLD : MonoBehaviour, IInitializable {
 
     public Transform walker;
     public SnakeMesh snakeMesh;
