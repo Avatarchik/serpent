@@ -43,7 +43,7 @@ public class GrowController_OLD : MonoBehaviour, IInitializable {
         Vector3 delta = walker.position - lastGrowPoint;
         if (delta.magnitude >= interval) {
             lastGrowPoint += delta.normalized * interval;
-            snakeMesh.Grow(walker.localToWorldMatrix, distanceTraveled);
+            snakeMesh.PushToEnd(walker.localToWorldMatrix, distanceTraveled);
         }
 
         // Animate UV

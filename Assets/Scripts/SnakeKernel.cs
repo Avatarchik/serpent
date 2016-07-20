@@ -18,11 +18,11 @@ public class SnakeKernel : MonoBehaviour, IInitializable {
         Path = new CircularBuffer<Vector3>(pointsNum);
     }
 
-    public void Grow(Vector3 dest) {
+    public void PushToEnd(Vector3 dest) {
         Path.Enqueue(dest);
     }
 
-    public void Shrink() {
+    public void PopFromStart() {
         Path.Dequeue();
     }
 

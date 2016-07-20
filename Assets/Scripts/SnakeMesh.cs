@@ -32,9 +32,9 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
 #endif
     }
 
-    public void Grow(Matrix4x4 localToWorld, float distanceTraveled) {
+    public void PushToEnd(Matrix4x4 localToWorld, float distanceTraveled) {
         Vector3 dest = localToWorld.MultiplyPoint3x4(Vector3.zero);
-        kernel.Grow(dest);
+        kernel.PushToEnd(dest);
 
         // Vertices and normals
         float ringLength = 2 * Mathf.PI * radius;
@@ -62,7 +62,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
         UpdateMesh();
     }
 
-    public void Shrink() {
+    public void PopFromStart() {
         vertices.Dequeue(RealPointsPerRing);
         normals.Dequeue(RealPointsPerRing);
         uvs.Dequeue(RealPointsPerRing);
@@ -75,7 +75,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
         }
         triangles.Dequeue(trianglesPerSegment * 3);
 
-        kernel.Shrink();
+        kernel.PopFromStart();
     }
 
 
