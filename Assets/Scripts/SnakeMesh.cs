@@ -32,7 +32,8 @@ public class SnakeMesh : MonoBehaviour, IInitializable {
 #endif
     }
 
-    public void Grow(Vector3 dest, Matrix4x4 localToWorld, float distanceTraveled) {
+    public void Grow(Matrix4x4 localToWorld, float distanceTraveled) {
+        Vector3 dest = localToWorld.MultiplyPoint3x4(Vector3.zero);
         kernel.Grow(dest);
 
         // Vertices and normals
