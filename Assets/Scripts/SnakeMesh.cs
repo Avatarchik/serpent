@@ -1,13 +1,21 @@
 ﻿using UnityEngine;
 using JetBlack.Core.Collections.Generic;
 
-public class SnakeMesh : MonoBehaviour, IInitializable {
+public interface ISnakeMesh {
+    void PushToEnd(Matrix4x4 localToWorld, float distanceTraveled);
+    void PopFromStart();
+    int Count { get; }
+}
+
+public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
     public SnakeKernel kernel;
-    public float radius = 0.5f;
+    public float radius = 0.5f; // TODO: move out of the class
     public int visiblePointsPerRing = 16; // Visible points per ring (as opposed to real number)
     public GameObject vertexLabelPrefab;
     public bool showDebugInfo = false;
+
+    public int Count { get { return kernel.Path.Count; } }
 
     private ICircularBuffer<Vector3> vertices;
     private ICircularBuffer<Vector3> normals;

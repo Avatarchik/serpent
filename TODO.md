@@ -6,10 +6,8 @@
 
 - Snake body mesh
     - Body mesh
-        - **[CURRENT]** Length control
-            - Rename GrowController to GrowController_OLD
-            - Rename SnakeMesh.Grow/Shrink to Increment/Decrement (for contrast with new continuous Grow/Shrink methods)
-        - CappedSnakeMesh
+        - ~~Length control~~
+        - **[CURRENT]** ContinuousSnakeMesh
         - Mesh partitioning
         - Collision detection
     - Plain terrain
