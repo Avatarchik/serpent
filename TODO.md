@@ -15,11 +15,19 @@
         - ~~3rd person camera~~
         - Wavy walker decorator
 
+- **[CURRENT 2]** Gameplay
+    - ~~Fence in Blender~~
+        - ~~Import terrain into Blender~~
+    - Smooth camera
+    - Low-poly styled terrain
+    - Increase speed when eating (i.e. up to 14/240)
+
 - Algorithms visualization
 - Separate development and production assets
 - Establish more modular, manageable workflow
 
 ## Art
+
 - Replace existing terrain by low-poly styled one
 - Snake head
 - Decorations
