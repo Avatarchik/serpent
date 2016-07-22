@@ -5,6 +5,7 @@ public interface ISnakeMesh {
     void PushToEnd(Matrix4x4 localToWorld, float distanceTraveled);
     void PopFromStart();
     int Count { get; }
+    float RingLength { get; }
 }
 
 public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
@@ -16,6 +17,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
     public bool showDebugInfo = false;
 
     public int Count { get { return kernel.Path.Count; } }
+    public float RingLength { get { return 2 * Mathf.PI * radius; } }
 
     private ICircularBuffer<Vector3> vertices;
     private ICircularBuffer<Vector3> normals;
@@ -45,7 +47,6 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
         kernel.PushToEnd(dest);
 
         // Vertices and normals
-        float ringLength = 2 * Mathf.PI * radius;
         for (int i = 0; i < RealPointsPerRing; ++i) {
             float angle = (2 * Mathf.PI) * i / visiblePointsPerRing;
             var normal = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle));
@@ -54,7 +55,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
             Vector2 uv = new Vector2();
             uv.x = 0.75f - (float)i / visiblePointsPerRing;
-            uv.y = distanceTraveled / ringLength;
+            uv.y = distanceTraveled / RingLength;
 
             vertices.Enqueue(vertex);
             normals.Enqueue(normal);
