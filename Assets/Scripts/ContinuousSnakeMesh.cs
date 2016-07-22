@@ -16,7 +16,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     public ISnakeMesh snakeMesh;
     private bool initialized = false;
     private Vector3 lastGrowPoint;
-
+    
     public void Init() {
         Debug.Assert(snakeMesh_ != null);
         snakeMesh = snakeMesh_ as ISnakeMesh;
@@ -38,6 +38,8 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
             lastGrowPoint += delta.normalized * interval;
             snakeMesh.PushToEnd(localToWorld, distanceTraveled);
         }
+
+        AnimateUV(distanceTraveled);
     }
 
     public void Shrink(float length) {
@@ -55,5 +57,12 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     public float ComputeLength() {
         // TODO
         return interval * snakeMesh.Count;
+    }
+
+
+    private void AnimateUV(float distanceTraveled) {
+        Vector2 offset = snakeMesh.TextureOffset;
+        offset.y = -distanceTraveled / snakeMesh.RingLength;
+        snakeMesh.TextureOffset = offset;
     }
 }

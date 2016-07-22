@@ -6,8 +6,10 @@ public interface ISnakeMesh {
     void PopFromStart();
     int Count { get; }
     float RingLength { get; }
+    Vector2 TextureOffset { get; set; }
 }
 
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
     public SnakeKernel kernel;
@@ -18,7 +20,23 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
     public int Count { get { return kernel.Path.Count; } }
     public float RingLength { get { return 2 * Mathf.PI * radius; } }
+    public Vector2 TextureOffset {
+        get {
+            Vector2 result = material.mainTextureOffset;
+            Vector2 scale = material.mainTextureScale;
+            result.x /= scale.x;
+            result.y /= scale.y;
+            return result;
+        }
+        set {
+            Vector2 result = value;
+            result.Scale(material.mainTextureScale);
+            material.mainTextureOffset = result;
+        }
+    }
 
+    private MeshFilter meshFilter;
+    private Material material;
     private ICircularBuffer<Vector3> vertices;
     private ICircularBuffer<Vector3> normals;
     private ICircularBuffer<Vector2> uvs;
@@ -34,6 +52,9 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
     public void Init() {
         Debug.Assert(kernel != null);
+        
+        meshFilter = GetComponent<MeshFilter>();
+        material = GetComponent<MeshRenderer>().material;
 
         AllocateBuffers();
 
@@ -126,7 +147,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
     }
 
     private void UpdateMesh() {
-        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        Mesh mesh = meshFilter.mesh;
 
         mesh.Clear();
         mesh.vertices = vertices.RawBuffer;
