@@ -98,12 +98,14 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
         uvs.Dequeue(RealPointsPerRing);
 
         // Make deleted triangles degenerate
-        for (int i = 0; i < trianglesPerSegment; ++i) {
-            triangles[i * 3 + 0] = 0;
-            triangles[i * 3 + 1] = 0;
-            triangles[i * 3 + 2] = 0;
+        if (triangles.Count > 0) {
+            for (int i = 0; i < trianglesPerSegment; ++i) {
+                triangles[i * 3 + 0] = 0;
+                triangles[i * 3 + 1] = 0;
+                triangles[i * 3 + 2] = 0;
+            }
+            triangles.Dequeue(trianglesPerSegment * 3);
         }
-        triangles.Dequeue(trianglesPerSegment * 3);
 
         kernel.PopFromStart();
     }
