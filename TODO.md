@@ -1,5 +1,13 @@
 # TODO
 
+## SUMMARY
+**[CURRENT 3]** Update TODO.md
+- Snake vertex shader
+- Collisions
+- Correct spawn
+- Full continuous mesh and tail
+- Basic, prebuilt levels
+
 ## Code
 - Refactor
     - GrowController.Update(): // Grow if needed
