@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class SnakeHead : MonoBehaviour {
 
     public GameObject foodPrefab;
@@ -7,6 +8,7 @@ public class SnakeHead : MonoBehaviour {
     public float growDelta = 2;
 
     private Terrain terrain;
+    private AudioSource audioSource;
 
     void Start () {
         Debug.Assert(foodPrefab != null);
@@ -14,6 +16,7 @@ public class SnakeHead : MonoBehaviour {
 
         terrain = FindObjectOfType<Terrain>();
         Debug.Assert(terrain != null);
+        audioSource = GetComponent<AudioSource>();
 
         SpawnNewFood();
 	}
@@ -28,6 +31,7 @@ public class SnakeHead : MonoBehaviour {
             return;
         
         Destroy(other.transform.parent.gameObject);
+        audioSource.Play();
 
         SpawnNewFood();
         GrowSnake();
