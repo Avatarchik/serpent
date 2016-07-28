@@ -9,8 +9,8 @@ namespace Snake3D {
 
         public Joystick joystick;
         public float offsetFromSurface = 1;
-        public float speed = 5;
-        public float rotationSpeed = 100; // degrees per second
+        public float speed = 8;
+        public float rotationSpeed = 180; // degrees per second
 
         private Terrain terrain;
         private float currentAngle = 0;

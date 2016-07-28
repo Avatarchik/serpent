@@ -5,7 +5,8 @@ public class SnakeHead : MonoBehaviour {
 
     public GameObject foodPrefab;
     public GrowController growController;
-    public float growDelta = 2;
+    public float growDelta = 4;
+    public FoodPointer foodPointer;
 
     private Terrain terrain;
     private AudioSource audioSource;
@@ -13,16 +14,13 @@ public class SnakeHead : MonoBehaviour {
     void Start () {
         Debug.Assert(foodPrefab != null);
         Debug.Assert(growController != null);
+        Debug.Assert(foodPointer != null);
 
         terrain = FindObjectOfType<Terrain>();
         Debug.Assert(terrain != null);
         audioSource = GetComponent<AudioSource>();
 
         SpawnNewFood();
-	}
-	
-	void Update () {
-	
 	}
 
     void OnTriggerEnter(Collider other) {
@@ -54,6 +52,7 @@ public class SnakeHead : MonoBehaviour {
         float y = position.z / size.z;
         position.y = terrain.terrainData.GetInterpolatedHeight(x, y);
 
-        Instantiate(foodPrefab, position, Quaternion.identity);
+        var gameObject = Instantiate(foodPrefab, position, Quaternion.identity) as GameObject;
+        foodPointer.food = gameObject.transform;
     }
 }
