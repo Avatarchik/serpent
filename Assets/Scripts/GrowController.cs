@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public interface IGrowable {
+    void Grow(Ring ring, float distanceTraveled);
+    void Shrink(float length);
+    float ComputeLength();
+}
+
 public class GrowController : MonoBehaviour, IInitializable {
 
     public Transform walker;
@@ -30,15 +36,16 @@ public class GrowController : MonoBehaviour, IInitializable {
         previousPosition = walker.position;
         distanceTraveled += step;
 
-        MaintainLength();
+        DragSnake();
     }
 
-    private void MaintainLength() {
+    private void DragSnake() {
         float currentLength = growable.ComputeLength();
         float shrinkLength = currentLength - targetLength;
         if (shrinkLength > 0)
             growable.Shrink(shrinkLength);
 
-        growable.Grow(walker.localToWorldMatrix, distanceTraveled);
+        var ring = new Ring(walker.position, walker.rotation);
+        growable.Grow(ring, distanceTraveled);
     }
 }

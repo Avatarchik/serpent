@@ -2,12 +2,6 @@
 using System.Collections;
 using System;
 
-public interface IGrowable {
-    void Grow(Matrix4x4 localToWorld, float distanceTraveled);
-    void Shrink(float length);
-    float ComputeLength();
-}
-
 public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     public MonoBehaviour snakeMesh_;
@@ -19,7 +13,6 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     private Vector3 lastGrowPoint;
 
     private ISnakeMesh headPatch;
-    private Matrix4x4 lastTransformMat; // TODO: remove when SnakeKernel will contain all transform matrices
 
     public void Init() {
         Debug.Assert(snakeMesh_ != null);
@@ -33,21 +26,18 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     }
 
 
-    public void Grow(Matrix4x4 localToWorld, float distanceTraveled) {
-        Vector3 dest = localToWorld.MultiplyPoint3x4(Vector3.zero);
-
+    public void Grow(Ring ring, float distanceTraveled) {
         if (!initialized) {
             initialized = true;
-            lastGrowPoint = dest;
-
-            // TODO: remove
-            lastTransformMat = localToWorld;
-            headPatch.PushToEnd(localToWorld, distanceTraveled);
-            headPatch.PushToEnd(localToWorld, distanceTraveled);
+            lastGrowPoint = ring.position;
+            GrowBodyMesh(ring, distanceTraveled, true);
+            
+            headPatch.PushToEnd(ring, distanceTraveled);
+            headPatch.PushToEnd(ring, distanceTraveled);
         }
 
-        GrowBodyMesh(localToWorld, distanceTraveled);
-        UpdateHeadPatch(localToWorld, distanceTraveled);
+        GrowBodyMesh(ring, distanceTraveled);
+        UpdateHeadPatch(ring, distanceTraveled);
 
         AnimateUV(distanceTraveled);
     }
@@ -71,30 +61,25 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
 
     // Grows body mesh if needed in current frame.
-    private void GrowBodyMesh(Matrix4x4 localToWorld, float distanceTraveled) {
-        Vector3 dest = localToWorld.MultiplyPoint3x4(Vector3.zero);
-
-        Vector3 delta = dest - lastGrowPoint;
-        if (delta.magnitude >= interval) {
+    private void GrowBodyMesh(Ring ring, float distanceTraveled, bool force=false) {
+        Vector3 delta = ring.position - lastGrowPoint;
+        if (delta.magnitude >= interval || force) {
             // Grow
             lastGrowPoint += delta.normalized * interval;
-            snakeMesh.PushToEnd(localToWorld, distanceTraveled);
-
-            // TODO: remove in future
-            lastTransformMat = localToWorld;
+            snakeMesh.PushToEnd(ring, distanceTraveled);
         }
     }
 
-    private void UpdateHeadPatch(Matrix4x4 localToWorld, float distanceTraveled) {
+    private void UpdateHeadPatch(Ring ring, float distanceTraveled) {
         headPatch.PopFromStart();
         headPatch.PopFromStart();
-        
-        Vector3 currentPosition = localToWorld.MultiplyPoint3x4(Vector3.zero);
-        Vector3 lastPosition = lastTransformMat.MultiplyPoint3x4(Vector3.zero);
-        float lastDistance = distanceTraveled - (currentPosition - lastPosition).magnitude;
 
-        headPatch.PushToEnd(lastTransformMat, lastDistance);
-        headPatch.PushToEnd(localToWorld, distanceTraveled);
+        Ring lastRing = snakeMesh.Kernel.Path.Last;
+        Vector3 lastPosition = lastRing.position;
+        float lastDistance = distanceTraveled - (ring.position - lastPosition).magnitude;
+
+        headPatch.PushToEnd(lastRing, lastDistance);
+        headPatch.PushToEnd(ring, distanceTraveled);
     }
 
     private void AnimateUV(float distanceTraveled) {

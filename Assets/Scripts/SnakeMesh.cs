@@ -2,11 +2,12 @@
 using JetBlack.Core.Collections.Generic;
 
 public interface ISnakeMesh {
-    void PushToEnd(Matrix4x4 localToWorld, float distanceTraveled);
+    void PushToEnd(Ring ring, float distanceTraveled);
     void PopFromStart();
     int Count { get; }
     float RingLength { get; }
     Vector2 TextureOffset { get; set; }
+    ISnakeKernel Kernel { get; }
 }
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -34,6 +35,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
             material.mainTextureOffset = result;
         }
     }
+    public ISnakeKernel Kernel { get { return kernel; } }
 
     private MeshFilter meshFilter;
     private Material material;
@@ -63,16 +65,15 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 #endif
     }
 
-    public void PushToEnd(Matrix4x4 localToWorld, float distanceTraveled) {
-        Vector3 dest = localToWorld.MultiplyPoint3x4(Vector3.zero);
-        kernel.PushToEnd(dest);
+    public void PushToEnd(Ring ring, float distanceTraveled) {
+        kernel.PushToEnd(ring);
 
         // Vertices and normals
         for (int i = 0; i < RealPointsPerRing; ++i) {
             float angle = (2 * Mathf.PI) * i / visiblePointsPerRing;
             var normal = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle));
-            normal = localToWorld * normal;
-            Vector3 vertex = normal * radius + dest;
+            normal = ring.rotation * normal;
+            Vector3 vertex = normal * radius + ring.position;
 
             Vector2 uv = new Vector2();
             uv.x = 0.75f - (float)i / visiblePointsPerRing;
@@ -129,7 +130,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
     }
 
     private void AddSegmentTriangles() {
-        ICircularBuffer<Vector3> path = kernel.Path;
+        ICircularBuffer<Ring> path = kernel.Path;
         if (path.Count >= 2) {
             int ring1Offset = path.RawPosition(path.Count - 2) * RealPointsPerRing;
             int ring2Offset = path.RawPosition(path.Count - 1) * RealPointsPerRing;

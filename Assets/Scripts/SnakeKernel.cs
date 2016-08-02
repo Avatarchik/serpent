@@ -1,12 +1,28 @@
 using UnityEngine;
 using JetBlack.Core.Collections.Generic;
 
-public class SnakeKernel : MonoBehaviour, IInitializable {
+public struct Ring {
+    public Vector3 position;
+    public Quaternion rotation;
+
+    public Ring(Vector3 position, Quaternion rotation) {
+        this.position = position;
+        this.rotation = rotation;
+    }
+}
+
+public interface ISnakeKernel {
+    void PushToEnd(Ring ring);
+    void PopFromStart();
+    ICircularBuffer<Ring> Path { get; }
+}
+
+public class SnakeKernel : MonoBehaviour, IInitializable, ISnakeKernel {
     
     public int pointsNum = 64;
     public bool showDebugInfo = false;
 
-    public ICircularBuffer<Vector3> Path { get; private set; }
+    public ICircularBuffer<Ring> Path { get; private set; }
 
 #if UNITY_EDITOR
     void Update() {
@@ -15,10 +31,10 @@ public class SnakeKernel : MonoBehaviour, IInitializable {
 #endif
 
     public void Init() {
-        Path = new CircularBuffer<Vector3>(pointsNum);
+        Path = new CircularBuffer<Ring>(pointsNum);
     }
 
-    public void PushToEnd(Vector3 dest) {
+    public void PushToEnd(Ring dest) {
         Path.Enqueue(dest);
     }
 
@@ -48,7 +64,7 @@ public class SnakeKernel : MonoBehaviour, IInitializable {
             }
 
             var color = Color.Lerp(Color.green, Color.red, factor);
-            Debug.DrawLine(Path[i], Path[i + 1], color);
+            Debug.DrawLine(Path[i].position, Path[i + 1].position, color);
         }
     }
 #endif // UNITY_EDITOR
