@@ -23,7 +23,7 @@ namespace Snake3D {
             joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();
 
             // What camera to use?
-            Canvas canvas = Utilities.FindNearestParentWithComponent<Canvas>(transform);
+            Canvas canvas = Utils.FindNearestParentWithComponent<Canvas>(transform);
             if (canvas.renderMode == RenderMode.WorldSpace || canvas.renderMode == RenderMode.ScreenSpaceCamera)
                 myCamera = canvas.worldCamera;
             else

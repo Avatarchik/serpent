@@ -6,14 +6,16 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     public MonoBehaviour snakeMesh_;
     public float interval = 0.25f;
+    public bool animateUv = true;
 
     public ISnakeMesh snakeMesh;
     public Transform tail;
     
     private Ring lastPoppedRing;
-
     private ISnakeMesh headPatch;
     private ISnakeMesh tailPatch;
+    private Material tailMaterial;
+    private Vector2 baseTailOffset; // Tail UV offset without sliding animation
 
     public void Init() {
         Debug.Assert(snakeMesh_ != null);
@@ -24,6 +26,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         tailPatch = InitPatch("Tail Patch");
 
         Debug.Assert(tail != null);
+        tailMaterial = tail.GetChild(0).GetComponent<MeshRenderer>().material;
 
         // Add first ring
         // TODO: replace by more sane mechanism (incorrect ring here)
@@ -56,7 +59,8 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         GrowBodyMesh(ring);
         UpdateHeadPatch(ring);
 
-        AnimateUV();
+        if (animateUv)
+            AnimateUV();
     }
 
     public void ShrinkToLength(float targetLength) {
@@ -81,6 +85,13 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
             Ring tailRing = Ring.lerp(snakeMesh.Kernel.Path[0], lastPoppedRing, factor);
             tailRing.SetTransform(tail);
             UpdateTailPatch(tailRing);
+
+
+            // UV offset
+            float distanceTraveled = bodyDistanceTraveled - bodyLength - tailPatchLength;
+            baseTailOffset = tailMaterial.GetUnscaledTextureOffset();
+            baseTailOffset.y = distanceTraveled / snakeMesh.RingLength;
+            tailMaterial.SetUnscaledTextureOffset(baseTailOffset);
         }
     }
 
@@ -90,10 +101,11 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     #region Private
 
-    private float bodyLength { get { return interval * (snakeMesh.Count - 1); } }
+    private float bodyLength { get { return (snakeMesh.Count - 1) * interval; } }
     private float bodyDistanceTraveled {
         get {
-            return Mathf.Max(0, (snakeMesh.Kernel.RingsAdded - 1) * interval);
+            //return Mathf.Max(0, (snakeMesh.Kernel.RingsAdded - 1) * interval);
+            return (snakeMesh.Kernel.RingsAdded - 1) * interval;
         }
     }
 
@@ -150,8 +162,6 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     private void UpdateLastPoppedRing(Ring ring) {
         lastPoppedRing = ring;
-
-        lastPoppedRing.SetTransform(tail);
     }
 
     private void AnimateUV() {
@@ -162,19 +172,10 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         headPatch.TextureOffset = offset;
         tailPatch.TextureOffset = offset;
 
-        Material tailMaterial = tail.GetChild(0).GetComponent<MeshRenderer>().material;
-        /*get {
-            Vector2 result = material.mainTextureOffset;
-            Vector2 scale = material.mainTextureScale;
-            result.x /= scale.x;
-            result.y /= scale.y;
-            return result;
-        }
-        set {
-            Vector2 result = value;
-            result.Scale(material.mainTextureScale);
-            material.mainTextureOffset = result;
-        }*/
+        // Tail
+        Vector2 tailOffset = baseTailOffset;
+        tailOffset.y += offset.y;
+        tailMaterial.SetUnscaledTextureOffset(tailOffset);
     }
 
     #endregion Private

@@ -23,18 +23,8 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
     public int Count { get { return kernel.Path.Count; } }
     public float RingLength { get { return 2 * Mathf.PI * radius; } }
     public Vector2 TextureOffset {
-        get {
-            Vector2 result = material.mainTextureOffset;
-            Vector2 scale = material.mainTextureScale;
-            result.x /= scale.x;
-            result.y /= scale.y;
-            return result;
-        }
-        set {
-            Vector2 result = value;
-            result.Scale(material.mainTextureScale);
-            material.mainTextureOffset = result;
-        }
+        get { return material.GetUnscaledTextureOffset(); }
+        set { material.SetUnscaledTextureOffset(value); }
     }
     public ISnakeKernel Kernel { get { return kernel; } }
 

@@ -14,7 +14,6 @@ public class GrowController : MonoBehaviour, IInitializable {
     public float targetLength;
 
     private IGrowable growable;
-    private Vector3 previousPosition;
 
     public void Init() {
         Debug.Assert(walker != null);
@@ -25,8 +24,6 @@ public class GrowController : MonoBehaviour, IInitializable {
         Debug.Assert(growable_ != null);
         growable = growable_ as IGrowable;
         Debug.Assert(growable != null);
-
-        previousPosition = walker.position;
     }
 	
 	void Update() {
