@@ -2,8 +2,8 @@
 using System.Collections;
 
 public interface IGrowable {
-    void Grow(Ring ring, float distanceTraveled);
-    void Shrink(float length);
+    void Grow(Ring ring);
+    void ShrinkToLength(float targetLength);
     float ComputeLength();
 }
 
@@ -14,7 +14,6 @@ public class GrowController : MonoBehaviour, IInitializable {
     public float targetLength;
 
     private IGrowable growable;
-    private float distanceTraveled = 0;
     private Vector3 previousPosition;
 
     public void Init() {
@@ -30,22 +29,16 @@ public class GrowController : MonoBehaviour, IInitializable {
         previousPosition = walker.position;
     }
 	
-	void Update () {
-        // Distance went since last frame
-        float step = (walker.position - previousPosition).magnitude;
-        previousPosition = walker.position;
-        distanceTraveled += step;
-
-        DragSnake();
+	void Update() {
+        MaintainLength();
     }
 
-    private void DragSnake() {
+    private void MaintainLength() {
         float currentLength = growable.ComputeLength();
         float shrinkLength = currentLength - targetLength;
         if (shrinkLength > 0)
-            growable.Shrink(shrinkLength);
-
-        var ring = new Ring(walker.position, walker.rotation);
-        growable.Grow(ring, distanceTraveled);
+            growable.ShrinkToLength(targetLength);
+        
+        growable.Grow(new Ring(walker));
     }
 }

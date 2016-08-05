@@ -1,5 +1,6 @@
 using UnityEngine;
 using JetBlack.Core.Collections.Generic;
+using System;
 
 public struct Ring {
     public Vector3 position;
@@ -9,12 +10,34 @@ public struct Ring {
         this.position = position;
         this.rotation = rotation;
     }
+
+    public Ring(Transform transform) {
+        this.position = transform.position;
+        this.rotation = transform.rotation;
+    }
+
+    public static Ring lerp(Ring start, Ring end, float factor) {
+        return new Ring(
+                Vector3.LerpUnclamped(start.position, end.position, factor),
+                Quaternion.LerpUnclamped(start.rotation, end.rotation, factor)
+            );
+    }
+
+    public void SetTransform(Transform transform) {
+        transform.position = position;
+        transform.rotation = rotation;
+    }
 }
+
+public delegate void KernelChangeDelegate(Ring ring);
 
 public interface ISnakeKernel {
     void PushToEnd(Ring ring);
     void PopFromStart();
+
     ICircularBuffer<Ring> Path { get; }
+    KernelChangeDelegate OnPopFromStart { get; set; }
+    int RingsAdded { get; }
 }
 
 public class SnakeKernel : MonoBehaviour, IInitializable, ISnakeKernel {
@@ -23,6 +46,9 @@ public class SnakeKernel : MonoBehaviour, IInitializable, ISnakeKernel {
     public bool showDebugInfo = false;
 
     public ICircularBuffer<Ring> Path { get; private set; }
+    public int RingsAdded { get; private set; }
+
+    public KernelChangeDelegate OnPopFromStart { get; set; }
 
 #if UNITY_EDITOR
     void Update() {
@@ -36,10 +62,13 @@ public class SnakeKernel : MonoBehaviour, IInitializable, ISnakeKernel {
 
     public void PushToEnd(Ring dest) {
         Path.Enqueue(dest);
+        RingsAdded++;
     }
 
     public void PopFromStart() {
-        Path.Dequeue();
+        Ring popped = Path.Dequeue();
+        if (OnPopFromStart != null)
+            OnPopFromStart(popped);
     }
 
 #if UNITY_EDITOR

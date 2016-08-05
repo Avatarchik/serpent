@@ -1,7 +1,7 @@
 # TODO
 
 ## SUMMARY
-**[CURRENT 3]** Update TODO.md
+**[CURRENT 3]** Add author notice
 - Collisions
 - Correct spawn
 - Full continuous mesh and tail
@@ -9,13 +9,13 @@
 - Snake vertex shader
 
 ## Code
-- Refactor
-    - GrowController.Update(): // Grow if needed
-
 - Snake body mesh
     - Body mesh
         - ~~Length control~~
         - **[CURRENT]** ContinuousSnakeMesh
+            - Keep trail rings
+            - Compute tail position
+            - Proper snake growing
         - Mesh partitioning
         - Collision detection
     - Plain terrain

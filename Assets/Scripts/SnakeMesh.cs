@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using JetBlack.Core.Collections.Generic;
+using System;
 
 public interface ISnakeMesh {
     void PushToEnd(Ring ring, float distanceTraveled);
@@ -45,11 +46,19 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
     private ICircularBuffer<int> triangles;
     private Transform[] vertexLabels;
 
+    // Flag to avoid unnecessary updates of mesh data
+    private bool meshIsDirty = false;
+
     // There is additional row of vertices because we need correct UVs
     private int RealPointsPerRing { get { return visiblePointsPerRing + 1; } }
 
     void Update() {
         // Empty Update() just to activate component checkbox in the editor
+    }
+
+    void LateUpdate() {
+        if (meshIsDirty)
+            UpdateMesh();
     }
 
     public void Init() {
@@ -90,7 +99,7 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
         AddSegmentTriangles();
 
-        UpdateMesh();
+        meshIsDirty = true;
     }
 
     public void PopFromStart() {
@@ -98,17 +107,11 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
         normals.Dequeue(RealPointsPerRing);
         uvs.Dequeue(RealPointsPerRing);
 
-        // Make deleted triangles degenerate
-        if (triangles.Count > 0) {
-            for (int i = 0; i < trianglesPerSegment; ++i) {
-                triangles[i * 3 + 0] = 0;
-                triangles[i * 3 + 1] = 0;
-                triangles[i * 3 + 2] = 0;
-            }
-            triangles.Dequeue(trianglesPerSegment * 3);
-        }
+        RemoveSegmentTriangles();
 
         kernel.PopFromStart();
+
+        meshIsDirty = true;
     }
 
 
@@ -149,6 +152,17 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
         }
     }
 
+    private void RemoveSegmentTriangles() {
+        if (triangles.Count > 0) {
+            for (int i = 0; i < trianglesPerSegment; ++i) {
+                triangles[i * 3 + 0] = 0;
+                triangles[i * 3 + 1] = 0;
+                triangles[i * 3 + 2] = 0;
+            }
+            triangles.Dequeue(trianglesPerSegment * 3);
+        }
+    }
+
     private void UpdateMesh() {
         Mesh mesh = meshFilter.mesh;
 
@@ -157,6 +171,8 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
         mesh.normals = normals.RawBuffer;
         mesh.uv = uvs.RawBuffer;
         mesh.triangles = triangles.RawBuffer;
+
+        meshIsDirty = false;
     }
 
 
