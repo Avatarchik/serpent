@@ -5,7 +5,7 @@ using System;
 
 namespace Snake3D {
 
-    public class TerrainWalker : MonoBehaviour {
+    public class TerrainWalker : MonoBehaviour, IInitializable {
 
         public Joystick joystick;
         public float offsetFromSurface = 1;
@@ -14,19 +14,25 @@ namespace Snake3D {
 
         private Terrain terrain;
         private float currentAngle = 0;
+        private float targetAngle;
 
-        void Start() {
+        public void Init() {
+            Debug.Assert(joystick != null);
+
             terrain = FindObjectOfType<Terrain>();
-            if (terrain == null)
-                throw new UnityException("Terrain object not found in current scene");
+            Debug.Assert(terrain != null);
 
             CastToSurface();
         }
 
         void Update() {
             // Rotate
+            if (joystick.isPressed) {
+                float cameraAngle = Camera.main.transform.rotation.eulerAngles.y;
+                targetAngle = -joystick.Angle + 90 + cameraAngle;
+            }
             float rotationStep = rotationSpeed * Time.deltaTime;
-            RotateUpToAngle(-joystick.Angle + 90, rotationStep);
+            RotateUpToAngle(targetAngle, rotationStep);
 
             // Translate
             float step = speed * Time.deltaTime;
@@ -36,6 +42,7 @@ namespace Snake3D {
         }
 
         /**
+         * Smoothly rotates up to target angle.
          * <param name="target">Target angle</param>
          * <param name="absoluteStep">Step without sign</param>
          */

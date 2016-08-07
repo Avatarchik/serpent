@@ -5,22 +5,29 @@ using System;
 
 namespace Snake3D {
 
-    public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler {
+    public class Joystick : MonoBehaviour, IInitializable, IPointerDownHandler, IDragHandler, IPointerUpHandler {
 
         // Normalized vector
         public Vector2 Value { get; private set; }
         public float Angle { get; private set; }
+        public bool isPressed { get; private set; }
         public float maxStickDistance = 58;
-        
+
+        public delegate void Delegate();
+        public Delegate OnChange;
+        public Delegate OnDown;
+        public Delegate OnUp;
+
         UnityEngine.UI.Image joystickBackground;
         UnityEngine.UI.Image joystickCenter;
         Camera myCamera;
 
 
-        void Start() {
+        public void Init() {
             Value = Vector2.zero;
             joystickBackground = GetComponent<UnityEngine.UI.Image>();
             joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();
+            isPressed = false;
 
             // What camera to use?
             Canvas canvas = Utils.FindNearestParentWithComponent<Canvas>(transform);
@@ -45,15 +52,24 @@ namespace Snake3D {
             }
 
             UpdateValue(eventData.position);
+
+            isPressed = true;
+            if (OnDown != null) OnDown();
+            if (OnChange != null) OnChange();
         }
 
         public void OnDrag(PointerEventData eventData) {
             UpdateValue(eventData.position);
+
+            if (OnChange != null) OnChange();
         }
 
         public void OnPointerUp(PointerEventData eventData) {
             Value = Vector2.zero;
             joystickCenter.rectTransform.anchoredPosition = Value;
+
+            isPressed = false;
+            if (OnUp != null) OnUp();
         }
 
 
