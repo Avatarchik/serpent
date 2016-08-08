@@ -9,25 +9,19 @@
 - Snake vertex shader
 
 ## Code
-- Snake body mesh
+- Snake
     - Body mesh
-        - ~~Length control~~
-        - **[CURRENT]** ContinuousSnakeMesh
-            - Keep trail rings
-            - Compute tail position
-            - Proper snake growing
         - Mesh partitioning
         - Collision detection
-    - Plain terrain
-        - ~~Walker~~
-        - ~~3rd person camera~~
-        - Wavy walker decorator
+    - Wavy walker decorator
 
 - **[CURRENT 2]** Gameplay
-    - ~~Fence in Blender~~
-        - ~~Import terrain into Blender~~
-    - Smooth camera
-    - Low-poly styled terrain
+    - Snake respawn
+    - Correct food spawn
+    - Collisions with obstacles
+    - Snake body collisions
+    - Score
+    - Persistent high score
     - Increase speed when eating (i.e. up to 14/240)
 
 - Algorithms visualization
