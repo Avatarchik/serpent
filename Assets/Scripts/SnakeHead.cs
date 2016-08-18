@@ -1,34 +1,39 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
-public class SnakeHead : MonoBehaviour {
+namespace Snake3D {
 
-    public GrowController growController;
-    public float growDelta = 4;
+    [RequireComponent(typeof(AudioSource))]
+    public class SnakeHead : MonoBehaviour {
 
-    private AudioSource audioSource;
+        public GrowController growController;
+        public float growDelta = 4;
 
-    void Start () {
-        Debug.Assert(growController != null);
+        private AudioSource audioSource;
 
-        audioSource = GetComponent<AudioSource>();
-	}
+        void Start() {
+            Debug.Assert(growController != null);
 
-    void OnTriggerEnter(Collider other) {
-        if (!other.CompareTag("Food")) {
-            // TODO: game over
-            return;
+            audioSource = GetComponent<AudioSource>();
         }
 
-        OnFoodPickedUp(other.transform.parent.gameObject);
+        void OnTriggerEnter(Collider other) {
+            if (!other.CompareTag("Food")) {
+                // TODO: game over
+                return;
+            }
+
+            OnFoodPickedUp(other.transform.parent.gameObject);
+        }
+
+        private void OnFoodPickedUp(GameObject food) {
+            Destroy(food);
+            audioSource.Play();
+
+            FoodSpawner.instance.SpawnNewFood();
+            GameLogic.instance.Score++;
+            // Grow snake
+            growController.targetLength += growDelta;
+        }
     }
 
-    private void OnFoodPickedUp(GameObject food) {
-        Destroy(food);
-        audioSource.Play();
-
-        FoodSpawner.instance.SpawnNewFood();
-        // Grow snake
-        growController.targetLength += growDelta;
-    }
-}
+} // namespace Snake3D
