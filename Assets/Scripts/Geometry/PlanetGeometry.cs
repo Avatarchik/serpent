@@ -112,8 +112,8 @@ namespace Snake3D {
              *     Generate the noise
              *     cubemap.SetPixels();
              */
-
-            int savedSeed = Random.seed;
+             
+            Random.State savedState = Random.state;
 
             int size = heightCubemapSize;
             Cubemap heightMap = new Cubemap(size, TextureFormat.RGB24, false);
@@ -154,7 +154,7 @@ namespace Snake3D {
             }
 
 
-            Random.seed = savedSeed;
+            Random.state = savedState;
 
             return heightMap;
         }
