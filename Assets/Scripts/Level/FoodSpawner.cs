@@ -10,6 +10,9 @@ public class FoodSpawner : MonoBehaviour, IInitializable {
 
     private Terrain terrain;
 
+    // Enable editor deactivation
+    void Update() { }
+
     public void Init() {
         Debug.Assert(instance == null);
         instance = this;
