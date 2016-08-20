@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Snake3D {
 
-    public class PlanetWalker : MonoBehaviour {
+    public class PlanetWalker : MonoBehaviour, IInitializable {
 
         public Joystick joystick;
         public PlanetGeometry planetGeometry;
@@ -12,7 +12,7 @@ namespace Snake3D {
         public float moveSpeed = 2; // Meters per second
         public float offsetFromSurface = 1;
 
-        void Start() {
+        public void Init() {
             CastToSurface();
         }
 

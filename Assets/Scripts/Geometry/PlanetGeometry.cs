@@ -10,6 +10,7 @@ namespace Snake3D {
      */
 
     //[ExecuteInEditMode]
+    [RequireComponent(typeof(MeshFilter), typeof(Renderer))]
     public class PlanetGeometry : MonoBehaviour {
 
         public const int kMaxSubdivisionLevel = 5;
@@ -27,7 +28,60 @@ namespace Snake3D {
 
         //[HideInInspector]
         public Cubemap heightMap;
+        public bool showOctreeNodeBounds = false;
+        public bool showOctreeObjectBounds = true;
 
+
+        // Octree with triangle bounds
+        private BoundsOctree<int> octree;
+
+
+#if UNITY_EDITOR
+        // Watch for properties change in editor
+
+        private int _lastSubdivisionLevel;
+        private bool _lastValuesInitialized = false;
+
+        void Update() {
+            if (!_lastValuesInitialized) {
+                _lastValuesInitialized = true;
+                _lastSubdivisionLevel = subdivisionLevel;
+                return;
+            }
+
+            if (_lastSubdivisionLevel != subdivisionLevel) {
+                Reset();
+
+                _lastSubdivisionLevel = subdivisionLevel;
+            }
+        }
+#endif // UNITY_EDITOR
+
+        void Reset() {
+            Resources.UnloadUnusedAssets();
+            if (heightMap != null)
+                DestroyImmediate(heightMap);
+
+            GeneratePlanet();
+        }
+
+        // Use this for initialization
+        void Awake() {
+            GeneratePlanet();
+        }
+
+        void OnDrawGizmos() {
+            if (octree == null)
+                return;
+
+            if (showOctreeNodeBounds)
+                octree.DrawAllBounds();
+
+            if (showOctreeObjectBounds)
+                octree.DrawAllObjects();
+
+            //octree.DrawCollisionChecks(); // Draw the last *numCollisionsToSave* collision check boundaries\
+        }
 
         public float GetHeightAt(Vector3 radiusVector) {
             Color pixel = CubemapProjections.ReadPixel(heightMap, radiusVector);
@@ -38,47 +92,58 @@ namespace Snake3D {
             return radius + heightDelta;
         }
 
-        void Reset() {
-            Resources.UnloadUnusedAssets();
-            if (heightMap != null)
-                Object.DestroyImmediate(heightMap);
 
-            GeneratePlanet();
-        }
+        #region Private part
 
-        // Use this for initialization
-        void Awake() {
-            GeneratePlanet();
-        }
-
-        void GeneratePlanet() {
+        private void GeneratePlanet() {
             CheckAndCorrectInputs();
 
             Icosphere.Create(gameObject, subdivisionLevel, radius);
 
             // Generate and measure generation time
-            float time = Time.realtimeSinceStartup;
+            float startTime = Time.realtimeSinceStartup;
+            {
+                heightMap = GenerateHeightmap(seed);
+                ApplyDisplacementMap();
+            }
 
-            heightMap = GenerateHeightmap(seed);
+            ApplyHeightmapAsTexture();
+            GenerateOctree();
 
-            ApplyDisplacementMap();
-
-            time = Time.realtimeSinceStartup - time;
-            string text = string.Format("Generated in {0:N3} seconds", time);
-            text += string.Format("{0:N3} {0:N3}", 0.123, 1234.0);
-            textComponent.text += text;
-
-            // Apply as texture
-            Renderer renderer = gameObject.GetComponent<Renderer>();
-            Material testMaterial = renderer.material;
-            testMaterial.SetTexture("_HeightCubemap", heightMap);
+            // Print performance info
+            {
+                float elapsedTime = Time.realtimeSinceStartup - startTime;
+                textComponent.text += string.Format("Generated in {0:N3} seconds\n", elapsedTime);
+            }
 
             System.GC.Collect();
         }
 
-        void ApplyDisplacementMap() {
+        private void GenerateOctree() {
+            octree = new BoundsOctree<int>(64, Vector3.zero, 1, 1.25f);
+
             Mesh mesh = GetComponent<MeshFilter>().mesh;
-            // Don't need to do error checks on MeshFilter and Mesh existence here
+            Vector3[] vertices = mesh.vertices;
+            int[] triangles = mesh.triangles;
+            for (int triangle = 0; triangle < triangles.Length / 3; ++triangle) {
+                int offset = triangle * 3;
+                Vector3 v1 = vertices[triangles[offset + 0]];
+                Vector3 v2 = vertices[triangles[offset + 1]];
+                Vector3 v3 = vertices[triangles[offset + 2]];
+                Bounds aabb = new Bounds(v1, Vector3.zero);
+                aabb.Encapsulate(v2);
+                aabb.Encapsulate(v3);
+                octree.Add(triangle, aabb);
+            }
+        }
+
+        private void ApplyHeightmapAsTexture() {
+            Material material = GetComponent<Renderer>().material;
+            material.SetTexture("_HeightCubemap", heightMap);
+        }
+
+        private void ApplyDisplacementMap() {
+            Mesh mesh = GetComponent<MeshFilter>().mesh;
 
             Vector3[] vertices = mesh.vertices;
             for (int i = 0; i < vertices.Length; ++i) {
@@ -92,12 +157,13 @@ namespace Snake3D {
             mesh.Optimize();
         }
 
-        void CheckAndCorrectInputs() {
+        private void CheckAndCorrectInputs() {
             bool warn = false;
             if (subdivisionLevel < 0) {
                 subdivisionLevel = 0;
                 warn = true;
-            } else if (subdivisionLevel > kMaxSubdivisionLevel) {
+            }
+            else if (subdivisionLevel > kMaxSubdivisionLevel) {
                 subdivisionLevel = kMaxSubdivisionLevel;
                 warn = true;
             }
@@ -105,14 +171,14 @@ namespace Snake3D {
                 Debug.LogWarning(string.Format("Subdivision Level must be in [0; {0}]", kMaxSubdivisionLevel));
         }
 
-        Cubemap GenerateHeightmap(int seed) {
+        private Cubemap GenerateHeightmap(int seed) {
             /*
              * Steps:
              *   For each one of six sides:
              *     Generate the noise
              *     cubemap.SetPixels();
              */
-             
+
             Random.State savedState = Random.state;
 
             int size = heightCubemapSize;
@@ -159,26 +225,7 @@ namespace Snake3D {
             return heightMap;
         }
 
-#if UNITY_EDITOR
-        // Watch for properties change in editor
-
-        private int _lastSubdivisionLevel;
-        private bool _lastValuesInitialized = false;
-
-        void Update() {
-            if (!_lastValuesInitialized) {
-                _lastValuesInitialized = true;
-                _lastSubdivisionLevel = subdivisionLevel;
-                return;
-            }
-
-            if (_lastSubdivisionLevel != subdivisionLevel) {
-                Reset();
-
-                _lastSubdivisionLevel = subdivisionLevel;
-            }
-        }
-#endif // UNITY_EDITOR
+        #endregion Private part
     }
 
 } // namespace Snake3D
