@@ -1,0 +1,3 @@
+[submodule "Assets/Scripts/3rd party/UnityOctree"]
+	path = Assets/Scripts/3rd party/UnityOctree
+	url = git@github.com:Nition/UnityOctree.git
