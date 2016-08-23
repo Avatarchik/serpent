@@ -8,7 +8,7 @@ namespace Snake3D {
      *   Properly dispose resources
      *   Interpolate height value in GetHeightAt()
      */
-
+    
     //[ExecuteInEditMode]
     [RequireComponent(typeof(MeshFilter), typeof(Renderer))]
     public class PlanetGeometry : MonoBehaviour {
@@ -28,12 +28,11 @@ namespace Snake3D {
 
         //[HideInInspector]
         public Cubemap heightMap;
-        public bool showOctreeNodeBounds = false;
-        public bool showOctreeObjectBounds = true;
-
 
         // Octree with triangle bounds
-        private BoundsOctree<int> octree;
+        public BoundsOctree<int> Octree;
+        public bool showOctreeNodeBounds = false;
+        public bool showOctreeObjectBounds = true;
 
 
 #if UNITY_EDITOR
@@ -71,14 +70,14 @@ namespace Snake3D {
         }
 
         void OnDrawGizmos() {
-            if (octree == null)
+            if (Octree == null)
                 return;
 
             if (showOctreeNodeBounds)
-                octree.DrawAllBounds();
+                Octree.DrawAllBounds();
 
             if (showOctreeObjectBounds)
-                octree.DrawAllObjects();
+                Octree.DrawAllObjects();
 
             //octree.DrawCollisionChecks(); // Draw the last *numCollisionsToSave* collision check boundaries\
         }
@@ -120,7 +119,7 @@ namespace Snake3D {
         }
 
         private void GenerateOctree() {
-            octree = new BoundsOctree<int>(64, Vector3.zero, 1, 1.25f);
+            Octree = new BoundsOctree<int>(64, Vector3.zero, 1, 1.25f);
 
             Mesh mesh = GetComponent<MeshFilter>().mesh;
             Vector3[] vertices = mesh.vertices;
@@ -133,7 +132,7 @@ namespace Snake3D {
                 Bounds aabb = new Bounds(v1, Vector3.zero);
                 aabb.Encapsulate(v2);
                 aabb.Encapsulate(v3);
-                octree.Add(triangle, aabb);
+                Octree.Add(triangle, aabb);
             }
         }
 

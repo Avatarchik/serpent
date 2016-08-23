@@ -6,18 +6,31 @@ public interface IInitializable {
 }
 
 /**
- Allows to init objects in particular order.
+ * Allows to init objects in particular order.
+ * You must either leave "startIndependently" to true, to let it start automatically
+ * or start it manually from another MyInitHelper, chaining them together.
  */
-public class MyInitHelper : MonoBehaviour {
+public class MyInitHelper : MonoBehaviour, IInitializable {
 
+    public bool startIndependently = true;
     public MonoBehaviour[] objects;
 
+    private bool initialized = false;
+
 	void Start () {
+        if (startIndependently)
+            Init();
+	}
+
+    public void Init() {
+        Debug.Assert(initialized == false);
+        initialized = true;
+
         foreach (MonoBehaviour comp in objects) {
             var obj = comp as IInitializable;
             Debug.Assert(obj != null);
             if (comp.enabled)
                 obj.Init();
         }
-	}
+    }
 }

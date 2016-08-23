@@ -3,11 +3,11 @@ using System.Collections;
 
 public class _Template : MonoBehaviour {
     
-	void Start () {
+	void Start() {
 	
 	}
 	
-	void Update () {
+	void Update() {
 	
 	}
 }

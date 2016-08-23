@@ -2,25 +2,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-public class GUIUtils : MonoBehaviour {
+namespace Snake3D {
+
+public class FpsDisplay : MonoBehaviour {
 
     private const float kFPSUpdateInterval = 0.5f;
     private Text debugText;
-
-    public void ExitGame() {
-        Application.Quit();
-    }
 
     void Start() {
         // Display FPS
         debugText = GameObject.FindWithTag("Debug text").GetComponent<Text>();
         StartCoroutine(UpdateFPS());
-
-        // Adjust UI scale
-#if !UNITY_EDITOR
-        CanvasScaler scaler = GameObject.Find("Play Canvas").GetComponent<CanvasScaler>();
-        scaler.scaleFactor = 1;
-#endif
     }
 
     IEnumerator UpdateFPS() {
@@ -34,3 +26,5 @@ public class GUIUtils : MonoBehaviour {
     }
 
 }
+
+} // namespace Snake3D

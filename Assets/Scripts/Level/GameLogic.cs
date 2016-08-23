@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 namespace Snake3D {
 
@@ -25,9 +26,22 @@ namespace Snake3D {
 
             scoreText = GameObject.Find("Score text").GetComponent<Text>();
             Debug.Assert(scoreText != null);
+
+
+            AdjustUiScale();
+        }
+
+        public void ExitGame() {
+            Application.Quit();
         }
 
 
+        private void AdjustUiScale() {
+#if !UNITY_EDITOR
+            CanvasScaler scaler = GameObject.Find("Play Canvas").GetComponent<CanvasScaler>();
+            scaler.scaleFactor = 1;
+#endif
+        }
     }
 
 } // namespace Snake3D

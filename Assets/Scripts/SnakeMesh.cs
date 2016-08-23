@@ -2,6 +2,8 @@
 using JetBlack.Core.Collections.Generic;
 using System;
 
+namespace Snake3D {
+
 public interface ISnakeMesh {
     void PushToEnd(Ring ring, float distanceTraveled);
     void PopFromStart();
@@ -211,3 +213,5 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
     #endregion Private part
 }
+
+} // namespace Snake3D

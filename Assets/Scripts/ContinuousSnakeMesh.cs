@@ -2,6 +2,8 @@
 using System.Collections;
 using System;
 
+namespace Snake3D {
+
 public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     public MonoBehaviour snakeMesh_;
@@ -180,3 +182,5 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     #endregion Private
 }
+
+} // namespace Snake3D

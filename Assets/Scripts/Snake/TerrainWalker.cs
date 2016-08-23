@@ -5,6 +5,7 @@ using System;
 
 namespace Snake3D {
 
+    // TODO: (?) implement IWalker (do we need it with MeshWalker?)
     public class TerrainWalker : MonoBehaviour, IInitializable {
 
         public Joystick joystick;
