@@ -124,8 +124,8 @@ namespace Snake3D {
             bool[] filteredEdges = new bool[3];
             CullBackEdges(ref filteredEdges);
 
-            // Get collision point
-            // ...
+            int intersectedEdge;
+            Vector2 intersectionPoint = GetEdgeIntersection(filteredEdges, out intersectedEdge);
 
             // Get neighbor triangle
             // ...
@@ -146,6 +146,37 @@ namespace Snake3D {
             Vector2 v1 = Vector2.zero;
             Vector2 v2 = worldToTangent * v2w;
             Vector2 v3 = worldToTangent * v3w;
+        }
+
+        private Vector2 GetEdgeIntersection(bool[] filteredEdges, out int intersectedEdge) {
+            Vector2 nearestIntersection = new Vector2();
+            intersectedEdge = -1;
+            float minimumDistance = float.PositiveInfinity;
+            for (int i = 0; i < 3; ++i) {
+                if (!filteredEdges[i])
+                    continue;
+
+                Vector2 edgeStart = triangleCoords[i];
+                Vector2 edgeEnd   = triangleCoords[(i + 1) % 3];
+                Vector2 pos = tangentTransform.localPosition;
+                Vector2 intersection = MathUtils.GetLinesIntersection(edgeStart, edgeEnd, pos, pos + LocalDirection);
+                float distance = (intersection - pos).sqrMagnitude;
+                if (distance < minimumDistance) {
+                    intersectedEdge = i;
+                    nearestIntersection = intersection;
+                    minimumDistance = distance;
+                }
+            }
+
+#if UNITY_EDITOR
+            if (debugDrawEnabled) {
+                Vector3 p = tangentToWorld.MultiplyPoint3x4(nearestIntersection);
+                Debug.DrawLine(p, transform.position, Color.black, 0, false);
+                //Debug.Log("intersectedEdge: " + intersectedEdge);
+            }
+#endif
+
+            return nearestIntersection;
         }
 
         /// Walker doesn't necessarily updates Transform during MoveForward and Rotate,
