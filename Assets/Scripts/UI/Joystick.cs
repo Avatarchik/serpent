@@ -51,7 +51,7 @@ namespace Snake3D {
                 return;
             }
 
-            UpdateValue(eventData.position);
+            UpdateValues(eventData.position);
 
             isPressed = true;
             if (OnDown != null) OnDown();
@@ -59,7 +59,7 @@ namespace Snake3D {
         }
 
         public void OnDrag(PointerEventData eventData) {
-            UpdateValue(eventData.position);
+            UpdateValues(eventData.position);
 
             if (OnChange != null) OnChange();
         }
@@ -73,7 +73,7 @@ namespace Snake3D {
         }
 
 
-        void UpdateValue(Vector2 pointerCoords) {
+        void UpdateValues(Vector2 pointerCoords) {
             Vector2 stickPosition = new Vector2();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 joystickBackground.rectTransform,
@@ -91,15 +91,7 @@ namespace Snake3D {
             joystickCenter.rectTransform.anchoredPosition = direction * magnitude;
             Value = direction * magnitude / maxStickDistance;
 
-            UpdateAngle();
-        }
-
-        private void UpdateAngle() {
-            float angle = Vector2.Angle(Vector2.right, Value);
-            if (Value.y < 0)
-                angle = 360 - angle;
-
-            Angle = angle;
+            Angle = Value.GetAngle();
         }
     }
 
