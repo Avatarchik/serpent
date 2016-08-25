@@ -11,6 +11,9 @@ namespace Snake3D {
             if (vector.y < 0)
                 angle = 360 - angle;
 
+            if (angle >= 360)
+                angle -= 360;
+
             return angle;
         }
     }
