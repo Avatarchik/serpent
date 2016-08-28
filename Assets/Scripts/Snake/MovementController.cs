@@ -29,7 +29,7 @@ namespace Snake3D {
             
             Move(moveSpeed * Time.deltaTime);
 
-            walker.WriteToTransform();
+            walker.WriteToTransform(transform);
         }
 
         private void Move(float distance) {
@@ -40,10 +40,10 @@ namespace Snake3D {
 #endif
 
             while (distance > 0) {
-                walker.MoveForward(distance, out distance);
+                walker.StepUntilEdge(distance, out distance);
 
 #if UNITY_EDITOR
-                walker.WriteToTransform();
+                walker.WriteToTransform(transform);
                 Vector3 currentPos = transform.position;
                 Debug.DrawLine(previousPos, currentPos, colors[currentColor], 5f, false);
                 currentColor = ++currentColor % colors.Length;

@@ -2,21 +2,23 @@
 using System.Collections;
 
 namespace Snake3D {
-
-    [RequireComponent(typeof(MeshWalker))]
+    
     public class MeshWalkerTest : MonoBehaviour {
 
+        [NotNull] public Transform intersectionMarker;
+        [NotNull] public Transform startMarker;
+        [NotNull] public MeshFilter surfaceMeshFilter;
+
         private MeshWalker walker;
-        private float angle;
+        private float angle, distance = 1;
         private Vector2 coords;
 
         void Start() {
-            walker = GetComponent<MeshWalker>();
+            MeshUtils.ApplyTransformToMesh(surfaceMeshFilter);
 
-            MeshUtils.ApplyTransformToMesh(walker.meshFilter);
-
-            walker.Init();
-            walker.RespawnNearestToTransform();
+            walker = new MeshWalker(surfaceMeshFilter.mesh);
+            walker.debugDrawEnabled = true;
+            walker.RespawnNearPoint(startMarker.position + transform.position);
         }
         
         void OnGUI() {
@@ -27,13 +29,20 @@ namespace Snake3D {
             coords.x = GUI.HorizontalSlider(new Rect(120, 60, 100, 20), coords.x, 0, 10);
             GUI.Label(new Rect(20, 80, 100, 20), "Y");
             coords.y = GUI.HorizontalSlider(new Rect(120, 80, 100, 20), coords.y, 0, 10);
+            GUI.Label(new Rect(20, 100, 100, 20), "Distance");
+            distance = GUI.HorizontalSlider(new Rect(120, 100, 100, 20), distance, 0, 10);
         }
 
         void Update() {
             walker.RespawnAtTriangle(733, angle, coords);
+            walker.WriteToTransform(startMarker);
 
             float distanceLeft;
-            walker.MoveForward(3, out distanceLeft);
+            walker.StepUntilEdge(distance, out distanceLeft);
+            walker.WriteToTransform(intersectionMarker);
+
+
+            walker.DebugDrawAxes();
         }
     }
 

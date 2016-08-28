@@ -11,12 +11,8 @@ namespace Snake3D {
         public float angle;
     }
 
-
-    // TODO: (?) remove dependency on Transform (at the other hand, it forces not to allocate MeshWalker)
-    [RequireComponent(typeof(Transform))]
-    public class MeshWalker : MonoBehaviour, IInitializable {
-        [NotNull]
-        public MeshFilter meshFilter;
+    
+    public class MeshWalker {
         public bool debugDrawEnabled = false;
 
         private TangentTransform tangentTransform;
@@ -30,8 +26,8 @@ namespace Snake3D {
         private Vector3[] vertices;
         private Vector3[] normals;
 
-        public void Init() {
-            mesh = meshFilter.mesh;
+        public MeshWalker(Mesh mesh) {
+            this.mesh = mesh;
 
             triangles = new TriangleArray(mesh.triangles);
             vertices = mesh.vertices;
@@ -40,29 +36,11 @@ namespace Snake3D {
             triangleCoords = new Vector2[3];
         }
 
-#if UNITY_EDITOR
-        // For debug only, walker shouldn't be dependent on Update()
-        void Update() {
-            if (!debugDrawEnabled)
-                return;
-
-            Vector3 right    = tangentToWorld.MultiplyPoint3x4(Vector3.right);
-            Vector3 up       = tangentToWorld.MultiplyPoint3x4(Vector3.up);
-            Vector3 forward  = tangentToWorld.MultiplyPoint3x4(Vector3.forward);
-            Vector3 position = tangentToWorld.MultiplyPoint3x4(Vector3.zero);
-
-            Debug.DrawLine(position, right, Color.red, 0, false);
-            Debug.DrawLine(position, up, Color.green, 0, false);
-            Debug.DrawLine(position, forward, Color.blue, 0, false);
-        }
-#endif // UNITY_EDITOR
-
         /// Respawns at vertex nearest to Transform
-        public void RespawnNearestToTransform() {
-            // Find nearest triangle to transform
+        public void RespawnNearPoint(Vector3 position) {
+            // Find nearest triangle
             int nearestTriangle = 0;
             float nearestDistance = float.PositiveInfinity;
-            Vector3 position = transform.position;
 
             for (int i = 0; i < triangles.Length; ++i) {
                 Vector3 vertex = vertices[triangles[i].v1];
@@ -105,8 +83,6 @@ namespace Snake3D {
             tangentTransform.localPosition = (t[1] + t[2]) / 3;
             */
             tangentTransform.localPosition = coords;
-
-            WriteToTransform();
         }
 
         public void Rotate(float angle) {
@@ -117,77 +93,65 @@ namespace Snake3D {
          * Moves IWalker forward by \param distance, stopping if an edge has been reached
          * (in which case \param distanceLeft > 0)
          */
-        public void MoveForward(float distance, out float distanceLeft) {
-            // TODO: remove
-            distanceLeft = Mathf.Max(0, distance - 1);
-
+        public void StepUntilEdge(float distance, out float distanceLeft) {
             bool[] filteredEdges = new bool[3];
             CullBackEdges(ref filteredEdges);
 
             int intersectedEdge;
             Vector2 intersectionPoint = GetEdgeIntersection(filteredEdges, out intersectedEdge);
+            
+            // Have we reached the edge?
+            {
+                float edgeDistance = (tangentTransform.localPosition - intersectionPoint).magnitude;
+                if (distance < edgeDistance) {
+                    distanceLeft = 0;
+                    tangentTransform.localPosition += LocalDirection * distance;
+                    return;
+                }
+            }
 
             // Get neighbor triangle
-            // ...
+            {
+                int edgeStart = CurrentTriangle[intersectedEdge];
+                int edgeEnd   = CurrentTriangle[(intersectedEdge + 1) % 3];
+
+                // Note the reverse order of start and end indices
+                int neighbor = MeshIndex.instance.FindTriangleByEdge(edgeEnd, edgeStart);
+            }
 
             // Get coordinates and angle in neighbor triangle space
             // ...
 
-            Vector3[] vertices = mesh.vertices;
-            Vector2 direction = LocalDirection;
-            Vector2 position = tangentTransform.localPosition;
-            Triangle triangle = CurrentTriangle;
-
-            // Triangle vertices in world space
-            //Vector3 v1w = vertices[triangle.v1];
-            Vector3 v2w = vertices[triangle.v2];
-            Vector3 v3w = vertices[triangle.v3];
-            
-            Vector2 v1 = Vector2.zero;
-            Vector2 v2 = worldToTangent * v2w;
-            Vector2 v3 = worldToTangent * v3w;
+            // TODO: remove
+            distanceLeft = 0;
         }
-
-        private Vector2 GetEdgeIntersection(bool[] filteredEdges, out int intersectedEdge) {
-            Vector2 nearestIntersection = new Vector2();
-            intersectedEdge = -1;
-            float minimumDistance = float.PositiveInfinity;
-            for (int i = 0; i < 3; ++i) {
-                if (!filteredEdges[i])
-                    continue;
-
-                Vector2 edgeStart = triangleCoords[i];
-                Vector2 edgeEnd   = triangleCoords[(i + 1) % 3];
-                Vector2 pos = tangentTransform.localPosition;
-                Vector2 intersection = MathUtils.GetLinesIntersection(edgeStart, edgeEnd, pos, pos + LocalDirection);
-                float distance = (intersection - pos).sqrMagnitude;
-                if (distance < minimumDistance) {
-                    intersectedEdge = i;
-                    nearestIntersection = intersection;
-                    minimumDistance = distance;
-                }
-            }
 
 #if UNITY_EDITOR
-            if (debugDrawEnabled) {
-                Vector3 p = tangentToWorld.MultiplyPoint3x4(nearestIntersection);
-                Debug.DrawLine(p, transform.position, Color.black, 0, false);
-                //Debug.Log("intersectedEdge: " + intersectedEdge);
-            }
-#endif
+        public void DebugDrawAxes() {
+            if (!debugDrawEnabled)
+                return;
 
-            return nearestIntersection;
+            Vector3 right = tangentToWorld.MultiplyPoint3x4(Vector3.right);
+            Vector3 up = tangentToWorld.MultiplyPoint3x4(Vector3.up);
+            Vector3 forward = tangentToWorld.MultiplyPoint3x4(Vector3.forward);
+            Vector3 position = tangentToWorld.MultiplyPoint3x4(Vector3.zero);
+
+            Debug.DrawLine(position, right, Color.red, 0, false);
+            Debug.DrawLine(position, up, Color.green, 0, false);
+            Debug.DrawLine(position, forward, Color.blue, 0, false);
         }
+#endif // UNITY_EDITOR
 
-        /// Walker doesn't necessarily updates Transform during MoveForward and Rotate,
-        /// so user needs to do it manually
-        public void WriteToTransform() {
+        public void WriteToTransform(Transform transform) {
+            // Position
             Vector3 localPosition = tangentTransform.localPosition;
             transform.position = tangentToWorld.MultiplyPoint3x4(localPosition);
 
-            transform.forward = tangentToWorld.MultiplyVector(LocalDirection);
-            // TODO: normal
-            // transform.up = normals[vertexIndex];
+            // Rotation
+            // TODO: smooth normal
+            Vector3 forward = tangentToWorld.MultiplyVector(LocalDirection);
+            Vector3 up = tangentToWorld.MultiplyVector(Vector3.forward);
+            transform.rotation = Quaternion.LookRotation(forward, up);
         }
 
         #region Private
@@ -203,6 +167,38 @@ namespace Snake3D {
             get {
                 return triangles[tangentTransform.triangleIndex];
             }
+        }
+
+        private Vector2 GetEdgeIntersection(bool[] filteredEdges, out int intersectedEdge) {
+            Vector2 nearestIntersection = new Vector2();
+            intersectedEdge = -1;
+            float minimumDistance = float.PositiveInfinity;
+            for (int i = 0; i < 3; ++i) {
+                if (!filteredEdges[i])
+                    continue;
+
+                Vector2 edgeStart = triangleCoords[i];
+                Vector2 edgeEnd = triangleCoords[(i + 1) % 3];
+                Vector2 pos = tangentTransform.localPosition;
+                Vector2 intersection = MathUtils.GetLinesIntersection(edgeStart, edgeEnd, pos, pos + LocalDirection);
+                float distance = (intersection - pos).sqrMagnitude;
+                if (distance < minimumDistance) {
+                    intersectedEdge = i;
+                    nearestIntersection = intersection;
+                    minimumDistance = distance;
+                }
+            }
+
+#if UNITY_EDITOR
+            if (debugDrawEnabled) {
+                Vector3 position = tangentToWorld.MultiplyPoint3x4(tangentTransform.localPosition);
+                Vector3 intersection = tangentToWorld.MultiplyPoint3x4(nearestIntersection);
+                Debug.DrawLine(position, intersection, Color.black, 0, false);
+                //Debug.Log("intersectedEdge: " + intersectedEdge);
+            }
+#endif
+
+            return nearestIntersection;
         }
 
         private void UpdateMatrices(int triangleIndex) {
