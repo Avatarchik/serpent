@@ -81,7 +81,20 @@ namespace Snake3D {
             }
         }
 
+        public IEnumerator GetEnumerator() {
+            return rawTriangles.GetEnumerator();
+        }
+
         public int Length { get { return rawTriangles.Length / 3; } }
+    }
+
+    public struct Edge {
+        public ushort start, end;
+
+        public Edge(int start, int end) {
+            this.start = (ushort)start;
+            this.end   = (ushort)end;
+        }
     }
 
     public static class MeshUtils {

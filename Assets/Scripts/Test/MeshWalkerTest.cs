@@ -8,6 +8,7 @@ namespace Snake3D {
         [NotNull] public Transform intersectionMarker;
         [NotNull] public Transform startMarker;
         [NotNull] public MeshFilter surfaceMeshFilter;
+        [NotNull] public MeshIndex meshIndex;
 
         private MeshWalker walker;
         private float angle, distance = 1;
@@ -15,6 +16,8 @@ namespace Snake3D {
 
         void Start() {
             MeshUtils.ApplyTransformToMesh(surfaceMeshFilter);
+
+            meshIndex.Init();
 
             walker = new MeshWalker(surfaceMeshFilter.mesh);
             walker.debugDrawEnabled = true;
@@ -34,7 +37,7 @@ namespace Snake3D {
         }
 
         void Update() {
-            walker.RespawnAtTriangle(733, angle, coords);
+            walker.RespawnAtTriangle(701, angle, coords);
             walker.WriteToTransform(startMarker);
 
             float distanceLeft;

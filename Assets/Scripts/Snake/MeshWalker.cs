@@ -103,7 +103,10 @@ namespace Snake3D {
             // Have we reached the edge?
             {
                 float edgeDistance = (tangentTransform.localPosition - intersectionPoint).magnitude;
-                if (distance < edgeDistance) {
+                distanceLeft = distance - edgeDistance;
+
+                if (distanceLeft < 0) {
+                    // The step haven't reached triangle sides
                     distanceLeft = 0;
                     tangentTransform.localPosition += LocalDirection * distance;
                     return;
@@ -111,19 +114,11 @@ namespace Snake3D {
             }
 
             // Get neighbor triangle
-            {
-                int edgeStart = CurrentTriangle[intersectedEdge];
-                int edgeEnd   = CurrentTriangle[(intersectedEdge + 1) % 3];
-
-                // Note the reverse order of start and end indices
-                int neighbor = MeshIndex.instance.FindTriangleByEdge(edgeEnd, edgeStart);
-            }
+            int neighbor = GetNeighborTriangle(intersectedEdge);
 
             // Get coordinates and angle in neighbor triangle space
             // ...
-
-            // TODO: remove
-            distanceLeft = 0;
+            
         }
 
 #if UNITY_EDITOR
@@ -172,7 +167,7 @@ namespace Snake3D {
             end   = tangentToWorld.MultiplyPoint3x4(end);
             Debug.DrawLine(start, end, color, duration, depthTest);
         }
- 
+
 #endif
 
         private Vector2 GetEdgeIntersection(bool[] filteredEdges, out int intersectedEdge) {
@@ -203,6 +198,21 @@ namespace Snake3D {
 #endif
 
             return nearestIntersection;
+        }
+
+        private int GetNeighborTriangle(int intersectedEdge) {
+            // Note the reverse order of start and end indices
+            Edge edge = new Edge(
+                CurrentTriangle[(intersectedEdge + 1) % 3],
+                CurrentTriangle[intersectedEdge]
+            );
+
+            int neighbor = MeshIndex.instance.FindTriangleByEdge(edge);
+#if UNITY_EDITOR
+            if (debugDrawEnabled)
+                mesh.DrawTriangle(neighbor, Color.yellow);
+#endif
+            return neighbor;
         }
 
         private void UpdateMatrices(int triangleIndex) {
