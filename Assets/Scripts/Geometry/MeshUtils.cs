@@ -104,6 +104,17 @@ namespace Snake3D {
         public static TriangleArray GetSaneTriangles(this Mesh mesh, int submesh) {
             return new TriangleArray(mesh.GetTriangles(submesh));
         }
+        
+        public static void DrawTriangle(this Mesh mesh, int index, Color color) {
+            Triangle triangle = mesh.GetSaneTriangles(0)[index];
+            Vector3[] vertices = mesh.vertices;
+
+            for (int i = 0; i < 3; ++i) {
+                Vector3 start = vertices[triangle[i]];
+                Vector3 end = vertices[triangle[(i + 1) % 3]];
+                Debug.DrawLine(start, end, color, 0, false);
+            }
+        }
 
         public static void ResetTransform(this Transform transform) {
             transform.localPosition = Vector3.zero;
