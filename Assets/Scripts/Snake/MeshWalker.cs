@@ -131,16 +131,11 @@ namespace Snake3D {
             if (!debugDrawEnabled)
                 return;
 
-            Vector3 right = tangentToWorld.MultiplyPoint3x4(Vector3.right);
-            Vector3 up = tangentToWorld.MultiplyPoint3x4(Vector3.up);
-            Vector3 forward = tangentToWorld.MultiplyPoint3x4(Vector3.forward);
-            Vector3 position = tangentToWorld.MultiplyPoint3x4(Vector3.zero);
-
-            Debug.DrawLine(position, right, Color.red, 0, false);
-            Debug.DrawLine(position, up, Color.green, 0, false);
-            Debug.DrawLine(position, forward, Color.blue, 0, false);
+            DrawLocalLine(Vector3.zero, Vector3.right, Color.red);
+            DrawLocalLine(Vector3.zero, Vector3.up, Color.green);
+            DrawLocalLine(Vector3.zero, Vector3.forward, Color.blue);
         }
-#endif // UNITY_EDITOR
+#endif
 
         public void WriteToTransform(Transform transform) {
             // Position
@@ -169,6 +164,17 @@ namespace Snake3D {
             }
         }
 
+#if UNITY_EDITOR
+
+        /// Draws a line, converting coordinates from tangent to world space
+        private void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest=false, float duration=0) {
+            start = tangentToWorld.MultiplyPoint3x4(start);
+            end   = tangentToWorld.MultiplyPoint3x4(end);
+            Debug.DrawLine(start, end, color, duration, depthTest);
+        }
+ 
+#endif
+
         private Vector2 GetEdgeIntersection(bool[] filteredEdges, out int intersectedEdge) {
             Vector2 nearestIntersection = new Vector2();
             intersectedEdge = -1;
@@ -191,9 +197,7 @@ namespace Snake3D {
 
 #if UNITY_EDITOR
             if (debugDrawEnabled) {
-                Vector3 position = tangentToWorld.MultiplyPoint3x4(tangentTransform.localPosition);
-                Vector3 intersection = tangentToWorld.MultiplyPoint3x4(nearestIntersection);
-                Debug.DrawLine(position, intersection, Color.black, 0, false);
+                DrawLocalLine(tangentTransform.localPosition, nearestIntersection, Color.black);
                 //Debug.Log("intersectedEdge: " + intersectedEdge);
             }
 #endif
@@ -242,10 +246,8 @@ namespace Snake3D {
 
 #if UNITY_EDITOR
                 if (debugDrawEnabled) {
-                    Vector3 startW = tangentToWorld.MultiplyPoint3x4(start);
-                    Vector3 endW   = tangentToWorld.MultiplyPoint3x4(end);
                     Color color = filteredEdges[i]? Color.blue : Color.red;
-                    Debug.DrawLine(startW, endW, color, 0, false);
+                    DrawLocalLine(start, end, color);
                 }
 #endif
             }
