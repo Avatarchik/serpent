@@ -10,9 +10,12 @@ namespace Snake3D {
         [NotNull] public MeshFilter surfaceMeshFilter;
         [NotNull] public MeshIndex meshIndex;
 
+        public float maxDistance = 64;
+
         private MeshWalker walker;
         private float angle, distance = 1;
         private Vector2 coords;
+        private int steps;
 
         void Start() {
             MeshUtils.ApplyTransformToMesh(surfaceMeshFilter);
@@ -27,23 +30,30 @@ namespace Snake3D {
         void OnGUI() {
             GUI.Box(new Rect(10, 10, 220, 220), "MeshWalker test");
             GUI.Label(new Rect(20, 40, 100, 20), "Angle");
-            angle = GUI.HorizontalSlider(new Rect(120, 40, 100, 20), angle, 0, Mathf.PI * 2);
+            angle = GUI.HorizontalSlider(new Rect(120, 40, 100, 20), angle, 0, 360);
             GUI.Label(new Rect(20, 60, 100, 20), "X");
             coords.x = GUI.HorizontalSlider(new Rect(120, 60, 100, 20), coords.x, 0, 10);
             GUI.Label(new Rect(20, 80, 100, 20), "Y");
             coords.y = GUI.HorizontalSlider(new Rect(120, 80, 100, 20), coords.y, 0, 10);
             GUI.Label(new Rect(20, 100, 100, 20), "Distance");
-            distance = GUI.HorizontalSlider(new Rect(120, 100, 100, 20), distance, 0, 10);
+            distance = GUI.HorizontalSlider(new Rect(120, 100, 100, 20), distance, 0, maxDistance);
+
+            var message = string.Format("Steps: {0}", steps);
+            GUI.Label(new Rect(20, 120, 200, 20), message);
         }
 
         void Update() {
             walker.RespawnAtTriangle(701, angle, coords);
             walker.WriteToTransform(startMarker);
 
-            float distanceLeft;
-            walker.StepUntilEdge(distance, out distanceLeft);
-            walker.WriteToTransform(intersectionMarker);
-
+            float distanceLeft = distance;
+            const int kMaxSteps = 16;
+            int i;
+            for (i = 0; i < kMaxSteps && distanceLeft > 0; i++) {
+                walker.StepUntilEdge(distanceLeft, out distanceLeft);
+                walker.WriteToTransform(intersectionMarker);
+            }
+            steps = i;
 
             walker.DebugDrawAxes();
         }

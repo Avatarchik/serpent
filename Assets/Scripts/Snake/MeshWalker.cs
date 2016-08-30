@@ -5,9 +5,12 @@ namespace Snake3D {
     /** Analogue of Transform for mesh tangent-space.
      * 
      * Doesn't store scale and reference to corresponding Mesh. */
+    // TODO: delete as it seems to be meaningless
     public struct TangentTransform {
         public int triangleIndex;
         public Vector2 localPosition;
+
+        /// Angle in degrees
         public float angle;
     }
 
@@ -113,12 +116,53 @@ namespace Snake3D {
                 }
             }
 
-            // Get neighbor triangle
+            // The edge had been reached, now we should move to the neighbor triangle
+
             int neighbor = GetNeighborTriangle(intersectedEdge);
 
             // Get coordinates and angle in neighbor triangle space
-            // ...
-            
+            {
+                // Intersected edge direction in old triangle's space
+                Vector2 edgeDirection = triangleCoords[(intersectedEdge + 1) % 3]
+                                      - triangleCoords[intersectedEdge];
+
+                // Index of intersected edge end vertex, to find corresponding edge
+                // in the neighbor triangle (it will be the start vertex index there)
+                int intersectedEdgeEnd = CurrentTriangle[(intersectedEdge + 1) % 3];
+
+                // "Intermediate" angle (the angle which is equal between both triangle's coordinate systems)
+                float beta = tangentTransform.angle - (-edgeDirection).GetAngle();
+
+                Vector3 worldPosition = tangentToWorld.MultiplyPoint3x4(intersectionPoint);
+                tangentTransform.triangleIndex = neighbor;
+                UpdateMatrices(tangentTransform.triangleIndex);
+                UpdateTriangleCoords();
+
+                tangentTransform.localPosition = worldToTangent.MultiplyPoint3x4(worldPosition);
+
+                // Intersected edge direction in new triangle's space
+                int intersectedEdgeNew = 0;
+                Triangle triangle = CurrentTriangle;
+                for (int i = 0; i < 3; i++) {
+                    if (triangle[i] == intersectedEdgeEnd)
+                        intersectedEdgeNew = i;
+                }
+                Vector2 edgeDirectionNew = triangleCoords[(intersectedEdgeNew + 1) % 3]
+                                         - triangleCoords[intersectedEdgeNew];
+                float a = beta + edgeDirectionNew.GetAngle();
+                tangentTransform.angle = MathUtils.NormalizeAngle(a);
+
+#if UNITY_EDITOR
+                if (debugDrawEnabled) {
+                    Vector2 center = (triangleCoords[1] + triangleCoords[2]) / 3;
+                    Vector2 start = triangleCoords[intersectedEdgeNew];
+                    Vector2 end   = triangleCoords[(intersectedEdgeNew + 1) % 3];
+                    start = Vector2.Lerp(start, center, 0.2f);
+                    end   = Vector2.Lerp(end, center, 0.2f);
+                    DrawLocalLine(start, end, Color.magenta);
+                }
+#endif
+            }
         }
 
 #if UNITY_EDITOR
@@ -148,7 +192,7 @@ namespace Snake3D {
 
         private Vector2 LocalDirection {
             get {
-                float a = tangentTransform.angle;
+                float a = tangentTransform.angle * Mathf.Deg2Rad;
                 return new Vector2(Mathf.Cos(a), Mathf.Sin(a));
             }
         }
@@ -162,10 +206,18 @@ namespace Snake3D {
 #if UNITY_EDITOR
 
         /// Draws a line, converting coordinates from tangent to world space
-        private void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest=false, float duration=0) {
+        private void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest = false, float duration = 0) {
             start = tangentToWorld.MultiplyPoint3x4(start);
-            end   = tangentToWorld.MultiplyPoint3x4(end);
+            end = tangentToWorld.MultiplyPoint3x4(end);
             Debug.DrawLine(start, end, color, duration, depthTest);
+        }
+        
+        private void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor,
+            bool depthTest = false, float duration = 0) {
+
+            start = tangentToWorld.MultiplyPoint3x4(start);
+            end = tangentToWorld.MultiplyPoint3x4(end);
+            Utils.DrawGradientLine(start, end, startColor, endColor, depthTest, duration);
         }
 
 #endif
@@ -192,7 +244,8 @@ namespace Snake3D {
 
 #if UNITY_EDITOR
             if (debugDrawEnabled) {
-                DrawLocalLine(tangentTransform.localPosition, nearestIntersection, Color.black);
+                DrawLocalGradientLine(tangentTransform.localPosition, nearestIntersection,
+                    Color.black, Color.white);
                 //Debug.Log("intersectedEdge: " + intersectedEdge);
             }
 #endif
@@ -200,6 +253,7 @@ namespace Snake3D {
             return nearestIntersection;
         }
 
+        /// Gets neighbor triangle index
         private int GetNeighborTriangle(int intersectedEdge) {
             // Note the reverse order of start and end indices
             Edge edge = new Edge(
@@ -215,6 +269,8 @@ namespace Snake3D {
             return neighbor;
         }
 
+        // The argument triangleIndex is transfered explicitly to indicate
+        // that the method is dependent on it.
         private void UpdateMatrices(int triangleIndex) {
             CalculateTangentToWorldMatrix(triangleIndex, mesh, out tangentToWorld);
             worldToTangent = tangentToWorld.inverse;
