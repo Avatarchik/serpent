@@ -11,10 +11,19 @@ namespace Snake3D {
             if (vector.y < 0)
                 angle = 360 - angle;
 
-            if (angle >= 360)
-                angle -= 360;
+            return NormalizeAngle(angle);
+        }
 
-            return angle;
+        /// Like Mathf.Repeat, but works for negative values.
+        public static float SaneRepeat(float value, float period) {
+            float result = value - Mathf.Floor(value / period) * period;
+            Debug.Assert(result >= 0);
+            Debug.Assert(result < period);
+            return result;
+        }
+
+        public static float NormalizeAngle(float angle) {
+            return SaneRepeat(angle, 360);
         }
 
         public static Vector2 GetLinesIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) {

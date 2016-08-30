@@ -25,4 +25,20 @@ public static class Utils {
         result.Scale(material.mainTextureScale);
         material.mainTextureOffset = result;
     }
+
+    public static void DrawGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor,
+        bool depthTest=false, float duration=0) {
+
+        const int kSteps = 8;
+        Vector3 direction = end - start;
+
+        for (int i = 0; i < kSteps; i++) {
+            float factor = (float)i / (kSteps - 1);
+            Color color = Color.Lerp(startColor, endColor, factor);
+
+            Vector3 a = start + direction * ((float)i / kSteps);
+            Vector3 b = start + direction * ((float)(i+1) / kSteps);
+            Debug.DrawLine(a, b, color);
+        }
+    }
 }
