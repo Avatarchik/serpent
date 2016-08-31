@@ -34,6 +34,13 @@ namespace Snake3D {
                 / ((p1.x - p2.x)*(p3.y - p4.y) - (p1.y - p2.y)*(p3.x - p4.x));
             return result;
         }
+
+        public static float LineToPointDistance(Vector2 lineStart, Vector2 lineEnd, Vector2 point) {
+            Vector2 lineDir = lineEnd - lineStart;
+            Vector2 lineNormal = new Vector2(lineDir.y, -lineDir.x);
+            Vector2 intersection = GetLinesIntersection(lineStart, lineEnd, point, point + lineNormal);
+            return (intersection - point).magnitude;
+        }
     }
 
 } // namespace Snake3D
