@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,7 +50,7 @@ namespace RedBlueGames.NotNull
 			}
 		
 			// Remove NotNullViolations for prefabs with IgnorePrefab
-			#if UNITY_EDITOR
+#if UNITY_EDITOR
 			bool isObjectAPrefab = PrefabUtility.GetPrefabType(sourceMB.gameObject) == PrefabType.Prefab;
 			List<NotNullViolation> violationsToIgnore = new List<NotNullViolation> ();
 			if (isObjectAPrefab) {
@@ -68,7 +70,7 @@ namespace RedBlueGames.NotNull
 					erroringFields.Remove (violation);
 				}
 			}
-			#endif
+#endif
 		
 			return erroringFields;
 		}
@@ -80,3 +82,4 @@ namespace RedBlueGames.NotNull
 	}
 
 }
+#endif // UNITY_EDITOR

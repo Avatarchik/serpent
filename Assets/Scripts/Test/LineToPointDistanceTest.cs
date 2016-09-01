@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
 using System.Collections;
 
 namespace Snake3D {
@@ -36,3 +38,5 @@ namespace Snake3D {
     }
 
 } // namespace Snake3D
+
+#endif // UNITY_EDITOR
