@@ -2,18 +2,20 @@
 using System.Collections;
 
 namespace Snake3D {
-
-    // TODO: (?) remove hard dependency on Mesh (replace by factory etc.)
+    
     public class MovementController : MonoBehaviour, IInitializable {
 
         [NotNull] public Joystick joystick;
-        [NotNull] public MeshWalker walker;
+        [NotNull] public MeshFilter meshFilter;
 
         public float rotationSpeed = 60; // Degrees per second
         public float moveSpeed = 2; // Meters per second
         public float offsetFromSurface = 1;
-        
+
+        private MeshWalker walker;
+
         public void Init() {
+            walker = new MeshWalker(meshFilter.mesh);
             //walker.RespawnAtDefaultPlace();
             walker.RespawnRandomly();
         }
@@ -30,6 +32,7 @@ namespace Snake3D {
             Move(moveSpeed * Time.deltaTime);
 
             walker.WriteToTransform(transform);
+            transform.position += transform.up * offsetFromSurface;
         }
 
         private void Move(float distance) {
@@ -41,14 +44,6 @@ namespace Snake3D {
 
             while (distance > 0) {
                 walker.StepUntilEdge(distance, out distance);
-
-#if UNITY_EDITOR
-                walker.WriteToTransform(transform);
-                Vector3 currentPos = transform.position;
-                Debug.DrawLine(previousPos, currentPos, colors[currentColor], 5f, false);
-                currentColor = ++currentColor % colors.Length;
-                previousPos = currentPos;
-#endif
             }
         }
     }

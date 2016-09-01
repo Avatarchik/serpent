@@ -181,10 +181,15 @@ namespace Snake3D {
             Vector3 localPosition = tangentTransform.localPosition;
             transform.position = tangentToWorld.MultiplyPoint3x4(localPosition);
 
+
             // Rotation
-            // TODO: smooth normal
+            Vector3 up = CalculateSmoothedNormal();
             Vector3 forward = tangentToWorld.MultiplyVector(LocalDirection);
-            Vector3 up = tangentToWorld.MultiplyVector(Vector3.forward);
+
+            // Make forward vector orthogonal to up
+            forward = Vector3.Cross(up, forward).normalized;
+            forward = Vector3.Cross(forward, up);
+
             transform.rotation = Quaternion.LookRotation(forward, up);
         }
 
@@ -221,6 +226,24 @@ namespace Snake3D {
         }
 
 #endif
+
+        private Vector3 CalculateSmoothedNormal() {
+            // Reference: https://www.google.com/search?q=barycentric+interpolation
+
+            Vector3 normal = new Vector3();
+            for (int i = 0; i < 3; ++i) {
+                // Side start and end
+                Vector3 a = triangleCoords[(i + 1) % 3];
+                Vector3 b = triangleCoords[(i + 2) % 3];
+                float sideLength = (a - b).magnitude;
+                float height = MathUtils.LineToPointDistance(a, b, tangentTransform.localPosition);
+                float area = 0.5f * sideLength * height;
+                Vector3 vertexNormal = normals[CurrentTriangle[i]];
+                normal += vertexNormal * area;
+            }
+
+            return normal.normalized;
+        }
 
         private Vector2 GetEdgeIntersection(bool[] filteredEdges, out int intersectedEdge) {
             Vector2 nearestIntersection = new Vector2();
