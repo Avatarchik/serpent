@@ -16,6 +16,8 @@ namespace Snake3D {
             Debug.Assert(instance == null);
             instance = this;
 
+            MeshUtils.ApplyTransformToMesh(meshFilter);
+
             GenerateIndex();
         }
 

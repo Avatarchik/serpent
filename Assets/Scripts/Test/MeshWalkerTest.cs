@@ -20,8 +20,6 @@ namespace Snake3D {
         private int steps;
 
         void Start() {
-            MeshUtils.ApplyTransformToMesh(surfaceMeshFilter);
-
             meshIndex.Init();
 
             walker = new MeshWalker(surfaceMeshFilter.mesh);

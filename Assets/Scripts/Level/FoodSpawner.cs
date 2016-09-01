@@ -1,46 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FoodSpawner : MonoBehaviour, IInitializable {
+namespace Snake3D {
 
-    public GameObject foodPrefab;
-    public FoodPointer foodPointer;
+    public class FoodSpawner : MonoBehaviour, IInitializable {
 
-    public static FoodSpawner instance { get; private set; }
+        [NotNull] public GameObject foodPrefab;
+        [NotNull] public FoodPointer foodPointer;
 
-    private Terrain terrain;
+        public static FoodSpawner instance { get; private set; }
 
-    // Enable editor deactivation
-    void Update() { }
+        private MeshWalker walker;
 
-    public void Init() {
-        Debug.Assert(instance == null);
-        instance = this;
+        // Enable editor deactivation
+        void Update() { }
 
-        Debug.Assert(foodPrefab != null);
-        Debug.Assert(foodPointer != null);
+        public void Init() {
+            Debug.Assert(instance == null);
+            instance = this;
 
-        terrain = FindObjectOfType<Terrain>();
-        Debug.Assert(terrain != null);
+            walker = new MeshWalker(LevelLogic.instance.LevelMesh);
 
+            SpawnNewFood();
+        }
 
-        SpawnNewFood();
+        public void SpawnNewFood() {
+            /* TODO
+
+            var gameObject = Instantiate(foodPrefab, position, Quaternion.identity) as GameObject;
+            foodPointer.food = gameObject.transform;*/
+        }
     }
 
-    public void SpawnNewFood() {
-        var position = new Vector3();
-
-        Vector3 size = terrain.terrainData.size;
-        float padding = 1;
-        position.x = Random.Range(padding, size.x - padding);
-        position.z = Random.Range(padding, size.z - padding);
-
-        // Get normalized terrain coordinates
-        float x = position.x / size.x;
-        float y = position.z / size.z;
-        position.y = terrain.terrainData.GetInterpolatedHeight(x, y);
-
-        var gameObject = Instantiate(foodPrefab, position, Quaternion.identity) as GameObject;
-        foodPointer.food = gameObject.transform;
-    }
-}
+} // namespace Snake3D

@@ -30,7 +30,7 @@ namespace Snake3D {
             audioSource.Play();
 
             FoodSpawner.instance.SpawnNewFood();
-            GameLogic.instance.Score++;
+            LevelLogic.instance.Score++;
             // Grow snake
             growController.targetLength += growDelta;
         }

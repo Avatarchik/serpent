@@ -8,8 +8,8 @@ namespace Snake3D {
         [NotNull] public Joystick joystick;
         [NotNull] public MeshFilter meshFilter;
 
-        public float rotationSpeed = 60; // Degrees per second
-        public float moveSpeed = 2; // Meters per second
+        public float rotationSpeed = 240; // Degrees per second
+        public float moveSpeed = 10; // Meters per second
         public float offsetFromSurface = 1;
 
         private MeshWalker walker;

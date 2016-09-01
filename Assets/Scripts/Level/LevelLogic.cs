@@ -5,9 +5,12 @@ using System;
 
 namespace Snake3D {
 
-    public class GameLogic : MonoBehaviour, IInitializable {
+    public class LevelLogic : MonoBehaviour, IInitializable {
 
-        public static GameLogic instance { get; private set; }
+        [NotNull] public MeshFilter levelMeshFilter;
+
+
+        public static LevelLogic instance { get; private set; }
 
         public int Score {
             get { return score; }
@@ -16,6 +19,8 @@ namespace Snake3D {
                 scoreText.text = value.ToString();
             }
         }
+
+        public Mesh LevelMesh { get; private set; }
 
         private Text scoreText;
         private int score;
@@ -27,8 +32,9 @@ namespace Snake3D {
             scoreText = GameObject.Find("Score text").GetComponent<Text>();
             Debug.Assert(scoreText != null);
 
-
             AdjustUiScale();
+
+            LevelMesh = levelMeshFilter.mesh;
         }
 
         public void ExitGame() {
