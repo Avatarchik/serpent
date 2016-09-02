@@ -25,10 +25,11 @@ namespace Snake3D {
         }
 
         public void SpawnNewFood() {
-            /* TODO
+            var gameObject = Instantiate(foodPrefab) as GameObject;
+            walker.RespawnRandomly();
+            walker.WriteToTransform(gameObject.transform);
 
-            var gameObject = Instantiate(foodPrefab, position, Quaternion.identity) as GameObject;
-            foodPointer.food = gameObject.transform;*/
+            foodPointer.food = gameObject.transform;
         }
     }
 

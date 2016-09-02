@@ -1,9 +1,10 @@
 # TODO
 
 ## SUMMARY
+- **[CURRENT]** Framerate-independent snake growth
 - Skin gallery
-- Level gallery
 - Correct spawn
+- Level gallery
 - Collisions
 
 ## Code
@@ -13,12 +14,11 @@
         - Collision detection
     - Wavy walker decorator
 
-- **[CURRENT 2]** Gameplay
+- Gameplay
     - Snake respawn
     - Correct food spawn
     - Collisions with obstacles
     - Snake body collisions
-    - Persistent high score
     - Increase speed when eating (i.e. up to 14/240)
 
 - Algorithms visualization
