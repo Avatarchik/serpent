@@ -16,7 +16,7 @@ public interface ISnakeMesh {
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
-    public SnakeKernel kernel;
+    [NotNull] public SnakeKernel kernel;
     public float radius = 0.5f; // TODO: move out of the class
     public int visiblePointsPerRing = 16; // Visible points per ring (as opposed to real number)
     public GameObject vertexLabelPrefab;
@@ -54,8 +54,6 @@ public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
     }
 
     public void Init() {
-        Debug.Assert(kernel != null);
-        
         meshFilter = GetComponent<MeshFilter>();
         material = GetComponent<MeshRenderer>().material;
 

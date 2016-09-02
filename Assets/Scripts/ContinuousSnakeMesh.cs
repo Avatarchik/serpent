@@ -6,12 +6,12 @@ namespace Snake3D {
 
 public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
-    public MonoBehaviour snakeMesh_;
+    [NotNull] public MonoBehaviour snakeMesh_;
     public float interval = 0.25f;
     public bool animateUv = true;
 
     public ISnakeMesh snakeMesh;
-    public Transform tail;
+    [NotNull] public Transform tail;
     
     private Ring lastPoppedRing;
     private ISnakeMesh headPatch;
@@ -20,14 +20,12 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     private Vector2 baseTailOffset; // Tail UV offset without sliding animation
 
     public void Init() {
-        Debug.Assert(snakeMesh_ != null);
         snakeMesh = snakeMesh_ as ISnakeMesh;
         Debug.Assert(snakeMesh != null);
 
         headPatch = InitPatch("Head Patch");
         tailPatch = InitPatch("Tail Patch");
-
-        Debug.Assert(tail != null);
+        
         tailMaterial = tail.GetChild(0).GetComponent<MeshRenderer>().material;
 
         // Add first ring

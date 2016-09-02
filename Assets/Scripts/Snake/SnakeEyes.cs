@@ -3,16 +3,13 @@ using System.Collections;
 
 public class SnakeEyes : MonoBehaviour {
 
-    public Transform leftPupil;
-    public Transform rightPupil;
+    [NotNull] public Transform leftPupil;
+    [NotNull] public Transform rightPupil;
 
     private Vector3 targetPosition, previousPosition;
     float lastTime;
     
     void Start () {
-        Debug.Assert(leftPupil != null);
-        Debug.Assert(rightPupil != null);
-        
         StartCoroutine(UpdateLookTarget());
     }
 	

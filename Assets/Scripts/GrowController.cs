@@ -9,19 +9,17 @@ public interface IGrowable {
 
 public class GrowController : MonoBehaviour, IInitializable {
 
-    public Transform walker;
-    public MonoBehaviour growable_;
+    [NotNull] public Transform walker;
+    [NotNull] public MonoBehaviour growable_;
     public float targetLength;
 
     private IGrowable growable;
 
     public void Init() {
-        Debug.Assert(walker != null);
         // Scale must be (1; 1; 1) because mesh normals depend on walker
         // transformation matrix and they need to be uniform
         Debug.Assert(walker.localScale == Vector3.one);
-
-        Debug.Assert(growable_ != null);
+        
         growable = growable_ as IGrowable;
         Debug.Assert(growable != null);
     }

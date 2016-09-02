@@ -5,14 +5,12 @@ namespace Snake3D {
     [RequireComponent(typeof(AudioSource))]
     public class SnakeHead : MonoBehaviour {
 
-        public GrowController growController;
+        [NotNull] public GrowController growController;
         public float growDelta = 4;
 
         private AudioSource audioSource;
 
         void Start() {
-            Debug.Assert(growController != null);
-
             audioSource = GetComponent<AudioSource>();
         }
 

@@ -4,13 +4,13 @@ using System;
 
 public class Food : MonoBehaviour {
 
-    public Transform movingPart;
+    [NotNull] public Transform movingPart;
     public float verticalAmplitude = 1;
     public float verticalPeriod = 4;
     public float rotationPeriod = 50;
 
-    public Transform highlightField;
-    public Projector projector;
+    [NotNull] public Transform highlightField;
+    [NotNull] public Projector projector;
     public float highlightScalePeriod = 1;
     public float maxHighlightScale = 1.3f;
 
@@ -19,14 +19,9 @@ public class Food : MonoBehaviour {
     private float initialProjectorSize;
 
     void Start () {
-        Debug.Assert(movingPart != null);
-        Debug.Assert(highlightField != null);
-        Debug.Assert(projector != null);
-
         initialPosition = movingPart.localPosition;
         initialHighlightScale = highlightField.localScale;
         initialProjectorSize = projector.orthographicSize;
-
     }
 	
 	void Update () {

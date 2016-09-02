@@ -26,25 +26,22 @@ namespace Snake3D {
         }
         
         void Update() {
-            float angle = joystick.Value.x * rotationSpeed * Time.deltaTime;
-            walker.Rotate(angle);
-            
-            Move(moveSpeed * Time.deltaTime);
+            // Rotate
+            {
+                float angle = joystick.Value.x * rotationSpeed * Time.deltaTime;
+                walker.Rotate(angle);
+            }
+
+            // Move
+            {
+                float distance = moveSpeed * Time.deltaTime;
+                while (distance > 0) {
+                    walker.StepUntilEdge(distance, out distance);
+                }
+            }
 
             walker.WriteToTransform(transform);
             transform.position += transform.up * offsetFromSurface;
-        }
-
-        private void Move(float distance) {
-            Vector3 previousPos = transform.position;
-#if UNITY_EDITOR
-            Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
-            int currentColor = 0;
-#endif
-
-            while (distance > 0) {
-                walker.StepUntilEdge(distance, out distance);
-            }
         }
     }
 

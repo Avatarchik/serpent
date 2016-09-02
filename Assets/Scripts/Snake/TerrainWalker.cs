@@ -8,7 +8,7 @@ namespace Snake3D {
     // TODO: (?) implement IWalker (do we need it with MeshWalker?)
     public class TerrainWalker : MonoBehaviour, IInitializable {
 
-        public Joystick joystick;
+        [NotNull] public Joystick joystick;
         public float offsetFromSurface = 1;
         public float speed = 8;
         public float rotationSpeed = 180; // degrees per second
@@ -18,8 +18,6 @@ namespace Snake3D {
         private float targetAngle;
 
         public void Init() {
-            Debug.Assert(joystick != null);
-
             terrain = FindObjectOfType<Terrain>();
             Debug.Assert(terrain != null);
 
