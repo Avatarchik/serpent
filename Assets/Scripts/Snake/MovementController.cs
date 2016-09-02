@@ -17,7 +17,7 @@ namespace Snake3D {
         public void Init() {
             walker = new MeshWalker(meshFilter.mesh);
             //walker.RespawnAtDefaultPlace();
-            walker.RespawnRandomly();
+            walker.RespawnNearPoint(transform.position);
         }
 
         void OnGUI() {
