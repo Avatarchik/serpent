@@ -1,12 +1,10 @@
 # TODO
 
 ## SUMMARY
-**[CURRENT 3]** Add author notice
-- Collisions
+- Skin gallery
+- Level gallery
 - Correct spawn
-- Full continuous mesh and tail
-- Basic, prebuilt levels
-- Snake vertex shader
+- Collisions
 
 ## Code
 - Snake
@@ -20,7 +18,6 @@
     - Correct food spawn
     - Collisions with obstacles
     - Snake body collisions
-    - Score
     - Persistent high score
     - Increase speed when eating (i.e. up to 14/240)
 
@@ -30,9 +27,9 @@
 
 ## Art
 
-- Replace existing terrain by low-poly styled one
-- Snake head
+- Skins
 - Decorations
     - Spruce
     - Flowers
     - Mushrooms
+- Logo
