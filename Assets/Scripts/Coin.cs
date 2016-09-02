@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Coin : MonoBehaviour {
+namespace Snake3D {
 
-	private const float kRotationSpeed = 120; // Deg/sec
+    public class Coin : MonoBehaviour {
 
-	void Start () {
+        private const float kRotationSpeed = 120; // Deg/sec
 
-	}
-	
-	void Update () {
-		transform.Rotate (0, kRotationSpeed * Time.deltaTime, 0);
-	}
-}
+        void Start() {
+
+        }
+
+        void Update() {
+            transform.Rotate(0, kRotationSpeed * Time.deltaTime, 0);
+        }
+    }
+
+} // namespace Snake3D

@@ -2,75 +2,79 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class PauseAndResume : MonoBehaviour {
+namespace Snake3D {
 
-    const float kFadeAnimationLength = 0.7f;
-    const float kEndBlurSize = 4;
+    public class PauseAndResume : MonoBehaviour {
 
-    public GameObject pauseCanvas;
-    public Animator animator;
+        const float kFadeAnimationLength = 0.7f;
+        const float kEndBlurSize = 4;
 
-    private Camera pauseUICamera;
-    private Button pauseButton;
-    private bool pauseStateNowChanging = false;
+        public GameObject pauseCanvas;
+        public Animator animator;
 
-    void Start () {
-        pauseUICamera = GameObject.FindGameObjectWithTag("Pause UI Camera").GetComponent<Camera>();
-        pauseButton = GameObject.FindGameObjectWithTag("Pause button").GetComponent<Button>();
-	}
+        private Camera pauseUICamera;
+        private Button pauseButton;
+        private bool pauseStateNowChanging = false;
 
-	void Update () {
-
-	}
-
-    public void PauseGame() {
-        if (pauseStateNowChanging)
-            return;
-        StartCoroutine(PauseCoroutine(true));
-    }
-
-    public void ResumeGame() {
-        if (pauseStateNowChanging)
-            return;
-        StartCoroutine(PauseCoroutine(false));
-    }
-
-    private IEnumerator PauseCoroutine(bool pause) {
-        pauseStateNowChanging = true;
-
-        //Blur blurComponent = Camera.main.GetComponent<Blur>();
-
-        if (pause) {
-            pauseButton.interactable = false;
-            pauseUICamera.enabled = true;
-            //blurComponent.enabled = true;
-            pauseCanvas.SetActive(true);
-            Time.timeScale = 0;
+        void Start() {
+            pauseUICamera = GameObject.FindGameObjectWithTag("Pause UI Camera").GetComponent<Camera>();
+            pauseButton = GameObject.FindGameObjectWithTag("Pause button").GetComponent<Button>();
         }
 
-        // Play animation
-        animator.SetBool("Open", pause);
+        void Update() {
 
-        float endTime = Time.unscaledTime + kFadeAnimationLength;
-        while (Time.unscaledTime <= endTime) {
-            float factor = (endTime - Time.unscaledTime) / kFadeAnimationLength;
-            if (pause)
-                factor = 1f - factor;
-            //blurComponent.blurSize = factor * kEndBlurSize;
-
-            yield return new WaitForEndOfFrame();
         }
 
-        if (!pause) {
-            pauseButton.interactable = true;
-            pauseUICamera.enabled = false;
-            //blurComponent.enabled = false;
-            pauseCanvas.SetActive(false);
-            Time.timeScale = 1;
+        public void PauseGame() {
+            if (pauseStateNowChanging)
+                return;
+            StartCoroutine(PauseCoroutine(true));
         }
 
-        pauseStateNowChanging = false;
+        public void ResumeGame() {
+            if (pauseStateNowChanging)
+                return;
+            StartCoroutine(PauseCoroutine(false));
+        }
 
-        yield return null;
+        private IEnumerator PauseCoroutine(bool pause) {
+            pauseStateNowChanging = true;
+
+            //Blur blurComponent = Camera.main.GetComponent<Blur>();
+
+            if (pause) {
+                pauseButton.interactable = false;
+                pauseUICamera.enabled = true;
+                //blurComponent.enabled = true;
+                pauseCanvas.SetActive(true);
+                Time.timeScale = 0;
+            }
+
+            // Play animation
+            animator.SetBool("Open", pause);
+
+            float endTime = Time.unscaledTime + kFadeAnimationLength;
+            while (Time.unscaledTime <= endTime) {
+                float factor = (endTime - Time.unscaledTime) / kFadeAnimationLength;
+                if (pause)
+                    factor = 1f - factor;
+                //blurComponent.blurSize = factor * kEndBlurSize;
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (!pause) {
+                pauseButton.interactable = true;
+                pauseUICamera.enabled = false;
+                //blurComponent.enabled = false;
+                pauseCanvas.SetActive(false);
+                Time.timeScale = 1;
+            }
+
+            pauseStateNowChanging = false;
+
+            yield return null;
+        }
     }
-}
+
+} // namespace Snake3D

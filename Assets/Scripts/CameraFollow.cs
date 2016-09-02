@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraFollow : MonoBehaviour {
+namespace Snake3D {
 
-	public Transform objectToFollow;
+    public class CameraFollow : MonoBehaviour {
 
-	private Vector3 offset;
+        public Transform objectToFollow;
 
-	void Start () {
-		offset = transform.position - objectToFollow.position;
-	}
-	
-	void Update () {
-		transform.position = objectToFollow.position + offset;
-	}
-}
+        private Vector3 offset;
+
+        void Start() {
+            offset = transform.position - objectToFollow.position;
+        }
+
+        void Update() {
+            transform.position = objectToFollow.position + offset;
+        }
+    }
+
+} // namespace Snake3D

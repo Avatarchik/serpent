@@ -1,28 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ScreenManager : MonoBehaviour {
+namespace Snake3D {
 
-    public GameObject initialOpen;
+    public class ScreenManager : MonoBehaviour {
 
-    private GameObject current;
+        public GameObject initialOpen;
 
-    public void OpenScreen(GameObject screen) {
-        if (current != null)
-            current.SetActive(false);
+        private GameObject current;
 
-        screen.SetActive(true);
-        current = screen;
+        public void OpenScreen(GameObject screen) {
+            if (current != null)
+                current.SetActive(false);
+
+            screen.SetActive(true);
+            current = screen;
+        }
+
+        void Start() {
+            current = initialOpen;
+
+            if (current != null)
+                current.SetActive(true);
+        }
+
+        void Update() {
+
+        }
     }
 
-	void Start () {
-        current = initialOpen;
-
-        if (current != null)
-            current.SetActive(true);
-	}
-	
-	void Update () {
-	
-	}
-}
+} // namespace Snake3D

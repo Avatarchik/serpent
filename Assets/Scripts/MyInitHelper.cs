@@ -1,36 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface IInitializable {
-    void Init();
-}
+namespace Snake3D {
 
-/**
- * Allows to init objects in particular order.
- * You must either leave "startIndependently" to true, to let it start automatically
- * or start it manually from another MyInitHelper, chaining them together.
- */
-public class MyInitHelper : MonoBehaviour, IInitializable {
+    public interface IInitializable {
+        void Init();
+    }
 
-    public bool startIndependently = true;
-    public MonoBehaviour[] objects;
+    /**
+     * Allows to init objects in particular order.
+     * You must either leave "startIndependently" to true, to let it start automatically
+     * or start it manually from another MyInitHelper, chaining them together.
+     */
+    public class MyInitHelper : MonoBehaviour, IInitializable {
 
-    private bool initialized = false;
+        public bool startIndependently = true;
+        public MonoBehaviour[] objects;
 
-	void Start () {
-        if (startIndependently)
-            Init();
-	}
+        private bool initialized = false;
 
-    public void Init() {
-        Debug.Assert(initialized == false);
-        initialized = true;
+        void Start() {
+            if (startIndependently)
+                Init();
+        }
 
-        foreach (MonoBehaviour comp in objects) {
-            var obj = comp as IInitializable;
-            Debug.Assert(obj != null);
-            if (comp.enabled)
-                obj.Init();
+        public void Init() {
+            Debug.Assert(initialized == false);
+            initialized = true;
+
+            foreach (MonoBehaviour comp in objects) {
+                var obj = comp as IInitializable;
+                Debug.Assert(obj != null);
+                if (comp.enabled)
+                    obj.Init();
+            }
         }
     }
-}
+
+} // namespace Snake3D
