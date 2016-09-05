@@ -29,7 +29,9 @@ namespace Snake3D {
             Camera camera = Camera.main;
             Vector2 position = camera.WorldToScreenPoint(food.position);
 
-            image.enabled = !camera.pixelRect.Contains(position);
+            // Should food pointer be visible now?
+            bool facingAwayFromCamera = Vector3.Angle(camera.transform.forward, food.up) < 80;
+            image.enabled = !camera.pixelRect.Contains(position) || facingAwayFromCamera;
 
 
             // Align to screen border

@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace Snake3D {
 
+    // Must be initialized after LevelLogic
     public class FoodSpawner : MonoBehaviour, IInitializable {
 
         [NotNull] public GameObject foodPrefab;

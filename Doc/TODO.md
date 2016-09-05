@@ -2,6 +2,7 @@
 
 ## SUMMARY
 - **[CURRENT]** Framerate-independent snake growth
+    - Refactor. Rename Ring to TransformData (alias TData), extract to separate file
 - Skin gallery
 - Correct spawn
 - Level gallery
