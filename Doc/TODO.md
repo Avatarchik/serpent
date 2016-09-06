@@ -1,8 +1,12 @@
 # TODO
 
 ## SUMMARY
-- **[CURRENT]** Framerate-independent snake growth
-    - Refactor. Rename Ring to TransformData (alias TData), extract to separate file
+- **[CURRENT]** Refactor
+    - Organize namespace (+ folder) hierarchy
+    - Extract all non-embedded interfaces and classes
+    - Document all non-optional dependencies
+    - Rename Ring to TransformData (alias TData), extract to separate file
+- Framerate-independent snake growth
 - Skin gallery
 - Correct spawn
 - Level gallery
