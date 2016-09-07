@@ -30,11 +30,6 @@ namespace Snake3D {
         //[HideInInspector]
         public Cubemap heightMap;
 
-        // Octree with triangle bounds
-        public BoundsOctree<int> Octree;
-        public bool showOctreeNodeBounds = false;
-        public bool showOctreeObjectBounds = true;
-
 
 #if UNITY_EDITOR
         // Watch for properties change in editor
@@ -70,19 +65,6 @@ namespace Snake3D {
             GeneratePlanet();
         }
 
-        void OnDrawGizmos() {
-            if (Octree == null)
-                return;
-
-            if (showOctreeNodeBounds)
-                Octree.DrawAllBounds();
-
-            if (showOctreeObjectBounds)
-                Octree.DrawAllObjects();
-
-            //octree.DrawCollisionChecks(); // Draw the last *numCollisionsToSave* collision check boundaries\
-        }
-
         public float GetHeightAt(Vector3 radiusVector) {
             Color pixel = CubemapProjections.ReadPixel(heightMap, radiusVector);
 
@@ -111,7 +93,6 @@ namespace Snake3D {
             }
 
             ApplyHeightmapAsTexture();
-            GenerateOctree();
 
             // Print performance info
             {
@@ -120,24 +101,6 @@ namespace Snake3D {
             }
 
             System.GC.Collect();
-        }
-
-        private void GenerateOctree() {
-            Octree = new BoundsOctree<int>(64, Vector3.zero, 1, 1.25f);
-
-            Mesh mesh = GetComponent<MeshFilter>().mesh;
-            Vector3[] vertices = mesh.vertices;
-            int[] triangles = mesh.triangles;
-            for (int triangle = 0; triangle < triangles.Length / 3; ++triangle) {
-                int offset = triangle * 3;
-                Vector3 v1 = vertices[triangles[offset + 0]];
-                Vector3 v2 = vertices[triangles[offset + 1]];
-                Vector3 v3 = vertices[triangles[offset + 2]];
-                Bounds aabb = new Bounds(v1, Vector3.zero);
-                aabb.Encapsulate(v2);
-                aabb.Encapsulate(v3);
-                Octree.Add(triangle, aabb);
-            }
         }
 
         private void ApplyHeightmapAsTexture() {
