@@ -20,6 +20,7 @@ namespace Snake3D {
         public int subdivisionLevel = 4;
         public float radius = 25;
         public float oceanDepth = 2, mountainHeight = 2;
+        public bool flipInsideOut = false;
 
         public int heightCubemapSize = 64;
         public double noiseScale = 0.5;
@@ -97,7 +98,10 @@ namespace Snake3D {
         private void GeneratePlanet() {
             CheckAndCorrectInputs();
 
-            Icosphere.Create(gameObject, subdivisionLevel, radius);
+            Mesh mesh = Icosphere.Create(gameObject, subdivisionLevel, radius);
+            if (flipInsideOut)
+                mesh.FlipNormals();
+
 
             // Generate and measure generation time
             float startTime = Time.realtimeSinceStartup;

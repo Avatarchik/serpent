@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Snake3D {
 
     public static class Icosphere {
-        public static void Create(GameObject gameObject, int recursionLevel = 3, float radius = 1) {
+        public static Mesh Create(GameObject gameObject, int recursionLevel = 3, float radius = 1) {
 
             MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
             if (meshFilter == null)
@@ -107,6 +107,8 @@ namespace Snake3D {
 
             mesh.RecalculateBounds();
             mesh.Optimize();
+
+            return mesh;
         }
 
 

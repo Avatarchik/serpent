@@ -164,6 +164,26 @@ namespace Snake3D {
             mesh.triangles = (int[]) triangles;
             mesh.UploadMeshData(false);
         }
+
+        public static void FlipNormals(this Mesh mesh, int submeshIndex=0) {
+            // Triangle orientation
+            {
+                TriangleArray triangles = mesh.GetSaneTriangles(submeshIndex);
+                for (int i = 0; i < triangles.Length; ++i)
+                    triangles[i] = triangles[i].Reversed;
+
+                mesh.triangles = (int[])triangles;
+            }
+
+            // Normals
+            {
+                Vector3[] normals = mesh.normals;
+                for (int i = 0; i < normals.Length; ++i)
+                    normals[i] = -normals[i];
+
+                mesh.normals = normals;
+            }
+        }
     }
 
 } // namespace Snake3D
