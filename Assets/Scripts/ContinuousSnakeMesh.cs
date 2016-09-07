@@ -13,7 +13,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     public ISnakeMesh snakeMesh;
     [NotNull] public Transform tail;
     
-    private Ring lastPoppedRing;
+    private ValueTransform lastPoppedRing;
     private ISnakeMesh headPatch;
     private ISnakeMesh tailPatch;
     private Material tailMaterial;
@@ -31,7 +31,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         // Add first ring
         // TODO: replace by more sane mechanism (incorrect ring here)
         {
-            Ring ring = new Ring(tail);
+            ValueTransform ring = new ValueTransform(tail);
 
             GrowBodyMesh(ring, true);
             UpdateLastPoppedRing(ring);
@@ -55,14 +55,14 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         return patch;
     }
 
-    public void Grow(Ring ring) {
+    public void Grow(ValueTransform ring) {
         GrowBodyMesh(ring);
         UpdateHeadPatch(ring);
 
         if (animateUv)
             AnimateUV();
     }
-
+    
     public void ShrinkToLength(float targetLength) {
         // Body mesh
         {
@@ -82,7 +82,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
             float tailPatchLength = targetLength - GetPatchLength(headPatch) - bodyLength;
             float factor = tailPatchLength / interval;
 
-            Ring tailRing = Ring.lerp(snakeMesh.Kernel.Path[0], lastPoppedRing, factor);
+            ValueTransform tailRing = ValueTransform.lerp(snakeMesh.Kernel.Path[0], lastPoppedRing, factor);
             tailRing.SetTransform(tail);
             UpdateTailPatch(tailRing);
 
@@ -120,7 +120,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     // Grows body mesh if needed in current frame.
     //
     // TODO: handle adding of several rings per call
-    private void GrowBodyMesh(Ring ring, bool force = false) {
+    private void GrowBodyMesh(ValueTransform ring, bool force = false) {
         Vector3 lastGrowPoint;
         if (force)
             lastGrowPoint = ring.position;
@@ -137,22 +137,22 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
     }
 
     // TODO: remove duplicate code in UpdateHeadPatch() and UpdateTailPatch()
-    private void UpdateHeadPatch(Ring headRing) {
+    private void UpdateHeadPatch(ValueTransform headRing) {
         headPatch.PopFromStart();
         headPatch.PopFromStart();
 
-        Ring bodyRing = snakeMesh.Kernel.Path.Last;
+        ValueTransform bodyRing = snakeMesh.Kernel.Path.Last;
         float patchLength = (headRing.position - bodyRing.position).magnitude;
 
         headPatch.PushToEnd(bodyRing, bodyDistanceTraveled);
         headPatch.PushToEnd(headRing, bodyDistanceTraveled + patchLength);
     }
 
-    private void UpdateTailPatch(Ring tailRing) {
+    private void UpdateTailPatch(ValueTransform tailRing) {
         tailPatch.PopFromStart();
         tailPatch.PopFromStart();
 
-        Ring bodyRing = snakeMesh.Kernel.Path[0];
+        ValueTransform bodyRing = snakeMesh.Kernel.Path[0];
         float bodyDistance = bodyDistanceTraveled - bodyLength;
         float tailPatchLength = (tailRing.position - bodyRing.position).magnitude;
 
@@ -160,7 +160,7 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         tailPatch.PushToEnd(bodyRing, bodyDistance);
     }
 
-    private void UpdateLastPoppedRing(Ring ring) {
+    private void UpdateLastPoppedRing(ValueTransform ring) {
         lastPoppedRing = ring;
     }
 

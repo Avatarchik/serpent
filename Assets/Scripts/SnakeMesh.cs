@@ -5,7 +5,7 @@ using System;
 namespace Snake3D {
 
     public interface ISnakeMesh {
-        void PushToEnd(Ring ring, float distanceTraveled);
+        void PushToEnd(ValueTransform ring, float distanceTraveled);
         void PopFromStart();
         int Count { get; }
         float RingLength { get; }
@@ -64,7 +64,7 @@ namespace Snake3D {
     #endif
         }
 
-        public void PushToEnd(Ring ring, float distanceTraveled) {
+        public void PushToEnd(ValueTransform ring, float distanceTraveled) {
             kernel.PushToEnd(ring);
 
             // Vertices and normals
@@ -123,7 +123,7 @@ namespace Snake3D {
         }
 
         private void AddSegmentTriangles() {
-            ICircularBuffer<Ring> path = kernel.Path;
+            ICircularBuffer<ValueTransform> path = kernel.Path;
             if (path.Count >= 2) {
                 int ring1Offset = path.RawPosition(path.Count - 2) * RealPointsPerRing;
                 int ring2Offset = path.RawPosition(path.Count - 1) * RealPointsPerRing;

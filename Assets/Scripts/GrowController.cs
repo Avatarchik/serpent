@@ -4,7 +4,7 @@ using System.Collections;
 namespace Snake3D {
 
     public interface IGrowable {
-        void Grow(Ring ring);
+        void Grow(ValueTransform ring);
         void ShrinkToLength(float targetLength);
         float ComputeLength();
     }
@@ -38,7 +38,7 @@ namespace Snake3D {
             if (shrinkLength > 0)
                 growable.ShrinkToLength(targetLength);
 
-            growable.Grow(new Ring(walker));
+            growable.Grow(new ValueTransform(walker));
         }
     }
 
