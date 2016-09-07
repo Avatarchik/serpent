@@ -4,16 +4,9 @@ using System.Collections.Generic;
 namespace Snake3D {
 
     public static class Icosphere {
-        public static Mesh Create(GameObject gameObject, int recursionLevel = 3, float radius = 1) {
+        public static Mesh Create(int recursionLevel = 3, float radius = 1) {
 
-            MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
-            if (meshFilter == null)
-                meshFilter = gameObject.AddComponent<MeshFilter>();
-
-            if (meshFilter.mesh == null)
-                meshFilter.mesh = new Mesh();
-
-            Mesh mesh = meshFilter.mesh;
+            var mesh = new Mesh();
             mesh.Clear();
 
             List<Vector3> vertList = new List<Vector3>();
