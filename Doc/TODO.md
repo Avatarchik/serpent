@@ -2,10 +2,15 @@
 
 ## SUMMARY
 - **[CURRENT]** Refactor
+    - Clean up:
+        - MeshUtils
+    - Rename Ring to ValueTransform (alias VTransform), extract to separate file
     - Organize namespace (+ folder) hierarchy
-    - Extract all non-embedded interfaces and classes
+    - Assign appropriate class access modifiers
+    - Extract all non-nested interfaces and classes into separate files
     - Document all non-optional dependencies
-    - Rename Ring to TransformData (alias TData), extract to separate file
+    - Replace loops with queries where appropriate
+    - Search for "TODO" comments
 - Framerate-independent snake growth
 - Skin gallery
 - Correct spawn

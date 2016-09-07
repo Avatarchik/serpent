@@ -4,17 +4,18 @@ using System.Collections;
 namespace Snake3D {
 
     public interface IGrowable {
-        void Grow(ValueTransform ring);
+        void Grow(ValueTransform valTrans);
         void ShrinkToLength(float targetLength);
         float ComputeLength();
+
+        /// Called after combination of Grow() and ShrinkToLength() has been run
+        void ApplyChanges();
     }
 
     public class GrowController : MonoBehaviour, IInitializable {
 
-        [NotNull]
-        public Transform walker;
-        [NotNull]
-        public MonoBehaviour growable_;
+        [NotNull] public Transform walker;
+        [NotNull] public MonoBehaviour growable_;
         public float targetLength;
 
         private IGrowable growable;
@@ -33,12 +34,14 @@ namespace Snake3D {
         }
 
         private void MaintainLength() {
+            growable.Grow(new ValueTransform(walker));
+
             float currentLength = growable.ComputeLength();
             float shrinkLength = currentLength - targetLength;
             if (shrinkLength > 0)
                 growable.ShrinkToLength(targetLength);
 
-            growable.Grow(new ValueTransform(walker));
+            growable.ApplyChanges();
         }
     }
 

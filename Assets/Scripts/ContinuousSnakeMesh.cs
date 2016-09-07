@@ -54,13 +54,10 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         Debug.Assert(patch != null);
         return patch;
     }
-
+    
     public void Grow(ValueTransform ring) {
         GrowBodyMesh(ring);
         UpdateHeadPatch(ring);
-
-        if (animateUv)
-            AnimateUV();
     }
     
     public void ShrinkToLength(float targetLength) {
@@ -99,6 +96,11 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
         return bodyLength + GetPatchLength(headPatch) + GetPatchLength(tailPatch);
     }
 
+    public void ApplyChanges() {
+        if (animateUv)
+            AnimateUV();
+    }
+
     #region Private
 
     private float bodyLength { get { return (snakeMesh.Count - 1) * interval; } }
@@ -119,7 +121,9 @@ public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
 
     // Grows body mesh if needed in current frame.
     //
-    // TODO: handle adding of several rings per call
+    // TODO:
+    //    - Handle adding of several rings per call
+    //    - Remove "force" argument
     private void GrowBodyMesh(ValueTransform ring, bool force = false) {
         Vector3 lastGrowPoint;
         if (force)
