@@ -190,15 +190,21 @@ namespace Snake3D {
 
             Vector3[] vertices = mesh.vertices;
             TriangleArray triangles = mesh.GetSaneTriangles(0);
-            for (int i = 0; i < triangles.Length; ++i) {
-                Triangle t = triangles[i];
+
+            Func<int, Bounds> getTriangleBounds = (int index) => {
+                Triangle t = triangles[index];
                 Vector3 v1 = vertices[t.v1];
                 Vector3 v2 = vertices[t.v2];
                 Vector3 v3 = vertices[t.v3];
                 Bounds aabb = new Bounds(v1, Vector3.zero);
                 aabb.Encapsulate(v2);
                 aabb.Encapsulate(v3);
-                octree.Add(i, aabb);
+
+                return aabb;
+            };
+
+            for (int i = 0; i < triangles.Length; ++i) {
+                octree.Add(i, getTriangleBounds(i));
             }
 
             return octree;
