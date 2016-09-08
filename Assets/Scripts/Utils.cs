@@ -4,6 +4,12 @@ namespace Snake3D {
 
     public static class Utils {
 
+        public static void ResetTransform(this Transform transform) {
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+        }
+
         public static T FindNearestParentWithComponent<T>(Transform trans) where T : Component {
             for (; trans != null; trans = trans.parent) {
                 T component = trans.GetComponent<T>();
@@ -26,22 +32,6 @@ namespace Snake3D {
             Vector2 result = offset;
             result.Scale(material.mainTextureScale);
             material.mainTextureOffset = result;
-        }
-
-        public static void DrawGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor,
-            bool depthTest = false, float duration = 0) {
-
-            const int kSteps = 8;
-            Vector3 direction = end - start;
-
-            for (int i = 0; i < kSteps; i++) {
-                float factor = (float)i / (kSteps - 1);
-                Color color = Color.Lerp(startColor, endColor, factor);
-
-                Vector3 a = start + direction * ((float)i / kSteps);
-                Vector3 b = start + direction * ((float)(i + 1) / kSteps);
-                Debug.DrawLine(a, b, color);
-            }
         }
     }
 

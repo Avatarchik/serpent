@@ -217,12 +217,10 @@ namespace Snake3D {
             Debug.DrawLine(start, end, color, duration, depthTest);
         }
         
-        private void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor,
-            bool depthTest = false, float duration = 0) {
-
+        private void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor) {
             start = tangentToWorld.MultiplyPoint3x4(start);
             end = tangentToWorld.MultiplyPoint3x4(end);
-            Utils.DrawGradientLine(start, end, startColor, endColor, depthTest, duration);
+            DebugUtils.DrawGradientLine(start, end, startColor, endColor, false, 0);
         }
 
 #endif
