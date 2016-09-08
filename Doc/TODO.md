@@ -4,7 +4,7 @@
 - **[CURRENT]** Refactor
     - Clean up:
         - MeshUtils
-    - Rename Ring to ValueTransform (alias VTransform), extract to separate file
+        - See comment to MeshUtils.ConvertQuadToTriangles
     - Organize namespace (+ folder) hierarchy
     - Assign appropriate class access modifiers
     - Extract all non-nested interfaces and classes into separate files

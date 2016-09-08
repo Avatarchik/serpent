@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.2">
-  <zoom_level>10</zoom_level>
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>270</x>
-      <y>40</y>
-      <w>160</w>
-      <h>100</h>
+      <x>324</x>
+      <y>135</y>
+      <w>144</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>GrowController
 -
-+targetLength: float
++targetLength
 -
 -Update()
 -MaintainLength()</panel_attributes>
@@ -20,45 +20,24 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>390</x>
-      <y>170</y>
-      <w>160</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes>Transform (Walker)</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>390</x>
-      <y>130</y>
-      <w>50</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30.0;40.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>170</x>
-      <y>280</y>
-      <w>160</w>
-      <h>70</h>
+      <x>324</x>
+      <y>351</y>
+      <w>144</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>ContinuousSnakeMesh
 -
-+interval: float</panel_attributes>
+[H] interval
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>110</x>
-      <y>170</y>
-      <w>270</w>
-      <h>80</h>
+      <x>306</x>
+      <y>252</y>
+      <w>180</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>/IGrowable/
 -
@@ -70,21 +49,21 @@ ComputeLength(): float</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>270</x>
-      <y>130</y>
-      <w>50</w>
-      <h>60</h>
+      <x>387</x>
+      <y>216</y>
+      <w>27</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;40.0;30.0;10.0</additional_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>240</x>
-      <y>240</y>
-      <w>30</w>
-      <h>60</h>
+      <x>387</x>
+      <y>315</y>
+      <w>27</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
@@ -92,10 +71,10 @@ ComputeLength(): float</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>90</x>
-      <y>390</y>
-      <w>310</w>
-      <h>90</h>
+      <x>252</x>
+      <y>441</y>
+      <w>279</w>
+      <h>81</h>
     </coordinates>
     <panel_attributes>/ISnakeMesh/
 -
@@ -107,21 +86,21 @@ GetLength(): int</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>240</x>
-      <y>340</y>
-      <w>30</w>
-      <h>70</h>
+      <x>387</x>
+      <y>405</y>
+      <w>27</w>
+      <h>54</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>310</x>
-      <y>520</y>
-      <w>110</w>
-      <h>30</h>
+      <x>450</x>
+      <y>558</y>
+      <w>99</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>SnakeMesh</panel_attributes>
     <additional_attributes/>
@@ -129,10 +108,10 @@ GetLength(): int</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>240</x>
-      <y>470</y>
-      <w>140</w>
-      <h>70</h>
+      <x>387</x>
+      <y>513</y>
+      <w>126</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;30.0;120.0;30.0;120.0;50.0</additional_attributes>
@@ -140,10 +119,10 @@ GetLength(): int</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>0</x>
-      <y>510</y>
-      <w>180</w>
-      <h>50</h>
+      <x>171</x>
+      <y>549</y>
+      <w>162</w>
+      <h>45</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes/>
@@ -151,10 +130,10 @@ GetLength(): int</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>120</x>
-      <y>470</y>
-      <w>150</w>
-      <h>70</h>
+      <x>279</x>
+      <y>513</y>
+      <w>135</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>130.0;10.0;130.0;30.0;10.0;30.0;10.0;50.0</additional_attributes>
@@ -162,10 +141,10 @@ GetLength(): int</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>10</x>
-      <y>520</y>
-      <w>160</w>
-      <h>30</h>
+      <x>180</x>
+      <y>558</y>
+      <w>144</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>ChunkedSnakeMesh</panel_attributes>
     <additional_attributes/>
@@ -173,10 +152,10 @@ GetLength(): int</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>610</x>
-      <y>170</y>
-      <w>260</w>
-      <h>130</h>
+      <x>585</x>
+      <y>360</y>
+      <w>234</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>MeshWalker
 -
@@ -193,34 +172,80 @@ getRotation(): Quaternion</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>570</x>
-      <y>80</y>
-      <w>140</w>
-      <h>30</h>
+      <x>630</x>
+      <y>243</y>
+      <w>126</w>
+      <h>90</h>
     </coordinates>
-    <panel_attributes>WalkerBehavior</panel_attributes>
+    <panel_attributes>WalkerBehavior
+--
+[H] interval
+rotationSpeed
+moveSpeed</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>520</x>
-      <y>100</y>
-      <w>90</w>
+      <x>684</x>
+      <y>324</y>
+      <w>27</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>72</x>
+      <y>135</y>
+      <w>189</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;70.0;70.0;10.0</additional_attributes>
+    <panel_attributes>bg=#FFFF40
+- Facade, mediator for snake
+- </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>522</x>
+      <y>27</y>
+      <w>126</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>SnakeBody
+-
+interval: float
+pointsPerRing: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>63</x>
+      <y>351</y>
+      <w>162</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>bg=#FFFF40
+Extract base and patches
+related code to the
+separate classes</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>680</x>
-      <y>100</y>
-      <w>80</w>
-      <h>90</h>
+      <x>216</x>
+      <y>360</y>
+      <w>126</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>60.0;70.0;10.0;10.0</additional_attributes>
+    <panel_attributes>lt=&lt;.
+</panel_attributes>
+    <additional_attributes>120.0;20.0;10.0;20.0</additional_attributes>
   </element>
 </diagram>
