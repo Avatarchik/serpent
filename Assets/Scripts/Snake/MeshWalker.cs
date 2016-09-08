@@ -46,7 +46,7 @@ namespace Snake3D {
             float nearestDistance = float.PositiveInfinity;
 
             for (int i = 0; i < triangles.Length; ++i) {
-                Vector3 vertex = vertices[triangles[i].v1];
+                Vector3 vertex = vertices[triangles[i].i1];
                 float distance = (position - vertex).sqrMagnitude;
                 if (distance < nearestDistance) {
                     // Found new nearest triangle
@@ -142,7 +142,7 @@ namespace Snake3D {
 
                 // Intersected edge direction in new triangle's space
                 int intersectedEdgeNew = 0;
-                Triangle triangle = CurrentTriangle;
+                IndexedTriangle triangle = CurrentTriangle;
                 for (int i = 0; i < 3; i++) {
                     if (triangle[i] == intersectedEdgeEnd)
                         intersectedEdgeNew = i;
@@ -202,7 +202,7 @@ namespace Snake3D {
             }
         }
 
-        private Triangle CurrentTriangle {
+        private IndexedTriangle CurrentTriangle {
             get {
                 return triangles[tangentTransform.triangleIndex];
             }
@@ -279,7 +279,7 @@ namespace Snake3D {
         /// Gets neighbor triangle index
         private int GetNeighborTriangle(int intersectedEdge) {
             // Note the reverse order of start and end indices
-            Edge edge = new Edge(
+            IndexedEdge edge = new IndexedEdge(
                 CurrentTriangle[(intersectedEdge + 1) % 3],
                 CurrentTriangle[intersectedEdge]
             );
@@ -300,17 +300,17 @@ namespace Snake3D {
         }
 
         private void UpdateTriangleCoords() {
-            Triangle t = CurrentTriangle;
+            IndexedTriangle t = CurrentTriangle;
             // triangleCoords[0] is always (0, 0)
-            triangleCoords[1] = worldToTangent.MultiplyPoint3x4(vertices[t.v2]);
-            triangleCoords[2] = worldToTangent.MultiplyPoint3x4(vertices[t.v3]);
+            triangleCoords[1] = worldToTangent.MultiplyPoint3x4(vertices[t.i2]);
+            triangleCoords[2] = worldToTangent.MultiplyPoint3x4(vertices[t.i3]);
         }
         
         private static void CalculateTangentToWorldMatrix(int triangleIndex, Mesh mesh, out Matrix4x4 tangentToWorld) {
-            Triangle t = mesh.GetSaneTriangles(0)[triangleIndex];
-            Vector3 v1 = mesh.vertices[t.v1];
-            Vector3 v2 = mesh.vertices[t.v2];
-            Vector3 v3 = mesh.vertices[t.v3];
+            IndexedTriangle t = mesh.GetSaneTriangles(0)[triangleIndex];
+            Vector3 v1 = mesh.vertices[t.i1];
+            Vector3 v2 = mesh.vertices[t.i2];
+            Vector3 v3 = mesh.vertices[t.i3];
             Vector3 right = (v2 - v1).normalized;
             Vector3 forward = Vector3.Cross(right, v3 - v1).normalized;
             Vector3 up = Vector3.Cross(forward, right);

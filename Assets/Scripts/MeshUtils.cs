@@ -3,99 +3,6 @@ using System.Collections;
 using System;
 
 namespace Snake3D {
-    
-    public struct Triangle {
-        // Indices
-        public int v1, v2, v3;
-
-        public Triangle(int v1, int v2, int v3) {
-            this.v1 = v1;
-            this.v2 = v2;
-            this.v3 = v3;
-        }
-
-        public int this[int index] {
-            get {
-                switch (index) {
-                    case 0: return v1;
-                    case 1: return v2;
-                    case 2: return v3;
-                    default: throw new System.IndexOutOfRangeException();
-                }
-            }
-
-            set {
-                switch (index) {
-                    case 0: v1 = value; return;
-                    case 1: v2 = value; return;
-                    case 2: v3 = value; return;
-                    default: throw new System.IndexOutOfRangeException();
-                }
-            }
-        }
-
-        public int Length { get { return 3; } }
-
-        public override string ToString() {
-            return string.Format("{{{0}, {1}, {2}}}", v1, v2, v3);
-        }
-
-        public Triangle Reversed { get {
-                return new Triangle(v3, v2, v1);
-            }
-        }
-    }
-
-    /// A proxy for handy reading/writing of triangles from/to the triangle array.
-    public struct TriangleArray {
-        private int[] rawTriangles;
-
-        public TriangleArray(int[] rawArray) {
-            rawTriangles = rawArray;
-        }
-
-        public static explicit operator int[] (TriangleArray triangleArray) {
-            return triangleArray.rawTriangles;
-        }
-
-        public void ReverseTriangles() {
-            for (int i = 0; i < Length; ++i) {
-                this[i] = this[i].Reversed;
-            }
-        }
-
-        public Triangle this[int index] {
-            get {
-                int offset = index * 3;
-                return new Triangle(
-                    rawTriangles[offset + 0],
-                    rawTriangles[offset + 1],
-                    rawTriangles[offset + 2]
-                    );
-            }
-            set {
-                int offset = index * 3;
-                rawTriangles[offset + 0] = value.v1;
-                rawTriangles[offset + 1] = value.v2;
-                rawTriangles[offset + 2] = value.v3;
-            }
-        }
-
-        public IEnumerator GetEnumerator() {
-            return rawTriangles.GetEnumerator();
-        }
-
-        public int Length { get { return rawTriangles.Length / 3; } }
-    }
-
-    public struct Edge {
-        public ushort start, end;
-
-        public Edge(int start, int end) {
-            this.start = (ushort)start;
-            this.end   = (ushort)end;
-        }
-    }
 
     public static class MeshUtils {
 
@@ -119,7 +26,7 @@ namespace Snake3D {
         }
         
         public static void DrawTriangle(this Mesh mesh, int index, Color color) {
-            Triangle triangle = mesh.GetSaneTriangles(0)[index];
+            IndexedTriangle triangle = mesh.GetSaneTriangles(0)[index];
             Vector3[] vertices = mesh.vertices;
 
             for (int i = 0; i < 3; ++i) {
@@ -192,10 +99,10 @@ namespace Snake3D {
             TriangleArray triangles = mesh.GetSaneTriangles(0);
 
             Func<int, Bounds> getTriangleBounds = (int index) => {
-                Triangle t = triangles[index];
-                Vector3 v1 = vertices[t.v1];
-                Vector3 v2 = vertices[t.v2];
-                Vector3 v3 = vertices[t.v3];
+                IndexedTriangle t = triangles[index];
+                Vector3 v1 = vertices[t.i1];
+                Vector3 v2 = vertices[t.i2];
+                Vector3 v3 = vertices[t.i3];
                 Bounds aabb = new Bounds(v1, Vector3.zero);
                 aabb.Encapsulate(v2);
                 aabb.Encapsulate(v3);

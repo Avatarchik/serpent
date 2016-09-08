@@ -10,7 +10,7 @@ namespace Snake3D {
         [NotNull]
         public MeshFilter meshFilter;
 
-        private Dictionary<Edge, int> edgeToTriangleMap;
+        private Dictionary<IndexedEdge, int> edgeToTriangleMap;
 
         public void Init() {
             Debug.Assert(instance == null);
@@ -25,20 +25,20 @@ namespace Snake3D {
             edgeToTriangleMap = null;
         }
 
-        public int FindTriangleByEdge(Edge edge) {
+        public int FindTriangleByEdge(IndexedEdge edge) {
             return edgeToTriangleMap[edge];
         }
 
 
         private void GenerateIndex() {
-            edgeToTriangleMap = new Dictionary<Edge, int>();
+            edgeToTriangleMap = new Dictionary<IndexedEdge, int>();
             TriangleArray triangles = meshFilter.mesh.GetSaneTriangles(0);
 
             for (int i = 0; i < triangles.Length; ++i) {
-                Triangle triangle = triangles[i];
+                IndexedTriangle triangle = triangles[i];
 
                 for (int j = 0; j < 3; ++j) {
-                    Edge edge = new Edge(
+                    IndexedEdge edge = new IndexedEdge(
                         triangle[j],
                         triangle[(j + 1) % 3]
                         );
