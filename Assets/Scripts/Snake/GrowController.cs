@@ -17,6 +17,7 @@ namespace Snake3D {
         [NotNull] public Transform walker;
         [NotNull] public MonoBehaviour growable_;
         public float targetLength;
+        public float simulatedLag = 0; // For debug
 
         private IGrowable growable;
 
@@ -27,12 +28,24 @@ namespace Snake3D {
 
             growable = growable_ as IGrowable;
             Debug.Assert(growable != null);
+            
+            if (simulatedLag > 0)
+                StartCoroutine(UpdateCoroutine());
         }
 
         void Update() {
-            MaintainLength();
+            if (simulatedLag == 0)
+                MaintainLength();
         }
 
+        private IEnumerator UpdateCoroutine() {
+            for (;;) {
+                MaintainLength();
+                yield return new WaitForSeconds(simulatedLag);
+            }
+        }
+
+        // Pulls the snake to the MovementController position
         private void MaintainLength() {
             growable.Grow(new ValueTransform(walker));
 
