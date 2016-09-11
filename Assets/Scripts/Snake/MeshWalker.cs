@@ -306,6 +306,14 @@ namespace Snake3D {
         
         private static void CalculateTangentToWorldMatrix(int triangleIndex, Mesh mesh, out Matrix4x4 tangentToWorld) {
             IndexedTriangle t = mesh.GetSaneTriangles(0)[triangleIndex];
+            /* 
+             *                            TODO
+             * 1) Replace by:
+             * RawTriangle t = mesh.GetRawTriangleByIndex(triangleIndex);
+             * 
+             * 2) See which other code we can move to RawTriangle
+             *
+             */             
             Vector3 v1 = mesh.vertices[t.i1];
             Vector3 v2 = mesh.vertices[t.i2];
             Vector3 v3 = mesh.vertices[t.i3];

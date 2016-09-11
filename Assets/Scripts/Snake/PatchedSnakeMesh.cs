@@ -2,9 +2,8 @@
 
 namespace Snake3D {
 
-/// Continuous snake mesh made of discrete middle part (SnakeBase)
-/// and patches
-public class ContinuousSnakeMesh : MonoBehaviour, IInitializable, IGrowable {
+/// Continuous snake mesh made of discrete middle part (SnakeBase) and patches
+public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
 
     [NotNull] public MonoBehaviour snakeMesh_;
     public float interval = 0.25f;

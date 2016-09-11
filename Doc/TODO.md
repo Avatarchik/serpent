@@ -2,6 +2,7 @@
 
 ## SUMMARY
 - **[CURRENT]** Refactor
+    - Properties: use read-only, in-place initialized properties
     - Clean up:
         - MeshUtils
         - See comment to MeshUtils.ConvertQuadToTriangles

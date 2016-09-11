@@ -2,7 +2,7 @@
 
 Features to implement:
 - Snake
-    - Caps
+    - ~~Caps~~
     - Length control
     - Division into chunks
     - Swallowing

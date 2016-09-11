@@ -3,7 +3,9 @@ using System.Collections;
 
 namespace Snake3D {
 
-    public interface IGrowable {
+    /// Continuously growing path
+    /// (as opposite to growing by discrete steps, like SnakeBase)
+    public interface IGrowablePath {
         void Grow(ValueTransform valTrans);
         void ShrinkToLength(float targetLength);
         float ComputeLength();
@@ -19,14 +21,14 @@ namespace Snake3D {
         public float targetLength;
         public float simulatedLag = 0; // For debug
 
-        private IGrowable growable;
+        private IGrowablePath growable;
 
         public void Init() {
             // Scale must be (1; 1; 1) because mesh normals depend on walker
             // transformation matrix and they need to be uniform
             Debug.Assert(walker.localScale == Vector3.one);
 
-            growable = growable_ as IGrowable;
+            growable = growable_ as IGrowablePath;
             Debug.Assert(growable != null);
             
             if (simulatedLag > 0)
