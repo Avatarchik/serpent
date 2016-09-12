@@ -18,7 +18,6 @@ public var damageSignals : SignalSender;
 public var dieSignals : SignalSender;
 
 private var lastDamageTime : float = 0;
-private var damageEffect : ParticleEmitter;
 private var damageEffectCenterYOffset : float;
 
 private var colliderRadiusHeuristic : float = 1.0;
@@ -32,7 +31,6 @@ function Awake () {
 		var effect : GameObject = Spawner.Spawn (damagePrefab, Vector3.zero, Quaternion.identity);
 		effect.transform.parent = damageEffectTransform;
 		effect.transform.localPosition = Vector3.zero;
-		damageEffect = effect.GetComponent.<ParticleEmitter>();
 		var tempSize : Vector2 = Vector2(GetComponent.<Collider>().bounds.extents.x,GetComponent.<Collider>().bounds.extents.z);
 		colliderRadiusHeuristic = tempSize.magnitude * 0.5;
 		damageEffectCenterYOffset = GetComponent.<Collider>().bounds.extents.y;
@@ -73,21 +71,6 @@ function OnDamage (amount : float, fromDirection : Vector3) {
 	// if regeneration is enabled
 	if (regenerateSpeed > 0)
 		enabled = true;
-
-	// Show damage effect if there is one
-	if (damageEffect) {
-		damageEffect.transform.rotation = Quaternion.LookRotation (fromDirection, Vector3.up);
-		if(!damageEffectCentered) {
-			var dir : Vector3 = fromDirection;
-			dir.y = 0.0;
-			damageEffect.transform.position = (transform.position + Vector3.up * damageEffectCenterYOffset) + colliderRadiusHeuristic * dir;
-		}
-		// @NOTE: due to popular demand (ethan, storm) we decided
-		// to make the amount damage independent ...
-		//var particleAmount = Random.Range (damageEffect.minEmission, damageEffect.maxEmission + 1);
-		//particleAmount = particleAmount * amount * damageEffectMultiplier;
-		damageEffect.Emit();// (particleAmount);
-	}
 
 	// Die if no health left
 	if (health <= 0)

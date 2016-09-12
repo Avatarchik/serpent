@@ -113,7 +113,7 @@ public class GameScore : MonoBehaviour
     }
 
 
-    public void OnLevelWasLoaded(int level)
+    public void Awake()
     {
         if (m_StartTime == 0.0f)
         {
