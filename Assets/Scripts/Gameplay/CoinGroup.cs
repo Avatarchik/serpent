@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace Snake3D {
 
+    // Sets different rotation phase to children Transforms
     public class CoinGroup : MonoBehaviour {
 
         public float phaseDelta = 45;
@@ -13,10 +14,6 @@ namespace Snake3D {
                 coin.Rotate(0, n * phaseDelta, 0);
                 n++;
             }
-        }
-
-        void Update() {
-
         }
     }
 

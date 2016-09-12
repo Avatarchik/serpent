@@ -6,16 +6,13 @@ namespace Snake3D {
 
     public class Food : MonoBehaviour {
 
-        [NotNull]
-        public Transform movingPart;
+        [NotNull] public Transform movingPart;
         public float verticalAmplitude = 1;
         public float verticalPeriod = 4;
         public float rotationPeriod = 50;
 
-        [NotNull]
-        public Transform highlightField;
-        [NotNull]
-        public Projector projector;
+        [NotNull] public Transform highlightField;
+        [NotNull] public Projector projector;
         public float highlightScalePeriod = 1;
         public float maxHighlightScale = 1.3f;
 

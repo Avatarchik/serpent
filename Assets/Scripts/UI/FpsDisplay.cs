@@ -18,9 +18,7 @@ public class FpsDisplay : MonoBehaviour {
     IEnumerator UpdateFPS() {
         for (; ; ) {
             int fps = Time.unscaledDeltaTime == 0 ? 0 : (int)(1f / Time.unscaledDeltaTime);
-            debugText.text = string.Format(
-                "FPS: {0}", fps
-            );
+            debugText.text = $"FPS: {fps}";
             yield return new WaitForSeconds(kFPSUpdateInterval);
         }
     }
