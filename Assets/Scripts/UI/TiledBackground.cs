@@ -23,7 +23,7 @@ namespace Snake3D {
 	    }
 	
 	    // Update is called once per frame
-	    void Update () {
+	    void Update() {
             offset += speed * Time.deltaTime;
             if (offset >= 1)
                 offset -= 1;

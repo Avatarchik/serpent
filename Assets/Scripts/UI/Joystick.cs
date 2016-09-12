@@ -24,10 +24,8 @@ namespace Snake3D {
 
 
         public void Init() {
-            Value = Vector2.zero;
             joystickBackground = GetComponent<UnityEngine.UI.Image>();
             joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();
-            isPressed = false;
 
             // What camera to use?
             Canvas canvas = Utils.FindNearestParentWithComponent<Canvas>(transform);
@@ -54,14 +52,14 @@ namespace Snake3D {
             UpdateValues(eventData.position);
 
             isPressed = true;
-            if (OnDown != null) OnDown();
-            if (OnChange != null) OnChange();
+            OnDown?.Invoke();
+            OnChange?.Invoke();
         }
 
         public void OnDrag(PointerEventData eventData) {
             UpdateValues(eventData.position);
 
-            if (OnChange != null) OnChange();
+            OnChange?.Invoke();
         }
 
         public void OnPointerUp(PointerEventData eventData) {

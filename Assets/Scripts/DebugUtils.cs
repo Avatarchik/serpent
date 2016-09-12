@@ -21,6 +21,7 @@ namespace Snake3D {
             }
         }
         
+        // TODO: implement mesh.GetRawTriangle(int index)
         public static void DrawTriangle(this Mesh mesh, int index, Color color) {
             IndexedTriangle triangle = mesh.GetSaneTriangles(0)[index];
             Vector3[] vertices = mesh.vertices;

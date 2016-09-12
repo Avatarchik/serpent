@@ -32,8 +32,7 @@ namespace Snake3D {
 
         void OnGUI() {
             GUI.Box(new Rect(10, 10, 220, 220), "LineToPointDistance test");
-            var text = string.Format("Distance: {0:N2}", distance);
-            GUI.Label(new Rect(20, 40, 200, 20), text);
+            GUI.Label(new Rect(20, 40, 200, 20), $"Distance: {distance:N2}");
         }
     }
 

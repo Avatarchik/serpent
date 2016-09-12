@@ -13,8 +13,8 @@ namespace Snake3D {
         }
 
         public ValueTransform(Transform transform) {
-            this.position = transform.position;
-            this.rotation = transform.rotation;
+            position = transform.position;
+            rotation = transform.rotation;
         }
 
         public static ValueTransform lerp(ValueTransform start, ValueTransform end, float factor) {

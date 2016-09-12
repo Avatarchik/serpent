@@ -37,9 +37,8 @@ namespace Snake3D {
             coords.y = GUI.HorizontalSlider(new Rect(120, 80, 100, 20), coords.y, 0, 10);
             GUI.Label(new Rect(20, 100, 100, 20), "Distance");
             distance = GUI.HorizontalSlider(new Rect(120, 100, 100, 20), distance, 0, maxDistance);
-
-            var message = string.Format("Steps: {0}", steps);
-            GUI.Label(new Rect(20, 120, 200, 20), message);
+            
+            GUI.Label(new Rect(20, 120, 200, 20), $"Steps: {steps}");
         }
 
         void Update() {

@@ -42,8 +42,7 @@ namespace Snake3D {
 
         public void PopFromStart() {
             ValueTransform popped = Path.Dequeue();
-            if (OnPopFromStart != null)
-                OnPopFromStart(popped);
+            OnPopFromStart?.Invoke(popped);
         }
 
 #if UNITY_EDITOR

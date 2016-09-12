@@ -21,9 +21,8 @@ namespace Snake3D {
             t[5] = q[2];
         }
 
-        public static TriangleArray GetSaneTriangles(this Mesh mesh, int submesh) {
-            return new TriangleArray(mesh.GetTriangles(submesh));
-        }
+        public static TriangleArray GetSaneTriangles(this Mesh mesh, int submesh)
+            => new TriangleArray(mesh.GetTriangles(submesh));
 
         public static void ApplyTransformToMesh(MeshFilter meshFilter) {
             Transform transform = meshFilter.transform;

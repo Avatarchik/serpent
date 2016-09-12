@@ -10,7 +10,6 @@ public class FpsDisplay : MonoBehaviour {
     private Text debugText;
 
     void Start() {
-        // Display FPS
         debugText = GameObject.FindWithTag("Debug text").GetComponent<Text>();
         StartCoroutine(UpdateFPS());
     }

@@ -10,8 +10,7 @@ namespace Snake3D {
         private GameObject current;
 
         public void OpenScreen(GameObject screen) {
-            if (current != null)
-                current.SetActive(false);
+            current?.SetActive(false);
 
             screen.SetActive(true);
             current = screen;
@@ -20,8 +19,7 @@ namespace Snake3D {
         void Start() {
             current = initialOpen;
 
-            if (current != null)
-                current.SetActive(true);
+            current?.SetActive(true);
         }
 
         void Update() {

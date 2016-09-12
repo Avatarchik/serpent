@@ -15,7 +15,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
     private ValueTransform lastPoppedRing;
     private ISnakeMesh headPatch;
     private ISnakeMesh tailPatch;
-    private Material tailMaterial;
+    private Material tailMaterial; // TODO: make separate
     private Vector2 baseTailOffset; // Tail UV offset without sliding animation
 
     public void Init() {
@@ -33,7 +33,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
             ValueTransform ring = new ValueTransform(tail);
 
             GrowBaseMesh(ring, true);
-            UpdateLastPoppedRing(ring);
+            lastPoppedRing = ring;
 
             float distanceTraveled = 0;
             headPatch.PushToEnd(ring, distanceTraveled);
@@ -42,8 +42,9 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
             tailPatch.PushToEnd(ring, distanceTraveled);
         }
 
-
-        snakeMesh.Kernel.OnPopFromStart += UpdateLastPoppedRing;
+        snakeMesh.Kernel.OnPopFromStart += (ring) => {
+            lastPoppedRing = ring;
+        };
     }
     
     public void Grow(ValueTransform ring) {
@@ -82,11 +83,10 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
             tailMaterial.SetUnscaledTextureOffset(baseTailOffset);
         }
     }
-
-    public float ComputeLength() {
-        return baseLength + GetPatchLength(headPatch) + GetPatchLength(tailPatch);
-    }
-
+    
+    public float ComputeLength() =>
+            baseLength + GetPatchLength(headPatch) + GetPatchLength(tailPatch);
+    
     public void ApplyChanges() {
         if (animateUv)
             AnimateUV();
@@ -94,15 +94,12 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
 
     #region Private
 
-    private float baseLength { get { return (snakeMesh.Count - 1) * interval; } }
-    private float baseDistanceTraveled {
-        get {
-            //return Mathf.Max(0, (snakeMesh.Kernel.RingsAdded - 1) * interval);
-            return (snakeMesh.Kernel.RingsAdded - 1) * interval;
-        }
-    }
+    private float baseLength => (snakeMesh.Count - 1) * interval;
+    private float baseDistanceTraveled =>
+            //Mathf.Max(0, (snakeMesh.Kernel.RingsAdded - 1) * interval);
+            (snakeMesh.Kernel.RingsAdded - 1) * interval;
         
-
+    
     private ISnakeMesh InitPatch(string gameObjectName) {
         Transform patchTransform = transform.FindChild(gameObjectName);
         Debug.Assert(patchTransform != null);
@@ -120,9 +117,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
 
     // Grows base mesh if needed in current frame.
     //
-    // TODO:
-    //    - Handle adding of several rings per call
-    //    - Remove "force" argument
+    // TODO: remove "force" argument
     private void GrowBaseMesh(ValueTransform ring, bool force = false) {
         Vector3 lastGrowPoint;
         if (force)
@@ -161,10 +156,6 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
 
         tailPatch.PushToEnd(tailRing, baseDistance - tailPatchLength);
         tailPatch.PushToEnd(baseRing, baseDistance);
-    }
-
-    private void UpdateLastPoppedRing(ValueTransform ring) {
-        lastPoppedRing = ring;
     }
 
     private void AnimateUV() {

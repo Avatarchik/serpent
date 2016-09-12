@@ -42,17 +42,9 @@ namespace Snake3D {
             }
         }
 
-        public int Length { get { return 3; } }
-
-        public override string ToString() {
-            return string.Format("{{{0}, {1}, {2}}}", i1, i2, i3);
-        }
-
-        public IndexedTriangle Reversed {
-            get {
-                return new IndexedTriangle(i3, i2, i1);
-            }
-        }
+        public int Length => 3;
+        public override string ToString() => $"{{{i1}, {i2}, {i3}}}";
+        public IndexedTriangle Reversed => new IndexedTriangle(i3, i2, i1);
     }
 
     /// A proxy for handy reading/writing of triangles from/to the triangle array.
@@ -90,11 +82,9 @@ namespace Snake3D {
             }
         }
 
-        public IEnumerator GetEnumerator() {
-            return rawTriangles.GetEnumerator();
-        }
+        public IEnumerator GetEnumerator() => rawTriangles.GetEnumerator();
 
-        public int Length { get { return rawTriangles.Length / 3; } }
+        public int Length => rawTriangles.Length / 3;
     }
 
     public struct IndexedEdge {

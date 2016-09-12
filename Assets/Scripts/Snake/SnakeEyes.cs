@@ -5,10 +5,8 @@ namespace Snake3D {
 
     public class SnakeEyes : MonoBehaviour {
 
-        [NotNull]
-        public Transform leftPupil;
-        [NotNull]
-        public Transform rightPupil;
+        [NotNull] public Transform leftPupil;
+        [NotNull] public Transform rightPupil;
 
         private Vector3 targetPosition, previousPosition;
         float lastTime;

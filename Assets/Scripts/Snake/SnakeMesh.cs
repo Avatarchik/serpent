@@ -17,18 +17,18 @@ namespace Snake3D {
     public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
 
         [NotNull] public SnakeKernel kernel;
-        public float radius = 0.5f; // TODO: move out of the class
+        public float radius = 0.5f;
         public int visiblePointsPerRing = 16; // Visible points per ring (as opposed to real number)
         public GameObject vertexLabelPrefab;
         public bool showDebugInfo = false;
 
-        public int Count { get { return kernel.Path.Count; } }
-        public float RingLength { get { return 2 * Mathf.PI * radius; } }
+        public int Count => kernel.Path.Count;
+        public float RingLength => 2 * Mathf.PI * radius;
         public Vector2 TextureOffset {
             get { return material.GetUnscaledTextureOffset(); }
             set { material.SetUnscaledTextureOffset(value); }
         }
-        public ISnakeKernel Kernel { get { return kernel; } }
+        public ISnakeKernel Kernel => kernel;
 
         private MeshFilter meshFilter;
         private Material material;
@@ -42,7 +42,7 @@ namespace Snake3D {
         private bool meshIsDirty = false;
 
         // There is additional row of vertices because we need correct UVs
-        private int RealPointsPerRing { get { return visiblePointsPerRing + 1; } }
+        private int RealPointsPerRing => visiblePointsPerRing + 1;
 
         void Update() {
             // Empty Update() just to activate component checkbox in the editor
@@ -107,7 +107,7 @@ namespace Snake3D {
 
         #region Private part
 
-        private int trianglesPerSegment { get { return visiblePointsPerRing * 2; } }
+        private int trianglesPerSegment => visiblePointsPerRing * 2;
 
 
         private void AllocateBuffers() {
