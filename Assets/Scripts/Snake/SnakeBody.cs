@@ -5,8 +5,6 @@ namespace Snake3D {
 
     public class SnakeBody : MonoBehaviour {
 
-
-
         void Start() {
 
         }
