@@ -1,7 +1,8 @@
 # TODO
 
-## SUMMARY
-- **[CURRENT]** Refactor
+## SUMMARY (TODO: remove this)
+- **[CURRENT]** Tests
+- Refactor
     - Properties: use read-only, in-place initialized properties
     - Clean up:
         - MeshUtils
@@ -16,7 +17,21 @@
 - Skin gallery
 - Correct spawn
 - Level gallery
-- Collisions
+
+## Planning
+- **[CURRENT]** Clean up docs
+    - Разделить на требования, дизайн и расписание
+- Gantt chart
+
+## Development tools
+- Build automation
+    - https://www.google.ru/search?q=unity+cache+server
+        - http://forum.unity3d.com/threads/automating-builds-with-jenkins.319169/
+        - http://answers.unity3d.com/questions/47183/continuous-integration-with-unity.html
+- Cache server
+    - https://unity3d.com/unity/team-license
+- Version control
+    - Split assets and code into Git submodules
 
 ## Code
 - Snake
@@ -24,20 +39,18 @@
         - Mesh partitioning
         - Collision detection
     - Wavy walker decorator
+    - Correct respawn
 
 - Gameplay
-    - Snake respawn
     - Correct food spawn
     - Collisions with obstacles
-    - Snake body collisions
     - Increase speed when eating (i.e. up to 14/240)
 
+- Establish more modular, manageable workflow
 - Algorithms visualization
 - Separate development and production assets
-- Establish more modular, manageable workflow
 
 ## Art
-
 - Skins
 - Decorations
     - Spruce
