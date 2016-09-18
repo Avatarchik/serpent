@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using JetBlack.Core.Collections.Generic;
-using System;
 
 namespace Snake3D {
 

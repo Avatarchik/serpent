@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace JetBlack.Core.Collections.Generic {
+namespace Snake3D {
     public interface ICircularBuffer<T> {
         int Count { get; }
         int Capacity { get; set; }
@@ -26,9 +26,8 @@ namespace JetBlack.Core.Collections.Generic {
     }
 
     public class BufferOverflowException : Exception {
-        public override string Message {
-            get { return "Attempt to push to full circular buffer"; }
-        }
+        public override string Message
+            => "Attempt to push to full circular buffer";
     }
 
     public class CircularBuffer<T> : ICircularBuffer<T>, IEnumerable<T> {
@@ -66,9 +65,7 @@ namespace JetBlack.Core.Collections.Generic {
             }
         }
 
-        public T Last {
-            get { return this[Count - 1]; }
-        }
+        public T Last => this[Count - 1];
 
         public T Enqueue(T item) {
             if (Count == Capacity)
@@ -176,8 +173,7 @@ namespace JetBlack.Core.Collections.Generic {
             }
         }
 
-        public int RawPosition(int index) {
-            return (Tail + index) % Capacity;
-        }
+        public int RawPosition(int index)
+            => (Tail + index) % Capacity;
     }
 }
