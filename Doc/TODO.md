@@ -1,5 +1,12 @@
 # TODO
 
+## Task queue
+- CircularBuffer
+    - `git diff` modified and original versions
+    - Write tests for new methods
+    - Implement automatic capacity increase
+- Refactor snake classes
+
 ## SUMMARY (TODO: remove this)
 - **[CURRENT]** Tests
 - Refactor
@@ -24,6 +31,11 @@
 - Gantt chart
 
 ## Development tools
+- Setup and test automated backup
+    - Синхронизировать c облаком не только Git, но и
+    - Использовать проекцию в ZipFS (7z?)
+    - Также синхронизировать билды и файлы, исключенные с пом. `.gitignore`
+    - Удалённый воркер по раскидыванию бэкапов в разные источники
 - Build automation
     - https://www.google.ru/search?q=unity+cache+server
         - http://forum.unity3d.com/threads/automating-builds-with-jenkins.319169/
