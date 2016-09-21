@@ -6,5 +6,7 @@
 /Temp
 /Build
 /CSharp60Support/compilation.log
+/Library_*
 
 *.swp
+
