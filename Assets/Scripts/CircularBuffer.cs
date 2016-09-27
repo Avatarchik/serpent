@@ -97,15 +97,11 @@ namespace Snake3D {
 
         public T this[int index] {
             get {
-                if (index < 0 || index >= Count)
-                    throw new ArgumentOutOfRangeException("index");
-
+                EnsureIndexIsCorrect(index);
                 return RawBuffer[RawPosition(index)];
             }
             set {
-                if (index < 0 || index >= Count)
-                    throw new ArgumentOutOfRangeException("index");
-
+                EnsureIndexIsCorrect(index);
                 RawBuffer[RawPosition(index)] = value;
             }
         }
@@ -118,8 +114,7 @@ namespace Snake3D {
         }
 
         public void Insert(int index, T item) {
-            if (index < 0 || index > Count)
-                throw new ArgumentOutOfRangeException("index");
+            EnsureIndexIsCorrect(index);
 
             if (Count == index)
                 Enqueue(item);
@@ -133,8 +128,7 @@ namespace Snake3D {
         }
 
         public void RemoveAt(int index) {
-            if (index < 0 || index >= Count)
-                throw new ArgumentOutOfRangeException("index");
+            EnsureIndexIsCorrect(index);
 
             for (var i = index; i > 0; --i)
                 this[i] = this[i - 1];
@@ -175,5 +169,10 @@ namespace Snake3D {
 
         public int RawPosition(int index)
             => (Tail + index) % Capacity;
+
+        private void EnsureIndexIsCorrect(int index) {
+            if (index < 0 || index >= Count)
+                throw new IndexOutOfRangeException();
+        }
     }
 }
