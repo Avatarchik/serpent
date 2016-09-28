@@ -82,7 +82,8 @@ namespace Snake3D {
             }
         }
 
-        public IEnumerator GetEnumerator() => rawTriangles.GetEnumerator();
+        // TODO
+        //public IEnumerator GetEnumerator() => rawTriangles.GetEnumerator();
 
         public int Length => rawTriangles.Length / 3;
     }
