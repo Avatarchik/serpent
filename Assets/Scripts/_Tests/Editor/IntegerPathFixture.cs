@@ -50,7 +50,7 @@ namespace Snake3D {
             path.PushToEnd(new int[] { });
             Assert.AreEqual(kValues.Length, path.Size);
 
-            Assert.Throws(typeof(System.ArgumentNullException), () => {
+            Assert.Throws(typeof(ArgumentNullException), () => {
                 path.PushToEnd((int[]) null);
             });
         }

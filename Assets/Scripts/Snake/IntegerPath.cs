@@ -10,12 +10,12 @@ namespace Snake3D {
     }
 
     public class IntegerPath<T> : IEnumerable {
-        public int stepsPassed { get; private set; }
         public readonly float interval;
 
-        public float Mileage { get; } = 0;
-        public int Size { get; } = 0;
-        public float Length { get; } = 0;
+        public int Size => buffer.Count;
+        public float Length => Mathf.Max(0, (Size - 1) * interval);
+        public int stepsPassed { get; private set; }
+        public float Mileage => stepsPassed * interval;
 
         // TODO: make buffer "infinite"
         private CircularBuffer<T> buffer = new CircularBuffer<T>(512);
@@ -25,24 +25,31 @@ namespace Snake3D {
         }
 
         public void PushToEnd(T value) {
-
+            buffer.Enqueue(value);
         }
 
         public void PushToEnd(T[] values) {
-
+            buffer.Enqueue(values);
         }
 
         public void PopFromStart() {
-
+            buffer.Dequeue();
+            stepsPassed++;
         }
 
         public T GetValueAt(int index, SnakeSpace space = SnakeSpace.FromTail) {
+            switch (space) {
+                case SnakeSpace.FromTail:
+                    return buffer[index];
+                case SnakeSpace.FromHead:
+                    return buffer[Size - 1 - index];
+                case SnakeSpace.FromStart:
+                    return buffer[index - stepsPassed];
+            }
             return default(T);
         }
 
-        public T this[int index] {
-            get { return GetValueAt(index); }
-        }
+        public T this[int index] => GetValueAt(index);
 
         public IEnumerator GetEnumerator() => buffer.GetEnumerator();
     }

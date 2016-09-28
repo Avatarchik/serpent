@@ -156,6 +156,9 @@ namespace Snake3D {
         }
 
         public void Enqueue(T[] items) {
+            if (items == null)
+                throw new ArgumentNullException();
+
             if (Count + items.Length > Capacity)
                 throw new BufferOverflowException();
 
