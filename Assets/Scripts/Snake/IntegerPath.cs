@@ -17,8 +17,10 @@ namespace Snake3D {
         public int stepsPassed { get; private set; }
         public float Mileage => stepsPassed * interval;
 
+        public T Last => buffer.Last;
+
         // TODO: make buffer "infinite"
-        private CircularBuffer<T> buffer = new CircularBuffer<T>(512);
+        private readonly CircularBuffer<T> buffer = new CircularBuffer<T>(512);
 
         public IntegerPath(float interval) {
             this.interval = interval;
