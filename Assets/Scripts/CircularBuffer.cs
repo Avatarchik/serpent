@@ -65,7 +65,14 @@ namespace Snake3D {
             }
         }
 
-        public T Last => this[Count - 1];
+        public T Last {
+            get {
+                if (Count == 0)
+                    throw new InvalidOperationException();
+
+                return this[Count - 1];
+            }
+        }
 
         public T Enqueue(T item) {
             if (Count == Capacity)
