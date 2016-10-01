@@ -16,9 +16,10 @@ namespace Snake3D {
     
     public class MeshWalker {
         public bool debugDrawEnabled = false;
+        public Matrix4x4 surfaceToWorld { get; private set; }
+        public Matrix4x4 worldToSurface { get; private set; }
 
         private SurfaceTransform surfaceTransform;
-        private Matrix4x4 surfaceToWorld, worldToSurface;
 
         // Current triangle vertices in surface space
         private Vector2[] triangleCoords;
@@ -292,7 +293,7 @@ namespace Snake3D {
         // The argument triangleIndex is transfered explicitly to indicate
         // that the method is dependent on it.
         private void UpdateMatrices(int triangleIndex) {
-            CalculateTangentToWorldMatrix(triangleIndex, mesh, out surfaceToWorld);
+            surfaceToWorld = CalculateSurfaceToWorldMatrix(triangleIndex, mesh);
             worldToSurface = surfaceToWorld.inverse;
         }
 
@@ -303,7 +304,9 @@ namespace Snake3D {
             triangleCoords[2] = worldToSurface.MultiplyPoint3x4(vertices[t.i3]);
         }
         
-        private static void CalculateTangentToWorldMatrix(int triangleIndex, Mesh mesh, out Matrix4x4 surfaceToWorld) {
+        private static Matrix4x4 CalculateSurfaceToWorldMatrix(int triangleIndex, Mesh mesh) {
+            Matrix4x4 result = new Matrix4x4();
+
             IndexedTriangle t = mesh.GetSaneTriangles(0)[triangleIndex];
             /* 
              *                            TODO
@@ -320,12 +323,14 @@ namespace Snake3D {
             Vector3 forward = Vector3.Cross(right, v3 - v1).normalized;
             Vector3 up = Vector3.Cross(forward, right);
 
-            surfaceToWorld = new Matrix4x4();
-            surfaceToWorld.SetColumn(0, right);
-            surfaceToWorld.SetColumn(1, up);
-            surfaceToWorld.SetColumn(2, forward);
+            result = new Matrix4x4();
+            result.SetColumn(0, right);
+            result.SetColumn(1, up);
+            result.SetColumn(2, forward);
             Vector3 p = v1;
-            surfaceToWorld.SetColumn(3, new Vector4(p.x, p.y, p.z, 1));
+            result.SetColumn(3, new Vector4(p.x, p.y, p.z, 1));
+
+            return result;
         }
 
         /**
