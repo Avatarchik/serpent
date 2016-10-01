@@ -67,7 +67,7 @@ namespace Snake3D {
             joystickCenter.rectTransform.anchoredPosition = Value;
 
             isPressed = false;
-            if (OnUp != null) OnUp();
+            OnUp?.Invoke();
         }
 
 
