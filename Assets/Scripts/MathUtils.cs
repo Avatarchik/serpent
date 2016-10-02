@@ -14,6 +14,12 @@ namespace Snake3D {
             return NormalizeAngle(angle);
         }
 
+        // Angle is in degrees
+        public static Vector2 AngleToDirection(float angle) {
+            float a = angle * Mathf.Deg2Rad;
+            return new Vector2(Mathf.Cos(a), Mathf.Sin(a));
+        }
+
         /// Like Mathf.Repeat, but works for negative values.
         public static float SaneRepeat(float value, float period) {
             float result = value - Mathf.Floor(value / period) * period;

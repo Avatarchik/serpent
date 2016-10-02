@@ -13,12 +13,7 @@ namespace Snake3D {
         // These two properties hold their value after joystick release
         public float Angle { get; private set; } // In degrees
         // Notice: when isPressed == false, Direction != Value.normalized
-        public Vector3 Direction {
-            get {
-                float a = Angle * Mathf.Deg2Rad;
-                return new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0);
-            }
-        }
+        public Vector3 Direction => MathUtils.AngleToDirection(Angle);
 
         public bool isPressed { get; private set; }
         public float maxStickDistance = 58;
