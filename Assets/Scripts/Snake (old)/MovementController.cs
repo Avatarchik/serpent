@@ -12,12 +12,22 @@ namespace Snake3D {
         public float moveSpeed = 10; // Meters per second
         public float offsetFromSurface = 1;
 
+
         private MeshWalker walker;
+
+        // This angle is in the space of current walker triangle,
+        // so it needs to be updated when triangle changes
+        private float targetAngle;
+
 
         public void Init() {
             walker = new MeshWalker(meshFilter.mesh);
             //walker.RespawnAtDefaultPlace();
             walker.RespawnNearPoint(transform.position);
+
+            walker.OnTriangleChanged += (float deltaAngle) => {
+                targetAngle += deltaAngle;
+            };
         }
 
         void OnGUI() {
@@ -28,8 +38,40 @@ namespace Snake3D {
         void Update() {
             // Rotate
             {
-                float angle = joystick.Value.x * rotationSpeed * Time.deltaTime;
-                walker.Rotate(angle);
+                if (joystick.isPressed) {
+                    // Update target angle
+
+                    Vector3 worldDirection = Camera.main.cameraToWorldMatrix
+                        .MultiplyVector(joystick.Direction);
+                    /*Debug.DrawLine(transform.position, transform.position + worldDirection * 4,
+                        Color.red, 0, false);*/
+
+                    Vector2 surfaceDirection = walker.worldToSurface.MultiplyVector(worldDirection);
+                    Vector3 pos = walker.SurfaceTransform_.localPosition;
+                    /*walker.DrawLocalLine(pos, pos + (Vector3)surfaceDirection.normalized * 4,
+                        Color.yellow);*/
+
+                    targetAngle = surfaceDirection.GetAngle();
+                }
+
+                float currentAngle = walker.SurfaceTransform_.angle;
+
+                // Debug draw
+                /*{
+                    Vector3 pos = walker.SurfaceTransform_.localPosition;
+
+                    Vector2 currentDirection = MathUtils.AngleToDirection(currentAngle);
+                    walker.DrawLocalLine(pos, pos + (Vector3)currentDirection * 4,
+                        Color.magenta);
+
+                    Vector2 targetDirection = MathUtils.AngleToDirection(targetAngle);
+                    walker.DrawLocalLine(pos, pos + (Vector3)targetDirection * 4,
+                        Color.cyan);
+                }*/
+
+                float step = rotationSpeed * Time.deltaTime;
+                step = ApproachToAngle(targetAngle, currentAngle, step);
+                walker.Rotate(step);
             }
 
             // Move
@@ -42,6 +84,17 @@ namespace Snake3D {
 
             walker.WriteToTransform(transform);
             transform.position += transform.up * offsetFromSurface;
+        }
+
+        /**
+         * Calculates angle delta, not bigger than needed to reach target angle.
+         * <param name="absoluteStep">Step without sign</param>
+         */
+        private static float ApproachToAngle(float target, float source, float absoluteStep) {
+            float delta = Mathf.DeltaAngle(source, target);
+            float sign = Mathf.Sign(delta);
+            
+            return sign * Mathf.Min(Mathf.Abs(delta), absoluteStep);
         }
     }
 

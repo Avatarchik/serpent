@@ -18,6 +18,13 @@ namespace Snake3D {
         public bool debugDrawEnabled = false;
         public Matrix4x4 surfaceToWorld { get; private set; }
         public Matrix4x4 worldToSurface { get; private set; }
+        public SurfaceTransform SurfaceTransform_ => surfaceTransform;
+
+        // angleDelta - difference between angles in new coordinate system
+        // and old one
+        public delegate void TriangleChangedDelegate(float angleDelta);
+        public TriangleChangedDelegate OnTriangleChanged;
+
 
         private SurfaceTransform surfaceTransform;
 
@@ -28,6 +35,7 @@ namespace Snake3D {
         private TriangleArray triangles;
         private Vector3[] vertices;
         private Vector3[] normals;
+
 
         public MeshWalker(Mesh mesh) {
             this.mesh = mesh;
@@ -149,8 +157,11 @@ namespace Snake3D {
                 }
                 Vector2 edgeDirectionNew = triangleCoords[(intersectedEdgeNew + 1) % 3]
                                          - triangleCoords[intersectedEdgeNew];
-                float a = beta + edgeDirectionNew.GetAngle();
-                surfaceTransform.angle = MathUtils.NormalizeAngle(a);
+                float newAngle = MathUtils.NormalizeAngle(beta + edgeDirectionNew.GetAngle());
+                float angleDelta = newAngle - surfaceTransform.angle;
+                surfaceTransform.angle = newAngle;
+
+                OnTriangleChanged?.Invoke(angleDelta);
 
 #if UNITY_EDITOR
                 if (debugDrawEnabled) {
@@ -164,17 +175,6 @@ namespace Snake3D {
 #endif
             }
         }
-
-#if UNITY_EDITOR
-        public void DebugDrawAxes() {
-            if (!debugDrawEnabled)
-                return;
-
-            DrawLocalLine(Vector3.zero, Vector3.right, Color.red);
-            DrawLocalLine(Vector3.zero, Vector3.up, Color.green);
-            DrawLocalLine(Vector3.zero, Vector3.forward, Color.blue);
-        }
-#endif
 
         public void WriteToTransform(Transform transform) {
             // Position
@@ -193,37 +193,34 @@ namespace Snake3D {
             transform.rotation = Quaternion.LookRotation(forward, up);
         }
 
-        #region Private
-
-        private Vector2 LocalDirection {
-            get {
-                float a = surfaceTransform.angle * Mathf.Deg2Rad;
-                return new Vector2(Mathf.Cos(a), Mathf.Sin(a));
-            }
-        }
-
-        private IndexedTriangle CurrentTriangle {
-            get {
-                return triangles[surfaceTransform.triangleIndex];
-            }
-        }
-
 #if UNITY_EDITOR
-
         /// Draws a line, converting coordinates from triangle to world space
-        private void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest = false, float duration = 0) {
+        public void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest = false, float duration = 0) {
             start = surfaceToWorld.MultiplyPoint3x4(start);
             end = surfaceToWorld.MultiplyPoint3x4(end);
             Debug.DrawLine(start, end, color, duration, depthTest);
         }
-        
-        private void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor) {
+
+        public void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor) {
             start = surfaceToWorld.MultiplyPoint3x4(start);
             end = surfaceToWorld.MultiplyPoint3x4(end);
             DebugUtils.DrawGradientLine(start, end, startColor, endColor, false, 0);
         }
 
+        public void DebugDrawAxes() {
+            if (!debugDrawEnabled)
+                return;
+
+            DrawLocalLine(Vector3.zero, Vector3.right, Color.red);
+            DrawLocalLine(Vector3.zero, Vector3.up, Color.green);
+            DrawLocalLine(Vector3.zero, Vector3.forward, Color.blue);
+        }
 #endif
+
+        #region Private
+
+        private Vector2 LocalDirection => MathUtils.AngleToDirection(surfaceTransform.angle);
+        private IndexedTriangle CurrentTriangle => triangles[surfaceTransform.triangleIndex];
 
         private Vector3 CalculateSmoothedNormal() {
             // Reference: https://www.google.com/search?q=barycentric+interpolation
