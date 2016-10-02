@@ -4,7 +4,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>261</x>
+      <x>387</x>
       <y>108</y>
       <w>144</w>
       <h>90</h>
@@ -20,7 +20,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>261</x>
+      <x>387</x>
       <y>324</y>
       <w>144</w>
       <h>54</h>
@@ -34,14 +34,14 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>243</x>
+      <x>333</x>
       <y>225</y>
-      <w>180</w>
+      <w>216</w>
       <h>72</h>
     </coordinates>
     <panel_attributes>/IGrowablePath/
 -
-Grow(ring, distanceTraveled)
+Grow(VTransform, distanceTraveled)
 Shrink(length: float)
 ComputeLength(): float</panel_attributes>
     <additional_attributes/>
@@ -49,7 +49,7 @@ ComputeLength(): float</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>324</x>
+      <x>450</x>
       <y>189</y>
       <w>27</w>
       <h>54</h>
@@ -60,7 +60,7 @@ ComputeLength(): float</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>324</x>
+      <x>450</x>
       <y>288</y>
       <w>99</w>
       <h>54</h>
@@ -72,7 +72,7 @@ ComputeLength(): float</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>189</x>
+      <x>315</x>
       <y>495</y>
       <w>279</w>
       <h>99</h>
@@ -88,7 +88,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>324</x>
+      <x>450</x>
       <y>459</y>
       <w>27</w>
       <h>54</h>
@@ -99,7 +99,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>387</x>
+      <x>513</x>
       <y>639</y>
       <w>99</w>
       <h>27</h>
@@ -110,7 +110,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>324</x>
+      <x>450</x>
       <y>585</y>
       <w>126</w>
       <h>72</h>
@@ -122,7 +122,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>108</x>
+      <x>234</x>
       <y>630</y>
       <w>162</w>
       <h>45</h>
@@ -133,7 +133,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>216</x>
+      <x>342</x>
       <y>585</y>
       <w>135</w>
       <h>72</h>
@@ -144,7 +144,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>117</x>
+      <x>243</x>
       <y>639</y>
       <w>144</w>
       <h>27</h>
@@ -155,7 +155,7 @@ IsInfinite(): bool // Property</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>567</x>
+      <x>693</x>
       <y>216</y>
       <w>126</w>
       <h>90</h>
@@ -170,7 +170,7 @@ moveSpeed</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>621</x>
+      <x>747</x>
       <y>297</y>
       <w>27</w>
       <h>54</h>
@@ -181,7 +181,7 @@ moveSpeed</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>9</x>
+      <x>135</x>
       <y>108</y>
       <w>189</w>
       <h>90</h>
@@ -194,7 +194,7 @@ moveSpeed</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>459</x>
+      <x>585</x>
       <y>0</y>
       <w>126</w>
       <h>81</h>
@@ -208,7 +208,7 @@ pointsPerRing: int</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>0</x>
+      <x>126</x>
       <y>324</y>
       <w>162</w>
       <h>63</h>
@@ -222,7 +222,7 @@ separate classes</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>153</x>
+      <x>279</x>
       <y>333</y>
       <w>126</w>
       <h>36</h>
@@ -234,7 +234,7 @@ separate classes</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>288</x>
+      <x>414</x>
       <y>414</y>
       <w>99</w>
       <h>54</h>
@@ -247,7 +247,7 @@ interval</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>90</x>
+      <x>216</x>
       <y>423</y>
       <w>90</w>
       <h>27</h>
@@ -258,7 +258,7 @@ interval</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>324</x>
+      <x>450</x>
       <y>369</y>
       <w>27</w>
       <h>63</h>
@@ -269,7 +269,7 @@ interval</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>126</x>
+      <x>252</x>
       <y>369</y>
       <w>225</w>
       <h>72</h>
@@ -280,7 +280,7 @@ interval</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>531</x>
+      <x>657</x>
       <y>333</y>
       <w>207</w>
       <h>99</h>
@@ -300,7 +300,7 @@ getRotation(): Quaternion</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>603</x>
+      <x>729</x>
       <y>612</y>
       <w>90</w>
       <h>27</h>
@@ -311,7 +311,7 @@ getRotation(): Quaternion</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>648</x>
+      <x>774</x>
       <y>675</y>
       <w>126</w>
       <h>108</h>
@@ -324,7 +324,7 @@ getRotation(): Quaternion</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>729</x>
+      <x>855</x>
       <y>576</y>
       <w>90</w>
       <h>63</h>
@@ -337,7 +337,7 @@ getRotation(): Quaternion</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>702</x>
+      <x>828</x>
       <y>630</y>
       <w>90</w>
       <h>63</h>
@@ -348,7 +348,7 @@ getRotation(): Quaternion</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>639</x>
+      <x>765</x>
       <y>630</y>
       <w>90</w>
       <h>63</h>

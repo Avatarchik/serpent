@@ -1,7 +1,3 @@
- - Корректный спаун
-    - Препятствия
-    - Еда
-    - Змея
  - Mesh to surface projector:
     - Exact and fast shadows
     - Highlight projector for food

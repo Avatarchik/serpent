@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>420</x>
+      <y>310</y>
+      <w>200</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>IntegerPath&lt;T&gt;
+-
+r stepsPassed : int
+r interval : float
+
+ // Dynamic properties
+r mileage : float
+// == stepsPassed * interval
+r size : int
+// == buffer.Length
+r length : float
+// == size * interval
+
+PushToEnd(T value)
+PopFromStart()
+GetValueAt(index : int, Space)
+
+-buffer : CircularBuffer&lt;T&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>690</x>
+      <y>430</y>
+      <w>140</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>bg=#FFFF40
+enum Space {
+    FromHead,
+    FromTail,
+    FromStart
+}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>400</x>
+      <y>100</y>
+      <w>240</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>ContinuousPath
+-
+length : float
+factor : float // Lerp factor
+
+GetValueAt(float position, Space)
+
+-previousGrowPos : Vector3</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>100</x>
+      <y>190</y>
+      <w>180</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>SnakeBody
+-
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>510</x>
+      <y>250</y>
+      <w>270</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+  intPath : IntegerPath&lt;ValueTransform&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+</diagram>
