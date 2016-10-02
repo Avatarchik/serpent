@@ -964,7 +964,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28499ebfbe1ed4c429ea5a04cc05323e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  phaseDelta: 30
 --- !u!1 &306104887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,7 +1863,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee03633219fd8b547a8cc5727aa8ee36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToFollow: {fileID: 0}
 --- !u!81 &490710326
 AudioListener:
   m_ObjectHideFlags: 0
@@ -3126,6 +3124,7 @@ GameObject:
   - 114: {fileID: 769574010}
   - 114: {fileID: 469205865}
   - 114: {fileID: 469205864}
+  - 114: {fileID: 769574014}
   m_Layer: 0
   m_Name: Game logic
   m_TagString: Untagged
@@ -3266,6 +3265,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 476842339}
   m_RootOrder: 1
+--- !u!114 &769574014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 769574008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66df7ecd6ddff9547b42123dfa56f2f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &780557163 stripped
 Transform:
   m_PrefabParentObject: {fileID: 469244, guid: 8a670eb3209ecfc4d83bf0cb9396909e, type: 2}
@@ -3985,7 +3995,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b0fca7b7d70e6a42ab691472fcf1105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialOpen: {fileID: 2019768117}
 --- !u!225 &976662261
 CanvasGroup:
   m_ObjectHideFlags: 0
