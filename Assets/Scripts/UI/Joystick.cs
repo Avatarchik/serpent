@@ -7,9 +7,19 @@ namespace Snake3D {
 
     public class Joystick : MonoBehaviour, IInitializable, IPointerDownHandler, IDragHandler, IPointerUpHandler {
 
-        // Normalized vector
+        // Value's magnitude is <= 1 and == (0, 0) when joystick is not pressed
         public Vector2 Value { get; private set; }
-        public float Angle { get; private set; }
+
+        // These two properties hold their value after joystick release
+        public float Angle { get; private set; } // In degrees
+        // Notice: when isPressed == false, Direction != Value.normalized
+        public Vector3 Direction {
+            get {
+                float a = Angle * Mathf.Deg2Rad;
+                return new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0);
+            }
+        }
+
         public bool isPressed { get; private set; }
         public float maxStickDistance = 58;
 
@@ -18,9 +28,9 @@ namespace Snake3D {
         public Delegate OnDown;
         public Delegate OnUp;
 
-        UnityEngine.UI.Image joystickBackground;
-        UnityEngine.UI.Image joystickCenter;
-        Camera myCamera;
+        private UnityEngine.UI.Image joystickBackground;
+        private UnityEngine.UI.Image joystickCenter;
+        private Camera myCamera;
 
 
         public void Init() {
@@ -71,7 +81,7 @@ namespace Snake3D {
         }
 
 
-        void UpdateValues(Vector2 pointerCoords) {
+        private void UpdateValues(Vector2 pointerCoords) {
             Vector2 stickPosition = new Vector2();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 joystickBackground.rectTransform,
