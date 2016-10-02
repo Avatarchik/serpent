@@ -302,29 +302,16 @@ namespace Snake3D {
         }
         
         private static Matrix4x4 CalculateSurfaceToWorldMatrix(int triangleIndex, Mesh mesh) {
-            Matrix4x4 result = new Matrix4x4();
-
-            IndexedTriangle t = mesh.GetSaneTriangles(0)[triangleIndex];
-            /* 
-             *                            TODO
-             * 1) Replace by:
-             * RawTriangle t = mesh.GetRawTriangleByIndex(triangleIndex);
-             * 
-             * 2) See which other code we can move to RawTriangle
-             *
-             */             
-            Vector3 v1 = mesh.vertices[t.i1];
-            Vector3 v2 = mesh.vertices[t.i2];
-            Vector3 v3 = mesh.vertices[t.i3];
-            Vector3 right = (v2 - v1).normalized;
-            Vector3 forward = Vector3.Cross(right, v3 - v1).normalized;
+            RawTriangle t = mesh.GetRawTriangleByIndex(triangleIndex);
+            Vector3 right = (t.v2 - t.v1).normalized;
+            Vector3 forward = Vector3.Cross(right, t.v3 - t.v1).normalized;
             Vector3 up = Vector3.Cross(forward, right);
 
-            result = new Matrix4x4();
+            var result = new Matrix4x4();
             result.SetColumn(0, right);
             result.SetColumn(1, up);
             result.SetColumn(2, forward);
-            Vector3 p = v1;
+            Vector3 p = t.v1;
             result.SetColumn(3, new Vector4(p.x, p.y, p.z, 1));
 
             return result;
