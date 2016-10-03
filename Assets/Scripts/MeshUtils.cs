@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 
 namespace Snake3D {
@@ -23,6 +22,16 @@ namespace Snake3D {
 
         public static TriangleArray GetSaneTriangles(this Mesh mesh, int submesh)
             => new TriangleArray(mesh.GetTriangles(submesh));
+
+        public static RawTriangle GetRawTriangleByIndex(this Mesh mesh, int index) {
+            Vector3[] vertices = mesh.vertices;
+            IndexedTriangle t = new TriangleArray(mesh.triangles)[index];
+            return new RawTriangle(
+                    vertices[t.i1],
+                    vertices[t.i2],
+                    vertices[t.i3]
+                );
+        }
 
         public static void ApplyTransformToMesh(MeshFilter meshFilter) {
             Transform transform = meshFilter.transform;
@@ -76,23 +85,18 @@ namespace Snake3D {
 
         public static BoundsOctree<int> GenerateOctree(this Mesh mesh) {
             var octree = new BoundsOctree<int>(64, Vector3.zero, 1, 1.25f);
-
-            Vector3[] vertices = mesh.vertices;
-            TriangleArray triangles = mesh.GetSaneTriangles(0);
-
+            
             Func<int, Bounds> getTriangleBounds = (int index) => {
-                IndexedTriangle t = triangles[index];
-                Vector3 v1 = vertices[t.i1];
-                Vector3 v2 = vertices[t.i2];
-                Vector3 v3 = vertices[t.i3];
-                Bounds aabb = new Bounds(v1, Vector3.zero);
-                aabb.Encapsulate(v2);
-                aabb.Encapsulate(v3);
+                RawTriangle t = mesh.GetRawTriangleByIndex(index);
+                Bounds aabb = new Bounds(t.v1, Vector3.zero);
+                aabb.Encapsulate(t.v2);
+                aabb.Encapsulate(t.v3);
 
                 return aabb;
             };
 
-            for (int i = 0; i < triangles.Length; ++i) {
+            int triangleCount = mesh.GetSaneTriangles(0).Length;
+            for (int i = 0; i < triangleCount; ++i) {
                 octree.Add(i, getTriangleBounds(i));
             }
 

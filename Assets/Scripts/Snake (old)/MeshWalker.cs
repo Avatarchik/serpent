@@ -16,9 +16,17 @@ namespace Snake3D {
     
     public class MeshWalker {
         public bool debugDrawEnabled = false;
+        public Matrix4x4 surfaceToWorld { get; private set; }
+        public Matrix4x4 worldToSurface { get; private set; }
+        public SurfaceTransform SurfaceTransform_ => surfaceTransform;
+
+        // angleDelta - difference between angles in new coordinate system
+        // and old one
+        public delegate void TriangleChangedDelegate(float angleDelta);
+        public TriangleChangedDelegate OnTriangleChanged;
+
 
         private SurfaceTransform surfaceTransform;
-        private Matrix4x4 surfaceToWorld, worldToSurface;
 
         // Current triangle vertices in surface space
         private Vector2[] triangleCoords;
@@ -27,6 +35,7 @@ namespace Snake3D {
         private TriangleArray triangles;
         private Vector3[] vertices;
         private Vector3[] normals;
+
 
         public MeshWalker(Mesh mesh) {
             this.mesh = mesh;
@@ -148,8 +157,11 @@ namespace Snake3D {
                 }
                 Vector2 edgeDirectionNew = triangleCoords[(intersectedEdgeNew + 1) % 3]
                                          - triangleCoords[intersectedEdgeNew];
-                float a = beta + edgeDirectionNew.GetAngle();
-                surfaceTransform.angle = MathUtils.NormalizeAngle(a);
+                float newAngle = MathUtils.NormalizeAngle(beta + edgeDirectionNew.GetAngle());
+                float angleDelta = newAngle - surfaceTransform.angle;
+                surfaceTransform.angle = newAngle;
+
+                OnTriangleChanged?.Invoke(angleDelta);
 
 #if UNITY_EDITOR
                 if (debugDrawEnabled) {
@@ -163,17 +175,6 @@ namespace Snake3D {
 #endif
             }
         }
-
-#if UNITY_EDITOR
-        public void DebugDrawAxes() {
-            if (!debugDrawEnabled)
-                return;
-
-            DrawLocalLine(Vector3.zero, Vector3.right, Color.red);
-            DrawLocalLine(Vector3.zero, Vector3.up, Color.green);
-            DrawLocalLine(Vector3.zero, Vector3.forward, Color.blue);
-        }
-#endif
 
         public void WriteToTransform(Transform transform) {
             // Position
@@ -192,37 +193,34 @@ namespace Snake3D {
             transform.rotation = Quaternion.LookRotation(forward, up);
         }
 
-        #region Private
-
-        private Vector2 LocalDirection {
-            get {
-                float a = surfaceTransform.angle * Mathf.Deg2Rad;
-                return new Vector2(Mathf.Cos(a), Mathf.Sin(a));
-            }
-        }
-
-        private IndexedTriangle CurrentTriangle {
-            get {
-                return triangles[surfaceTransform.triangleIndex];
-            }
-        }
-
 #if UNITY_EDITOR
-
         /// Draws a line, converting coordinates from triangle to world space
-        private void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest = false, float duration = 0) {
+        public void DrawLocalLine(Vector3 start, Vector3 end, Color color, bool depthTest = false, float duration = 0) {
             start = surfaceToWorld.MultiplyPoint3x4(start);
             end = surfaceToWorld.MultiplyPoint3x4(end);
             Debug.DrawLine(start, end, color, duration, depthTest);
         }
-        
-        private void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor) {
+
+        public void DrawLocalGradientLine(Vector3 start, Vector3 end, Color startColor, Color endColor) {
             start = surfaceToWorld.MultiplyPoint3x4(start);
             end = surfaceToWorld.MultiplyPoint3x4(end);
             DebugUtils.DrawGradientLine(start, end, startColor, endColor, false, 0);
         }
 
+        public void DebugDrawAxes() {
+            if (!debugDrawEnabled)
+                return;
+
+            DrawLocalLine(Vector3.zero, Vector3.right, Color.red);
+            DrawLocalLine(Vector3.zero, Vector3.up, Color.green);
+            DrawLocalLine(Vector3.zero, Vector3.forward, Color.blue);
+        }
 #endif
+
+        #region Private
+
+        private Vector2 LocalDirection => MathUtils.AngleToDirection(surfaceTransform.angle);
+        private IndexedTriangle CurrentTriangle => triangles[surfaceTransform.triangleIndex];
 
         private Vector3 CalculateSmoothedNormal() {
             // Reference: https://www.google.com/search?q=barycentric+interpolation
@@ -292,7 +290,7 @@ namespace Snake3D {
         // The argument triangleIndex is transfered explicitly to indicate
         // that the method is dependent on it.
         private void UpdateMatrices(int triangleIndex) {
-            CalculateTangentToWorldMatrix(triangleIndex, mesh, out surfaceToWorld);
+            surfaceToWorld = CalculateSurfaceToWorldMatrix(triangleIndex, mesh);
             worldToSurface = surfaceToWorld.inverse;
         }
 
@@ -303,29 +301,20 @@ namespace Snake3D {
             triangleCoords[2] = worldToSurface.MultiplyPoint3x4(vertices[t.i3]);
         }
         
-        private static void CalculateTangentToWorldMatrix(int triangleIndex, Mesh mesh, out Matrix4x4 surfaceToWorld) {
-            IndexedTriangle t = mesh.GetSaneTriangles(0)[triangleIndex];
-            /* 
-             *                            TODO
-             * 1) Replace by:
-             * RawTriangle t = mesh.GetRawTriangleByIndex(triangleIndex);
-             * 
-             * 2) See which other code we can move to RawTriangle
-             *
-             */             
-            Vector3 v1 = mesh.vertices[t.i1];
-            Vector3 v2 = mesh.vertices[t.i2];
-            Vector3 v3 = mesh.vertices[t.i3];
-            Vector3 right = (v2 - v1).normalized;
-            Vector3 forward = Vector3.Cross(right, v3 - v1).normalized;
+        private static Matrix4x4 CalculateSurfaceToWorldMatrix(int triangleIndex, Mesh mesh) {
+            RawTriangle t = mesh.GetRawTriangleByIndex(triangleIndex);
+            Vector3 right = (t.v2 - t.v1).normalized;
+            Vector3 forward = Vector3.Cross(right, t.v3 - t.v1).normalized;
             Vector3 up = Vector3.Cross(forward, right);
 
-            surfaceToWorld = new Matrix4x4();
-            surfaceToWorld.SetColumn(0, right);
-            surfaceToWorld.SetColumn(1, up);
-            surfaceToWorld.SetColumn(2, forward);
-            Vector3 p = v1;
-            surfaceToWorld.SetColumn(3, new Vector4(p.x, p.y, p.z, 1));
+            var result = new Matrix4x4();
+            result.SetColumn(0, right);
+            result.SetColumn(1, up);
+            result.SetColumn(2, forward);
+            Vector3 p = t.v1;
+            result.SetColumn(3, new Vector4(p.x, p.y, p.z, 1));
+
+            return result;
         }
 
         /**
