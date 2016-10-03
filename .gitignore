@@ -1,6 +1,5 @@
 /.vs
 /Library
-/ProjectSettings
 /*.csproj
 /*.sln
 /Temp
@@ -18,4 +17,3 @@
 *.blend7
 *.blend8
 *.blend9
-
