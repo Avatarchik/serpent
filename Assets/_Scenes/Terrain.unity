@@ -3510,7 +3510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walker: {fileID: 1020127663}
   growable_: {fileID: 952805691}
-  targetLength: 20
+  targetLength: 1
   simulatedLag: 0
 --- !u!114 &952805691
 MonoBehaviour:
@@ -6502,7 +6502,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Target: {fileID: 1020127663}
   m_AutoTargetPlayer: 1
-  m_UpdateType: 0
+  m_UpdateType: 1
   m_MoveSpeed: 3
   m_TurnSpeed: 3
   m_RollSpeed: 0.2
