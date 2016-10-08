@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.2">
-  <zoom_level>10</zoom_level>
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>420</x>
-      <y>310</y>
-      <w>200</w>
-      <h>250</h>
+      <x>423</x>
+      <y>378</y>
+      <w>180</w>
+      <h>234</h>
     </coordinates>
     <panel_attributes>IntegerPath&lt;T&gt;
 -
@@ -22,6 +22,9 @@ r size : int
 r length : float
 // == size * interval
 
+OnPushToEnd: Func&lt;&gt;
+OnPopFromStart: Func&lt;&gt;  
+
 PushToEnd(T value)
 PopFromStart()
 GetValueAt(index : int, Space)
@@ -32,10 +35,10 @@ GetValueAt(index : int, Space)
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>690</x>
-      <y>430</y>
-      <w>140</w>
-      <h>110</h>
+      <x>666</x>
+      <y>441</y>
+      <w>126</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>bg=#FFFF40
 enum Space {
@@ -48,16 +51,21 @@ enum Space {
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>400</x>
-      <y>100</y>
-      <w>240</w>
-      <h>160</h>
+      <x>405</x>
+      <y>171</y>
+      <w>216</w>
+      <h>171</h>
     </coordinates>
     <panel_attributes>ContinuousPath
 -
-length : float
-factor : float // Lerp factor
+r length : float
+// Lerp factor, calculated from prevGrowPos
+r factor : float
 
+OnPatchChanged: Func&lt;PatchType&gt;
+
+Grow(VTransform, isInteger: bool)
+Shrink(float delta)
 GetValueAt(float position, Space)
 
 -previousGrowPos : Vector3</panel_attributes>
@@ -66,26 +74,79 @@ GetValueAt(float position, Space)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>100</x>
-      <y>190</y>
+      <x>423</x>
+      <y>27</y>
       <w>180</w>
-      <h>250</h>
+      <h>90</h>
     </coordinates>
     <panel_attributes>SnakeBody
--
-</panel_attributes>
+-</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>510</x>
-      <y>250</y>
-      <w>270</w>
-      <h>80</h>
+      <x>504</x>
+      <y>333</y>
+      <w>243</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
   intPath : IntegerPath&lt;ValueTransform&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>126</x>
+      <y>27</y>
+      <w>216</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>SnakeCollider
+-
+CheckCollisionsWith(Sphere): bool
+
+-Init()
+-Update()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>225</x>
+      <y>108</y>
+      <w>306</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>320.0;70.0;320.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>666</x>
+      <y>261</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>bg=#FFFF40
+enum PatchType {
+    Head,
+    Tail
+}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>504</x>
+      <y>108</y>
+      <w>45</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+  path</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
   </element>
 </diagram>
