@@ -12,7 +12,7 @@ namespace Serpent {
      * You must either leave "startIndependently" to true, to let it start automatically
      * or start it manually from another MyInitHelper, chaining them together.
      */
-    public class MyInitHelper : MonoBehaviour, IInitializable {
+    public class InitHelper : MonoBehaviour, IInitializable {
 
         public bool startIndependently = true;
         public MonoBehaviour[] objects;
