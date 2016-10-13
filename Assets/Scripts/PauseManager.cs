@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Serpent {
 
-    public class PauseAndResume : MonoBehaviour {
+    public class PauseManager : MonoBehaviour {
 
         const float kFadeAnimationLength = 0.7f;
         const float kEndBlurSize = 4;
@@ -21,19 +21,17 @@ namespace Serpent {
             pauseButton = GameObject.FindGameObjectWithTag("Pause button").GetComponent<Button>();
         }
 
-        void Update() {
-
-        }
-
         public void PauseGame() {
             if (pauseStateNowChanging)
                 return;
+
             StartCoroutine(PauseCoroutine(true));
         }
 
         public void ResumeGame() {
             if (pauseStateNowChanging)
                 return;
+
             StartCoroutine(PauseCoroutine(false));
         }
 
