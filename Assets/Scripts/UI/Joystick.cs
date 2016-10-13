@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using System;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class Joystick : MonoBehaviour, IInitializable, IPointerDownHandler, IDragHandler, IPointerUpHandler {
 
@@ -98,6 +98,6 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent
 
 

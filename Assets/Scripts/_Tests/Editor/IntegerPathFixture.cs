@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Snake3D {
+namespace Serpent {
     [TestFixture]
     public class IntegerPathFixture {
 
@@ -121,4 +121,4 @@ namespace Snake3D {
             });
         }
     }
-}
+} // namespace Serpent

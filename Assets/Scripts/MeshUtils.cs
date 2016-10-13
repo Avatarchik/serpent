@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace Snake3D {
+namespace Serpent {
 
     public static class MeshUtils {
 
@@ -104,4 +104,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
     public static class Utils {
 
@@ -35,4 +35,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

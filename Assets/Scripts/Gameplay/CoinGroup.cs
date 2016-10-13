@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     // Sets different rotation phase to children Transforms
     public class CoinGroup : MonoBehaviour {
@@ -17,4 +17,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

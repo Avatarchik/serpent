@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
     
     public struct RawTriangle {
         public Vector3 v1, v2, v3;
@@ -97,4 +97,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

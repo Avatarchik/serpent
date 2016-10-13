@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Snake3D {
+namespace Serpent {
     public interface ICircularBuffer<T> {
         int Count { get; }
         int Capacity { get; set; }
@@ -185,4 +185,4 @@ namespace Snake3D {
                 throw new IndexOutOfRangeException();
         }
     }
-}
+} // namespace Serpent

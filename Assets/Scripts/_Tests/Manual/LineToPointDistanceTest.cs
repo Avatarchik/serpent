@@ -3,7 +3,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class LineToPointDistanceTest : MonoBehaviour {
         
@@ -36,6 +36,6 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent
 
 #endif // UNITY_EDITOR

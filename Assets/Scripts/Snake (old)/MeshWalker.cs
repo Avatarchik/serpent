@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
     /** Analogue of ValueTransform for current triangle space
      * (local surface space).
@@ -339,4 +339,4 @@ namespace Snake3D {
         #endregion Private
     }
 
-} // namespace Snake3D
+} // namespace Serpent

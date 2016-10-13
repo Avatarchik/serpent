@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
     [RequireComponent(typeof(AudioSource))]
     public class SnakeHead : MonoBehaviour {
@@ -34,4 +34,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

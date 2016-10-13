@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
     
     public class MovementController : MonoBehaviour, IInitializable {
 
@@ -98,4 +98,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

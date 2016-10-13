@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     public enum SnakeSpace {
         FromHead,
@@ -56,4 +56,4 @@ namespace Snake3D {
         public IEnumerator GetEnumerator() => buffer.GetEnumerator();
     }
 
-} // namespace Snake3D
+} // namespace Serpent

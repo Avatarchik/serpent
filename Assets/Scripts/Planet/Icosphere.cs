@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Snake3D {
+namespace Serpent {
 
     public static class Icosphere {
         public static Mesh Create(int recursionLevel = 3, float radius = 1) {
@@ -151,4 +151,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

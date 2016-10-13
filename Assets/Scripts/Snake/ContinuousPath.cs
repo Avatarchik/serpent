@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class ContinuousPath {
 
@@ -38,4 +38,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     /// Continuously growing path
     /// (as opposite to growing by discrete steps, like SnakeBase)
@@ -60,4 +60,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

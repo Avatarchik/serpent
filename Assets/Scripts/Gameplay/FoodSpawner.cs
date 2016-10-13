@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     // Must be initialized after LevelLogic
     public class FoodSpawner : MonoBehaviour, IInitializable {
@@ -34,4 +34,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

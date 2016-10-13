@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class PauseAndResume : MonoBehaviour {
 
@@ -77,4 +77,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

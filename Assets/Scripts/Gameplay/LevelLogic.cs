@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class LevelLogic : MonoBehaviour, IInitializable {
 
@@ -50,4 +50,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

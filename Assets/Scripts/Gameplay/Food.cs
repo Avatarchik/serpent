@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class Food : MonoBehaviour {
 
@@ -50,4 +50,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

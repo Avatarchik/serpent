@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
 public class FpsDisplay : MonoBehaviour {
 
@@ -24,4 +24,4 @@ public class FpsDisplay : MonoBehaviour {
 
 }
 
-} // namespace Snake3D
+} // namespace Serpent

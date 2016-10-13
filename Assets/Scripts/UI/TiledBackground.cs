@@ -2,7 +2,7 @@
 using System.Collections;
 using RawImage = UnityEngine.UI.RawImage;
 
-namespace Snake3D {
+namespace Serpent {
 
     [ExecuteInEditMode]
     public class TiledBackground : MonoBehaviour {
@@ -38,4 +38,4 @@ namespace Snake3D {
 	    }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

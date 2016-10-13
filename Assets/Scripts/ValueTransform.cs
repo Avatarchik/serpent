@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
     /// Value type analog of Transform, without scale
     public struct ValueTransform {
@@ -30,4 +30,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using GoogleMobileAds.Api;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class AdsTest : MonoBehaviour {
 
@@ -31,4 +31,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

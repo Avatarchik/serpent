@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
     public interface ISnakeMesh {
         void PushToEnd(ValueTransform ring, float distanceTraveled);
@@ -210,4 +210,4 @@ namespace Snake3D {
         #endregion Private part
     }
 
-} // namespace Snake3D
+} // namespace Serpent

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Snake3D {
+namespace Serpent {
     [TestFixture]
     public class CircularBufferFixture {
         [Test]
@@ -105,4 +105,4 @@ namespace Snake3D {
 
         }
     }
-}
+} // namespace Serpent

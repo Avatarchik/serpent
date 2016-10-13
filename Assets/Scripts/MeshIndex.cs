@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Snake3D {
+namespace Serpent {
 
     public class MeshIndex : MonoBehaviour, IInitializable {
 
@@ -44,4 +44,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

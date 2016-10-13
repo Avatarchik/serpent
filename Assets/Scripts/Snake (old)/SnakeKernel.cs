@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
     public delegate void KernelChangeDelegate(ValueTransform ring);
 
@@ -71,4 +71,4 @@ namespace Snake3D {
 #endif // UNITY_EDITOR
     }
 
-} // namespace Snake3D
+} // namespace Serpent

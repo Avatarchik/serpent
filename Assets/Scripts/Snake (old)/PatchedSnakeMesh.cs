@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Snake3D {
+namespace Serpent {
 
 /// Continuous snake mesh made of discrete middle part (SnakeBase) and patches
 public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
@@ -175,4 +175,4 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
     #endregion Private
 }
 
-} // namespace Snake3D
+} // namespace Serpent

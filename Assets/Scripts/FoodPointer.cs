@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     [RequireComponent(typeof(RectTransform), typeof(Image))]
     public class FoodPointer : MonoBehaviour {
@@ -49,4 +49,4 @@ namespace Snake3D {
         }
     }
 
-} // namespace Snake3D
+} // namespace Serpent

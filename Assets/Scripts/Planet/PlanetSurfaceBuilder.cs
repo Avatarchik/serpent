@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Snake3D {
+namespace Serpent {
 
     /*
      * Why functionality is isolated inside static class:
@@ -131,4 +131,4 @@ namespace Snake3D {
         #endregion Private part
     }
 
-} // namespace Snake3D
+} // namespace Serpent
