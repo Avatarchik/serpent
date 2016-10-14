@@ -3445,6 +3445,7 @@ GameObject:
   - 114: {fileID: 952805692}
   - 114: {fileID: 952805691}
   - 114: {fileID: 952805690}
+  - 114: {fileID: 952805698}
   m_Layer: 0
   m_Name: Snake (old)
   m_TagString: Untagged
@@ -3590,6 +3591,17 @@ Transform:
   - {fileID: 545963075}
   m_Father: {fileID: 476842339}
   m_RootOrder: 1
+--- !u!114 &952805698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 952805689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d930a3ba752fd54bba7cd106b6168d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &970250807
 Prefab:
   m_ObjectHideFlags: 0
