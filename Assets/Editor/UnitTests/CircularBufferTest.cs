@@ -2,7 +2,7 @@
 
 namespace Serpent {
     [TestFixture]
-    public class CircularBufferFixture {
+    public class CircularBufferTest {
         [Test]
         public void TestUnderwrite() {
             var buffer = new CircularBuffer<long>(5);

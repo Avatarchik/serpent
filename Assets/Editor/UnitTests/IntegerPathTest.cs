@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Serpent {
     [TestFixture]
-    public class IntegerPathFixture {
+    public class IntegerPathTest {
 
         private const float kInterval = 3;
         private readonly int[] kValues = new int[] { 1, 2, 3 };
