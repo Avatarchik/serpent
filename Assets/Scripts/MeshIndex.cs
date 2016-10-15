@@ -1,20 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Zenject;
 
 namespace Serpent {
 
-    public class MeshIndex : MonoBehaviour, IInitializable {
-
-        public static MeshIndex instance;
-
+    public class MeshIndex : MonoBehaviour {
+        
         [NotNull] public MeshFilter meshFilter;
 
         private Dictionary<IndexedEdge, int> edgeToTriangleMap = new Dictionary<IndexedEdge, int>();
 
-        public void Init() {
-            Debug.Assert(instance == null);
-            instance = this;
-
+        [Inject]
+        private void Init() {
             MeshUtils.ApplyTransformToMesh(meshFilter);
 
             GenerateIndex();

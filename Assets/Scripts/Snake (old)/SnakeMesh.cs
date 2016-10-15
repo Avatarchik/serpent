@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Zenject;
 
 namespace Serpent {
 
@@ -12,7 +13,7 @@ namespace Serpent {
     }
 
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-    public class SnakeMesh : MonoBehaviour, IInitializable, ISnakeMesh {
+    public class SnakeMesh : MonoBehaviour, ISnakeMesh {
 
         [NotNull] public SnakeKernel kernel;
         public float radius = 0.5f;
@@ -51,6 +52,7 @@ namespace Serpent {
                 UpdateMesh();
         }
 
+        [Inject]
         public void Init() {
             meshFilter = GetComponent<MeshFilter>();
             material = GetComponent<MeshRenderer>().material;

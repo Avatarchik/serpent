@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Zenject;
 
 namespace Serpent {
 
@@ -14,7 +15,7 @@ namespace Serpent {
         void ApplyChanges();
     }
 
-    public class GrowController : MonoBehaviour, IInitializable {
+    public class GrowController : MonoBehaviour {
 
         [NotNull] public Transform walker;
         [NotNull] public MonoBehaviour growable_;
@@ -23,6 +24,7 @@ namespace Serpent {
 
         private IGrowablePath growable;
 
+        [Inject]
         public void Init() {
             // Scale must be (1; 1; 1) because mesh normals depend on walker
             // transformation matrix and they need to be uniform

@@ -20,9 +20,7 @@ namespace Serpent {
         private int steps;
 
         void Start() {
-            meshIndex.Init();
-
-            walker = new MeshWalker(surfaceMeshFilter.mesh);
+            walker = new MeshWalker(surfaceMeshFilter.mesh, meshIndex);
             walker.debugDrawEnabled = true;
             walker.RespawnNearPoint(startMarker.position + transform.position);
         }

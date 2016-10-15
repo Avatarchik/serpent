@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Zenject;
 
 namespace Serpent {
 
@@ -8,9 +9,15 @@ namespace Serpent {
         [NotNull] public GrowController growController;
         public float growDelta = 4;
 
+        private LevelLogic levelLogic;
+        private FoodSpawner foodSpawner;
         private AudioSource audioSource;
 
-        void Start() {
+        [Inject]
+        void Init(LevelLogic levelLogic, FoodSpawner foodSpawner) {
+            this.levelLogic = levelLogic;
+            this.foodSpawner = foodSpawner;
+
             audioSource = GetComponent<AudioSource>();
         }
 
@@ -27,8 +34,8 @@ namespace Serpent {
             Destroy(food);
             audioSource.Play();
 
-            FoodSpawner.instance.SpawnNewFood();
-            LevelLogic.instance.Score++;
+            foodSpawner.SpawnNewFood();
+            levelLogic.Score++;
             // Grow snake
             growController.targetLength += growDelta;
         }

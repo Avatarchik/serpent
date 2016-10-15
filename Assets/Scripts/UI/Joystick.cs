@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
-using System;
+using Zenject;
 
 namespace Serpent {
 
-    public class Joystick : MonoBehaviour, IInitializable, IPointerDownHandler, IDragHandler, IPointerUpHandler {
+    public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler {
 
         // Value's magnitude is <= 1 and == (0, 0) when joystick is not pressed
         public Vector2 Value { get; private set; }
@@ -27,7 +26,7 @@ namespace Serpent {
         private UnityEngine.UI.Image joystickCenter;
         private Camera myCamera;
 
-
+        [Inject]
         public void Init() {
             joystickBackground = GetComponent<UnityEngine.UI.Image>();
             joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();

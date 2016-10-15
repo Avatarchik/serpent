@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 namespace Serpent {
 
@@ -13,7 +14,7 @@ namespace Serpent {
         int RingsAdded { get; }
     }
 
-    public class SnakeKernel : MonoBehaviour, IInitializable, ISnakeKernel {
+    public class SnakeKernel : MonoBehaviour, ISnakeKernel {
 
         public int pointsNum = 64;
         public bool showDebugInfo = false;
@@ -29,6 +30,7 @@ namespace Serpent {
         }
 #endif
 
+        [Inject]
         public void Init() {
             Path = new CircularBuffer<ValueTransform>(pointsNum);
         }

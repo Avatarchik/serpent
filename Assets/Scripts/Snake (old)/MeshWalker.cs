@@ -36,9 +36,12 @@ namespace Serpent {
         private Vector3[] vertices;
         private Vector3[] normals;
 
+        private MeshIndex meshIndex;
 
-        public MeshWalker(Mesh mesh) {
+
+        public MeshWalker(Mesh mesh, MeshIndex meshIndex) {
             this.mesh = mesh;
+            this.meshIndex = meshIndex;
 
             triangles = new TriangleArray(mesh.triangles);
             vertices = mesh.vertices;
@@ -279,7 +282,7 @@ namespace Serpent {
                 CurrentTriangle[intersectedEdge]
             );
 
-            int neighbor = MeshIndex.instance.FindTriangleByEdge(edge);
+            int neighbor = meshIndex.FindTriangleByEdge(edge);
 #if UNITY_EDITOR
             if (debugDrawEnabled)
                 mesh.DrawTriangle(neighbor, Color.yellow);

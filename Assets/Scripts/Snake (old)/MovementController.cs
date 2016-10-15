@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
+using Zenject;
 
 namespace Serpent {
     
-    public class MovementController : MonoBehaviour, IInitializable {
+    public class MovementController : MonoBehaviour {
 
         [NotNull] public Joystick joystick;
         [NotNull] public MeshFilter meshFilter;
@@ -18,10 +18,10 @@ namespace Serpent {
         // This angle is in the space of current walker triangle,
         // so it needs to be updated when triangle changes
         private float targetAngle;
-
-
-        public void Init() {
-            walker = new MeshWalker(meshFilter.mesh);
+        
+        [Inject]
+        private void Init(MeshIndex meshIndex) {
+            walker = new MeshWalker(meshFilter.mesh, meshIndex);
             //walker.RespawnAtDefaultPlace();
             walker.RespawnNearPoint(transform.position);
 

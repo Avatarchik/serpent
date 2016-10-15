@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using Zenject;
 
 namespace Serpent {
 
 /// Continuous snake mesh made of discrete middle part (SnakeBase) and patches
-public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
+public class PatchedSnakeMesh : MonoBehaviour, IGrowablePath {
 
     [NotNull] public MonoBehaviour snakeMesh_;
     public float interval = 0.25f;
@@ -18,6 +19,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IInitializable, IGrowablePath {
     private Material tailMaterial; // TODO: make separate
     private Vector2 baseTailOffset; // Tail UV offset without sliding animation
 
+    [Inject]
     public void Init() {
         snakeMesh = snakeMesh_ as ISnakeMesh;
         Debug.Assert(snakeMesh != null);

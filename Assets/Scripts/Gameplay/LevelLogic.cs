@@ -1,16 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using System;
+using Zenject;
 
 namespace Serpent {
 
-    public class LevelLogic : MonoBehaviour, IInitializable {
+    public class LevelLogic : MonoBehaviour {
 
         [NotNull] public MeshFilter levelMeshFilter;
-
-
-        public static LevelLogic instance { get; private set; }
 
         public int Score {
             get { return score; }
@@ -25,10 +21,8 @@ namespace Serpent {
         private Text scoreText;
         private int score;
 
-        public void Init() {
-            Debug.Assert(instance == null);
-            instance = this;
-
+        [Inject]
+        private void Init() {
             scoreText = GameObject.Find("Score text").GetComponent<Text>();
             Debug.Assert(scoreText != null);
 

@@ -1,26 +1,22 @@
 ﻿using UnityEngine;
-using System.Collections;
+using Zenject;
 
 namespace Serpent {
 
-    // Must be initialized after LevelLogic
-    public class FoodSpawner : MonoBehaviour, IInitializable {
+    public class FoodSpawner : MonoBehaviour {
 
         [NotNull] public GameObject foodPrefab;
         [NotNull] public FoodPointer foodPointer;
-
-        public static FoodSpawner instance { get; private set; }
 
         private MeshWalker walker;
 
         // Enable editor deactivation
         void Update() { }
 
-        public void Init() {
-            Debug.Assert(instance == null);
-            instance = this;
+        [Inject]
+        private void Init(LevelLogic levelLogic, MeshIndex meshIndex) {
 
-            walker = new MeshWalker(LevelLogic.instance.LevelMesh);
+            walker = new MeshWalker(levelLogic.LevelMesh, meshIndex);
 
             SpawnNewFood();
         }

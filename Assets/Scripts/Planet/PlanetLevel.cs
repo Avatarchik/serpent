@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
+using Zenject;
 
 namespace Serpent {
 
     using Builder = PlanetSurfaceBuilder;
 
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-    public class PlanetLevel : MonoBehaviour, IInitializable {
+    public class PlanetLevel : MonoBehaviour {
 
         public Builder.Config config = new Builder.Config();
 
+        [Inject]
         public void Init() {
             Debug.Assert(transform.lossyScale == Vector3.one);
 
