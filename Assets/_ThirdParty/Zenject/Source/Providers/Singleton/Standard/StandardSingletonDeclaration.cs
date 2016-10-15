@@ -15,7 +15,7 @@ namespace Zenject
         }
 
         public StandardSingletonDeclaration(
-            Type concreteType, string concreteIdentifier, List<TypeValuePair> args,
+            Type concreteType, object concreteIdentifier, List<TypeValuePair> args,
             SingletonTypes type, object singletonSpecificId)
             : this(
                 new SingletonId(concreteType, concreteIdentifier), args,

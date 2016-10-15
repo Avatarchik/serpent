@@ -33,8 +33,8 @@ namespace Zenject
         Type LookupConcreteType(Type factoryType)
         {
             // We assume here that the concrete type is the last generic argument to the IFactory class
-            return factoryType.GetInterfaces().Where(x => x.GetInterfaces().OnlyOrDefault() == typeof(IFactory))
-                .Single().GetGenericArguments().Last();
+            return factoryType.Interfaces().Where(x => x.Interfaces().OnlyOrDefault() == typeof(IFactory))
+                .Single().GenericArguments().Last();
         }
 
         public Type GetInstanceType(InjectContext context)

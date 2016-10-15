@@ -203,7 +203,7 @@ namespace Zenject
         {
             var constructors = parentType.Constructors();
 
-#if (UNITY_WSA && ENABLE_DOTNET) && !UNITY_EDITOR
+#if UNITY_WSA && ENABLE_DOTNET && !UNITY_EDITOR
             // WP8 generates a dummy constructor with signature (internal Classname(UIntPtr dummy))
             // So just ignore that
             constructors = constructors.Where(c => !IsWp8GeneratedConstructor(c)).ToArray();
@@ -223,7 +223,7 @@ namespace Zenject
             return constructors[0];
         }
 
-#if (UNITY_WSA && ENABLE_DOTNET) && !UNITY_EDITOR
+#if UNITY_WSA && ENABLE_DOTNET && !UNITY_EDITOR
         static bool IsWp8GeneratedConstructor(ConstructorInfo c)
         {
             ParameterInfo[] args = c.GetParameters();

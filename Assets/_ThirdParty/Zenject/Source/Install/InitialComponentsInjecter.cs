@@ -75,6 +75,11 @@ namespace Zenject
                             InstallSingleBinding(componentType, identifier, componentInfo);
                             break;
                         }
+                        case ZenjectBinding.BindTypes.BaseType:
+                        {
+                            InstallSingleBinding(componentType.BaseType(), identifier, componentInfo);
+                            break;
+                        }
                         case ZenjectBinding.BindTypes.AllInterfaces:
                         {
                             foreach (var baseType in componentType.Interfaces())
@@ -120,6 +125,11 @@ namespace Zenject
                 case ZenjectBinding.BindTypes.Self:
                 {
                     _container.Bind(component.GetType()).WithId(identifier).FromInstance(component, true);
+                    break;
+                }
+                case ZenjectBinding.BindTypes.BaseType:
+                {
+                    _container.Bind(component.GetType().BaseType()).WithId(identifier).FromInstance(component, true);
                     break;
                 }
                 case ZenjectBinding.BindTypes.AllInterfaces:

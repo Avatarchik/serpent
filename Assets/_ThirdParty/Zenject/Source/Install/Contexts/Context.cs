@@ -116,18 +116,32 @@ namespace Zenject
         {
             CheckInstallerPrefabTypes();
 
-            var newGameObjects = new List<GameObject>();
+            // Ideally we would just have one flat list of all the installers
+            // since that way the user has complete control over the order, but
+            // that's not possible since Unity does not allow serializing lists of interfaces
+            // (and it has to be an inteface since the scriptable object installers only share
+            // the interface)
+            //
+            // So the best we can do is have a hard-coded order in terms of the installer type
+            //
+            // The order is:
+            //      - Normal installers given directly via code
+            //      - ScriptableObject installers
+            //      - MonoInstallers in the scene
+            //      - Prefab Installers
+            //
+            // We put ScriptableObject installers before the MonoInstallers because
+            // ScriptableObjectInstallers are often used for settings (including settings
+            // that are injected into other installers like MonoInstallers)
+
             var allInstallers = _normalInstallers.Cast<IInstaller>()
-                .Concat(_installers.Cast<IInstaller>()).Concat(_scriptableObjectInstallers.Cast<IInstaller>()).ToList();
+                .Concat(_scriptableObjectInstallers.Cast<IInstaller>()).Concat(_installers.Cast<IInstaller>()).ToList();
 
             foreach (var installerPrefab in _installerPrefabs)
             {
                 Assert.IsNotNull(installerPrefab, "Found null installer prefab in '{0}'", this.GetType().Name());
 
                 var installerGameObject = GameObject.Instantiate(installerPrefab.gameObject);
-
-                newGameObjects.Add(installerGameObject);
-
                 installerGameObject.transform.SetParent(this.transform, false);
                 var installer = installerGameObject.GetComponent<MonoInstaller>();
 

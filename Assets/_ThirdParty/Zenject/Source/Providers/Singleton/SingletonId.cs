@@ -6,9 +6,9 @@ namespace Zenject
     public class SingletonId : IEquatable<SingletonId>
     {
         public readonly Type ConcreteType;
-        public readonly string ConcreteIdentifier;
+        public readonly object ConcreteIdentifier;
 
-        public SingletonId(Type concreteType, string concreteIdentifier)
+        public SingletonId(Type concreteType, object concreteIdentifier)
         {
             ConcreteType = concreteType;
             ConcreteIdentifier = concreteIdentifier;

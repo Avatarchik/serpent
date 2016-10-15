@@ -14,7 +14,7 @@ namespace Zenject
         public static string ConvertFullAbsolutePathToAssetPath(string fullPath)
         {
             return "Assets/" + Path.GetFullPath(fullPath)
-                .Substring(Path.GetFullPath(Application.dataPath).Length + 1)
+                .Remove(0, Path.GetFullPath(Application.dataPath).Length)
                 .Replace("\\", "/");
         }
 

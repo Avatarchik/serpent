@@ -81,7 +81,7 @@ namespace Zenject
         // This allows you to create When() conditionals like this:
         //      ...
         //          Container.BindInstance("some text").When(c => c.ConcreteIdentifier == "foo");
-        public string ConcreteIdentifier
+        public object ConcreteIdentifier
         {
             get;
             set;

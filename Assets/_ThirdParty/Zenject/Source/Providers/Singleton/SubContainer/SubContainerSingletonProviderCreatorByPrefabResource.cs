@@ -22,7 +22,7 @@ namespace Zenject
         }
 
         public IProvider CreateProvider(
-            Type resultType, string concreteIdentifier, string resourcePath, object identifier, string gameObjectName, string gameObjectGroupName)
+            Type resultType, object concreteIdentifier, string resourcePath, object identifier, string gameObjectName, string gameObjectGroupName)
         {
             _markRegistry.MarkSingleton(
                 resultType, concreteIdentifier,
@@ -59,10 +59,10 @@ namespace Zenject
 
         class CustomSingletonId : IEquatable<CustomSingletonId>
         {
-            public readonly string ConcreteIdentifier;
+            public readonly object ConcreteIdentifier;
             public readonly string ResourcePath;
 
-            public CustomSingletonId(string concreteIdentifier, string resourcePath)
+            public CustomSingletonId(object concreteIdentifier, string resourcePath)
             {
                 Assert.IsNotNull(resourcePath);
 

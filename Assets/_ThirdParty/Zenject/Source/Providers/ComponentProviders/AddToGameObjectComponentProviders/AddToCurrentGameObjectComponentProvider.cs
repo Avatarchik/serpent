@@ -11,14 +11,14 @@ namespace Zenject
 {
     public class AddToCurrentGameObjectComponentProvider : IProvider
     {
-        readonly string _concreteIdentifier;
+        readonly object _concreteIdentifier;
         readonly Type _componentType;
         readonly DiContainer _container;
         readonly List<TypeValuePair> _extraArguments;
 
         public AddToCurrentGameObjectComponentProvider(
             DiContainer container, Type componentType,
-            string concreteIdentifier, List<TypeValuePair> extraArguments)
+            object concreteIdentifier, List<TypeValuePair> extraArguments)
         {
             Assert.That(componentType.DerivesFrom<Component>());
 
@@ -44,7 +44,7 @@ namespace Zenject
             }
         }
 
-        protected string ConcreteIdentifier
+        protected object ConcreteIdentifier
         {
             get
             {

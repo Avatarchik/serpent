@@ -14,7 +14,7 @@ namespace Zenject
             return AsSingle(null);
         }
 
-        public ConditionBinder AsSingle(string concreteIdentifier)
+        public ConditionBinder AsSingle(object concreteIdentifier)
         {
             Assert.IsNull(BindInfo.ConcreteIdentifier);
 

@@ -6,7 +6,7 @@ namespace Zenject
     // This way, if you want to add strongly typed parameters later you can do this
     // by deriving from a different Installer<> base class
     //
-    public abstract class Installer : InstallerBase, IInstallerZeroParams
+    public abstract class Installer : InstallerBase
     {
     }
 
@@ -14,7 +14,7 @@ namespace Zenject
     // Derive from this class then install like this:
     //     FooInstaller.Install(Container);
     //
-    public abstract class Installer<TDerived> : InstallerBase, IInstallerZeroParams
+    public abstract class Installer<TDerived> : InstallerBase
         where TDerived : Installer<TDerived>
     {
         public static void Install(DiContainer container)
@@ -25,7 +25,7 @@ namespace Zenject
 
     // Use these versions to pass parameters to your installer
 
-    public abstract class Installer<TParam1, TDerived> : InstallerBase, IInstallerOneParams
+    public abstract class Installer<TParam1, TDerived> : InstallerBase
         where TDerived : Installer<TParam1, TDerived>
     {
         public static void Install(DiContainer container, TParam1 p1)
@@ -35,7 +35,7 @@ namespace Zenject
         }
     }
 
-    public abstract class Installer<TParam1, TParam2, TDerived> : InstallerBase, IInstallerOneParams
+    public abstract class Installer<TParam1, TParam2, TDerived> : InstallerBase
         where TDerived : Installer<TParam1, TParam2, TDerived>
     {
         public static void Install(DiContainer container, TParam1 p1, TParam2 p2)
@@ -45,7 +45,7 @@ namespace Zenject
         }
     }
 
-    public abstract class Installer<TParam1, TParam2, TParam3, TDerived> : InstallerBase, IInstallerOneParams
+    public abstract class Installer<TParam1, TParam2, TParam3, TDerived> : InstallerBase
         where TDerived : Installer<TParam1, TParam2, TParam3, TDerived>
     {
         public static void Install(DiContainer container, TParam1 p1, TParam2 p2, TParam3 p3)
@@ -55,7 +55,7 @@ namespace Zenject
         }
     }
 
-    public abstract class Installer<TParam1, TParam2, TParam3, TParam4, TDerived> : InstallerBase, IInstallerOneParams
+    public abstract class Installer<TParam1, TParam2, TParam3, TParam4, TDerived> : InstallerBase
         where TDerived : Installer<TParam1, TParam2, TParam3, TParam4, TDerived>
     {
         public static void Install(DiContainer container, TParam1 p1, TParam2 p2, TParam3 p3, TParam4 p4)
@@ -65,7 +65,7 @@ namespace Zenject
         }
     }
 
-    public abstract class Installer<TParam1, TParam2, TParam3, TParam4, TParam5, TDerived> : InstallerBase, IInstallerOneParams
+    public abstract class Installer<TParam1, TParam2, TParam3, TParam4, TParam5, TDerived> : InstallerBase
         where TDerived : Installer<TParam1, TParam2, TParam3, TParam4, TParam5, TDerived>
     {
         public static void Install(DiContainer container, TParam1 p1, TParam2 p2, TParam3 p3, TParam4 p4, TParam5 p5)

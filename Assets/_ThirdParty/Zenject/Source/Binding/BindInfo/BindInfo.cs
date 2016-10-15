@@ -103,7 +103,7 @@ namespace Zenject
         }
 
         // Note: This only makes sense for ScopeTypes.Singleton
-        public string ConcreteIdentifier
+        public object ConcreteIdentifier
         {
             get;
             set;

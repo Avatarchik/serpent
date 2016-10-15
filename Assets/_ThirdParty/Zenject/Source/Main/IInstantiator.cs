@@ -40,6 +40,12 @@ namespace Zenject
         Component InstantiateComponent(
             Type componentType, GameObject gameObject, IEnumerable<object> extraArgs);
 
+        T InstantiateComponentOnNewGameObject<T>()
+            where T : Component;
+
+        T InstantiateComponentOnNewGameObject<T>(string gameObjectName)
+            where T : Component;
+
         Component InstantiateComponentExplicit(
             Type componentType, GameObject gameObject, List<TypeValuePair> extraArgs);
 

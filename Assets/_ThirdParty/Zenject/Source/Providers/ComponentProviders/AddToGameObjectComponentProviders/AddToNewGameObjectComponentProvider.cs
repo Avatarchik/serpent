@@ -14,7 +14,7 @@ namespace Zenject
 
         public AddToNewGameObjectComponentProvider(
             DiContainer container, Type componentType,
-            string concreteIdentifier, List<TypeValuePair> extraArguments, string gameObjectName, string groupName)
+            object concreteIdentifier, List<TypeValuePair> extraArguments, string gameObjectName, string groupName)
             : base(container, componentType, concreteIdentifier, extraArguments)
         {
             _gameObjectName = gameObjectName;
@@ -24,7 +24,7 @@ namespace Zenject
         protected override GameObject GetGameObject(InjectContext context)
         {
             return Container.CreateEmptyGameObject(
-                _gameObjectName ?? ConcreteIdentifier ?? ComponentType.Name(), _groupName);
+                _gameObjectName ?? ConcreteIdentifier as string ?? ComponentType.Name(), _groupName);
         }
     }
 }

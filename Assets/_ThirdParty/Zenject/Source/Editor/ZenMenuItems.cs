@@ -222,6 +222,10 @@ namespace Zenject
                 defaultFileName + ".cs",
                 "cs");
 
+            if (absolutePath == "")
+                // Dialog has been canceled
+                return;
+
             if (!absolutePath.ToLower().EndsWith(".cs"))
             {
                 absolutePath += ".cs";

@@ -12,7 +12,7 @@ namespace Zenject
 
         public AddToExistingGameObjectComponentProvider(
             GameObject gameObject, DiContainer container, Type componentType,
-            string concreteIdentifier, List<TypeValuePair> extraArguments)
+            object concreteIdentifier, List<TypeValuePair> extraArguments)
             : base(container, componentType, concreteIdentifier, extraArguments)
         {
             _gameObject = gameObject;

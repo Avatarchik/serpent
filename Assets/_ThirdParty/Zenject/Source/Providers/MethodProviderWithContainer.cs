@@ -27,7 +27,15 @@ namespace Zenject
 
             Assert.That(typeof(TValue).DerivesFromOrEqual(context.MemberType));
 
-            yield return new List<object>() { _method(context.Container) };
+            if (context.Container.IsValidating)
+            {
+                // Don't do anything when validating, we can't make any assumptions on the given method
+                yield return new List<object>() { new ValidationMarker(typeof(TValue)) };
+            }
+            else
+            {
+                yield return new List<object>() { _method(context.Container) };
+            }
         }
     }
 
@@ -55,12 +63,20 @@ namespace Zenject
             Assert.That(typeof(TValue).DerivesFromOrEqual(context.MemberType));
             Assert.That(args[0].Type.DerivesFromOrEqual(typeof(TParam1)));
 
-            yield return new List<object>()
+            if (context.Container.IsValidating)
             {
-                _method(
-                    context.Container,
-                    (TParam1)args[0].Value)
-            };
+                // Don't do anything when validating, we can't make any assumptions on the given method
+                yield return new List<object>() { new ValidationMarker(typeof(TValue)) };
+            }
+            else
+            {
+                yield return new List<object>()
+                {
+                    _method(
+                        context.Container,
+                        (TParam1)args[0].Value)
+                };
+            }
         }
     }
 
@@ -89,13 +105,21 @@ namespace Zenject
             Assert.That(args[0].Type.DerivesFromOrEqual(typeof(TParam1)));
             Assert.That(args[1].Type.DerivesFromOrEqual(typeof(TParam2)));
 
-            yield return new List<object>()
+            if (context.Container.IsValidating)
             {
-                _method(
-                    context.Container,
-                    (TParam1)args[0].Value,
-                    (TParam2)args[1].Value)
-            };
+                // Don't do anything when validating, we can't make any assumptions on the given method
+                yield return new List<object>() { new ValidationMarker(typeof(TValue)) };
+            }
+            else
+            {
+                yield return new List<object>()
+                {
+                    _method(
+                        context.Container,
+                        (TParam1)args[0].Value,
+                        (TParam2)args[1].Value)
+                };
+            }
         }
     }
 
@@ -125,14 +149,22 @@ namespace Zenject
             Assert.That(args[1].Type.DerivesFromOrEqual(typeof(TParam2)));
             Assert.That(args[2].Type.DerivesFromOrEqual(typeof(TParam3)));
 
-            yield return new List<object>()
+            if (context.Container.IsValidating)
             {
-                _method(
-                    context.Container,
-                    (TParam1)args[0].Value,
-                    (TParam2)args[1].Value,
-                    (TParam3)args[2].Value)
-            };
+                // Don't do anything when validating, we can't make any assumptions on the given method
+                yield return new List<object>() { new ValidationMarker(typeof(TValue)) };
+            }
+            else
+            {
+                yield return new List<object>()
+                {
+                    _method(
+                        context.Container,
+                        (TParam1)args[0].Value,
+                        (TParam2)args[1].Value,
+                        (TParam3)args[2].Value)
+                };
+            }
         }
     }
 
@@ -163,15 +195,23 @@ namespace Zenject
             Assert.That(args[2].Type.DerivesFromOrEqual(typeof(TParam3)));
             Assert.That(args[3].Type.DerivesFromOrEqual(typeof(TParam4)));
 
-            yield return new List<object>()
+            if (context.Container.IsValidating)
             {
-                _method(
-                    context.Container,
-                    (TParam1)args[0].Value,
-                    (TParam2)args[1].Value,
-                    (TParam3)args[2].Value,
-                    (TParam4)args[3].Value)
-            };
+                // Don't do anything when validating, we can't make any assumptions on the given method
+                yield return new List<object>() { new ValidationMarker(typeof(TValue)) };
+            }
+            else
+            {
+                yield return new List<object>()
+                {
+                    _method(
+                        context.Container,
+                        (TParam1)args[0].Value,
+                        (TParam2)args[1].Value,
+                        (TParam3)args[2].Value,
+                        (TParam4)args[3].Value)
+                };
+            }
         }
     }
 
@@ -203,16 +243,24 @@ namespace Zenject
             Assert.That(args[3].Type.DerivesFromOrEqual(typeof(TParam4)));
             Assert.That(args[4].Type.DerivesFromOrEqual(typeof(TParam5)));
 
-            yield return new List<object>()
+            if (context.Container.IsValidating)
             {
-                _method(
-                    context.Container,
-                    (TParam1)args[0].Value,
-                    (TParam2)args[1].Value,
-                    (TParam3)args[2].Value,
-                    (TParam4)args[3].Value,
-                    (TParam5)args[4].Value)
-            };
+                // Don't do anything when validating, we can't make any assumptions on the given method
+                yield return new List<object>() { new ValidationMarker(typeof(TValue)) };
+            }
+            else
+            {
+                yield return new List<object>()
+                {
+                    _method(
+                        context.Container,
+                        (TParam1)args[0].Value,
+                        (TParam2)args[1].Value,
+                        (TParam3)args[2].Value,
+                        (TParam4)args[3].Value,
+                        (TParam5)args[4].Value)
+                };
+            }
         }
     }
 }

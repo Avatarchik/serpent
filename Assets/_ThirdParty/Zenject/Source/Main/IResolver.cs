@@ -13,7 +13,7 @@ namespace Zenject
         public List<TypeValuePair> ExtraArgs;
         public bool UseAllArgs;
         public InjectContext Context;
-        public string ConcreteIdentifier;
+        public object ConcreteIdentifier;
     }
 
     public interface IResolver

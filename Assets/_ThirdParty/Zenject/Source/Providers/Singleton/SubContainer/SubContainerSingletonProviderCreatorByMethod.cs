@@ -20,7 +20,7 @@ namespace Zenject
         }
 
         public IProvider CreateProvider(
-            Type resultType, string concreteIdentifier,
+            Type resultType, object concreteIdentifier,
             Action<DiContainer> installMethod, object identifier)
         {
             _markRegistry.MarkSingleton(
@@ -47,10 +47,10 @@ namespace Zenject
 
         class MethodSingletonId : IEquatable<MethodSingletonId>
         {
-            public readonly string ConcreteIdentifier;
+            public readonly object ConcreteIdentifier;
             public readonly Delegate InstallerDelegate;
 
-            public MethodSingletonId(string concreteIdentifier, Delegate installerMethod)
+            public MethodSingletonId(object concreteIdentifier, Delegate installerMethod)
             {
                 ConcreteIdentifier = concreteIdentifier;
                 InstallerDelegate = installerMethod;

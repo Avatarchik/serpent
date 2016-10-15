@@ -686,7 +686,7 @@ namespace Zenject
                 || type.DerivesFrom<Context>()
                 || type.DerivesFrom<DecoratorInstaller>()
 #endif
-#if !(UNITY_WSA && ENABLE_DOTNET)
+#if !(UNITY_WSA && ENABLE_DOTNET && !UNITY_EDITOR)
                 || type.HasAttribute<ZenjectAllowDuringValidationAttribute>()
 #endif
             ;
@@ -947,6 +947,7 @@ namespace Zenject
                 resourcePath, extraArgs, groupName, true);
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefabResourceExplicit(
             string resourcePath, List<TypeValuePair> extraArgs,
             string groupName, bool useAllArgs)
@@ -958,6 +959,7 @@ namespace Zenject
                 prefab, extraArgs, groupName, useAllArgs);
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefabExplicit(
             UnityEngine.Object prefab, List<TypeValuePair> extraArgs)
         {
@@ -965,6 +967,7 @@ namespace Zenject
                 prefab, extraArgs, null);
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefabExplicit(
             UnityEngine.Object prefab, List<TypeValuePair> extraArgs,
             string groupName)
@@ -973,6 +976,7 @@ namespace Zenject
                 prefab, extraArgs, groupName, true);
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefabExplicit(
             UnityEngine.Object prefab, List<TypeValuePair> extraArgs,
             string groupName, bool useAllArgs)
@@ -1242,11 +1246,13 @@ namespace Zenject
             return monoBehaviour;
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefab(UnityEngine.Object prefab)
         {
             return InstantiatePrefab(prefab, new object[0]);
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefab(
             UnityEngine.Object prefab, IEnumerable<object> extraArgs)
         {
@@ -1254,6 +1260,7 @@ namespace Zenject
                 prefab, extraArgs, null);
         }
 
+        // Note: extraArgs must be non null
         public GameObject InstantiatePrefab(
             UnityEngine.Object prefab, IEnumerable<object> extraArgs, string groupName)
         {
@@ -1286,6 +1293,18 @@ namespace Zenject
         }
 
         /////////////// InstantiatePrefabForComponent
+
+        public T InstantiateComponentOnNewGameObject<T>()
+            where T : Component
+        {
+            return InstantiateComponentOnNewGameObject<T>(typeof(T).Name);
+        }
+
+        public T InstantiateComponentOnNewGameObject<T>(string gameObjectName)
+            where T : Component
+        {
+            return InstantiateComponent<T>(CreateEmptyGameObject(gameObjectName));
+        }
 
         public T InstantiatePrefabForComponent<T>(UnityEngine.Object prefab)
         {
