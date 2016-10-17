@@ -3,6 +3,7 @@ using Zenject;
 
 namespace Serpent {
 
+    // TODO: remove class, transfer logic to LevelLogic, FoodSpawner
     [RequireComponent(typeof(AudioSource))]
     public class SnakeHead : MonoBehaviour {
 
@@ -27,7 +28,7 @@ namespace Serpent {
                 return;
             }
 
-            OnFoodPickedUp(other.transform.parent.gameObject);
+            OnFoodPickedUp(other.gameObject);
         }
 
         private void OnFoodPickedUp(GameObject food) {

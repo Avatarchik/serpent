@@ -290,7 +290,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 24c9af8836f02114487e361c5f169c13, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 24c9af8836f02114487e361c5f169c13, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -431,7 +431,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 24c9af8836f02114487e361c5f169c13, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 24c9af8836f02114487e361c5f169c13, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -1379,7 +1379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be4b4af1547b0e4fb91fd126e1b6ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foodPrefab: {fileID: 101792, guid: c84b33d191d9b6f4890a641caa028957, type: 2}
+  foodPrefab: {fileID: 1000011474794474, guid: c84b33d191d9b6f4890a641caa028957, type: 2}
   foodPointer: {fileID: 1844521004}
 --- !u!1001 &471100160
 Prefab:
