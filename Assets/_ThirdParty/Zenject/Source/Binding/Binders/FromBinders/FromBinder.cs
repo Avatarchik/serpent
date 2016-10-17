@@ -273,7 +273,7 @@ namespace Zenject
 
             SubFinalizer = new ScopableBindingFinalizer(
                 BindInfo, SingletonTypes.ToInstance, instance,
-                (_, type) => new InstanceProvider(type, instance));
+                (container, type) => new InstanceProvider(container, type, instance));
 
             return new ScopeBinder(BindInfo);
         }

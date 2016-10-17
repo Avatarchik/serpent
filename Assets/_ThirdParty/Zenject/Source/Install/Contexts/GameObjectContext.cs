@@ -41,14 +41,14 @@ namespace Zenject
 
             _container = parentContainer.CreateSubContainer();
 
-            var componentInjecter = new InitialComponentsInjecter(
-                _container, GetInjectableComponents().ToList());
+            _container.LazyInstanceInjector
+                .AddInstances(GetInjectableComponents().Cast<object>());
 
-            foreach (var component in componentInjecter.Components)
+            foreach (var instance in _container.LazyInstanceInjector.Instances)
             {
-                if (component is MonoKernel)
+                if (instance is MonoKernel)
                 {
-                    Assert.That(component == _kernel,
+                    Assert.That(ReferenceEquals(instance, _kernel),
                         "Found MonoKernel derived class that is not hooked up to GameObjectContext.  If you use MonoKernel, you must indicate this to GameObjectContext by dragging and dropping it to the Kernel field in the inspector");
                 }
             }
@@ -57,7 +57,7 @@ namespace Zenject
 
             try
             {
-                InstallBindings(installerExtraArgs, componentInjecter);
+                InstallBindings(installerExtraArgs);
             }
             finally
             {
@@ -66,7 +66,7 @@ namespace Zenject
 
             Log.Debug("GameObjectContext: Injecting into child components...");
 
-            componentInjecter.LazyInjectComponents();
+            _container.LazyInstanceInjector.LazyInjectAll();
 
             Assert.That(_dependencyRoots.IsEmpty());
             _dependencyRoots.AddRange(_container.ResolveDependencyRoots());
@@ -109,7 +109,7 @@ namespace Zenject
         }
 
         void InstallBindings(
-            InstallerExtraArgs installerExtraArgs, InitialComponentsInjecter componentInjecter)
+            InstallerExtraArgs installerExtraArgs)
         {
             _container.DefaultParent = this.transform;
 
@@ -125,7 +125,7 @@ namespace Zenject
                 _container.Bind<MonoKernel>().FromInstance(_kernel).AsSingle().NonLazy();
             }
 
-            InstallSceneBindings(componentInjecter);
+            InstallSceneBindings();
 
             var extraArgsMap = new Dictionary<Type, List<TypeValuePair>>();
 

@@ -27,6 +27,7 @@ namespace Zenject
 
         readonly SingletonProviderCreator _singletonProviderCreator;
         readonly SingletonMarkRegistry _singletonMarkRegistry;
+        readonly LazyInstanceInjector _lazyInjector;
 
         readonly Queue<IBindingFinalizer> _currentBindings = new Queue<IBindingFinalizer>();
         readonly List<IBindingFinalizer> _processedBindings = new List<IBindingFinalizer>();
@@ -40,12 +41,13 @@ namespace Zenject
             _isValidating = isValidating;
 
             _singletonMarkRegistry = new SingletonMarkRegistry();
+            _lazyInjector = new LazyInstanceInjector(this);
             _singletonProviderCreator = new SingletonProviderCreator(this, _singletonMarkRegistry);
 
             // We can't simply call Bind<DiContainer>().FromInstance(this) here because
             // we don't want these bindings to be included in the Clone() below
             // So just directly add to the provider map instead
-            var thisProvider = new InstanceProvider(typeof(DiContainer), this);
+            var thisProvider = new InstanceProvider(this, typeof(DiContainer), this);
             var thisContracts = new Type[]
             {
                 typeof(DiContainer), typeof(IBinder), typeof(IResolver), typeof(IInstantiator)
@@ -94,6 +96,14 @@ namespace Zenject
         public DiContainer(DiContainer parentContainer)
             : this(parentContainer, false)
         {
+        }
+
+        public LazyInstanceInjector LazyInstanceInjector
+        {
+            get
+            {
+                return _lazyInjector;
+            }
         }
 
         // When true, this will throw exceptions whenever we create new game objects
@@ -288,7 +298,7 @@ namespace Zenject
             return CreateSubContainer(_isValidating);
         }
 
-        public DiContainer CreateSubContainer(bool isValidating)
+        DiContainer CreateSubContainer(bool isValidating)
         {
             return new DiContainer(this, isValidating);
         }
@@ -1844,7 +1854,7 @@ namespace Zenject
 
             binding.SubFinalizer = new ScopableBindingFinalizer(
                 bindInfo, SingletonTypes.ToInstance, instance,
-                (_, type) => new InstanceProvider(type, instance));
+                (container, type) => new InstanceProvider(container, type, instance));
 
             return new IdScopeBinder(bindInfo);
         }

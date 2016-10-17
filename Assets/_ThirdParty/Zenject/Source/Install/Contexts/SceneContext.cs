@@ -27,11 +27,8 @@ namespace Zenject
         DiContainer _container;
         readonly List<object> _dependencyRoots = new List<object>();
 
-        bool _hasInitialized;
-
-#if UNITY_EDITOR
-        bool _validateShutDownAfterwards = true;
-#endif
+        bool _hasInstalled;
+        bool _hasResolved;
 
         static bool _autoRun = true;
 
@@ -46,19 +43,9 @@ namespace Zenject
 #if UNITY_EDITOR
         public bool IsValidating
         {
-            get;
-            set;
-        }
-
-        public bool ValidateShutDownAfterwards
-        {
             get
             {
-                return _validateShutDownAfterwards;
-            }
-            set
-            {
-                _validateShutDownAfterwards = value;
+                return ProjectContext.Instance.Container.IsValidating;
             }
         }
 #else
@@ -87,10 +74,6 @@ namespace Zenject
         {
             // We always want to initialize ProjectContext as early as possible
             ProjectContext.Instance.EnsureIsInitialized();
-
-#if UNITY_EDITOR
-            IsValidating = ProjectContext.Instance.Container.IsValidating;
-#endif
 
             if (_autoRun)
             {
@@ -135,10 +118,20 @@ namespace Zenject
         }
 #endif
 
-        public void RunInternal()
+        void RunInternal()
         {
-            Assert.That(!_hasInitialized);
-            _hasInitialized = true;
+            Install();
+            Resolve();
+        }
+
+        public void Install()
+        {
+#if !UNITY_EDITOR
+            Assert.That(!IsValidating);
+#endif
+
+            Assert.That(!_hasInstalled);
+            _hasInstalled = true;
 
             Assert.IsNull(_container);
 
@@ -147,11 +140,7 @@ namespace Zenject
             // ParentContainer is optionally set temporarily before calling ZenUtil.LoadScene
             ParentContainer = null;
 
-            _container = parentContainer.CreateSubContainer(IsValidating);
-
-#if !UNITY_EDITOR
-            Assert.That(!IsValidating);
-#endif
+            _container = parentContainer.CreateSubContainer();
 
             // This can happen if you run a decorated scene with immediately running a normal scene afterwards
             foreach (var decoratedScene in DecoratedScenes)
@@ -165,8 +154,8 @@ namespace Zenject
             // so that it doesn't inject on the game object twice
             // InitialComponentsInjecter will also guarantee that any component that is injected into
             // another component has itself been injected
-            var componentInjecter = new InitialComponentsInjecter(
-                _container, GetInjectableComponents().ToList());
+            _container.LazyInstanceInjector
+                .AddInstances(GetInjectableComponents().Cast<object>());
 
             Log.Debug("SceneContext: Running installers...");
 
@@ -174,28 +163,35 @@ namespace Zenject
 
             try
             {
-                InstallBindings(componentInjecter);
+                InstallBindings();
             }
             finally
             {
                 _container.IsInstalling = false;
             }
 
+            DecoratedScenes.Clear();
+        }
+
+        public void Resolve()
+        {
             Log.Debug("SceneContext: Injecting components in the scene...");
 
-            componentInjecter.LazyInjectComponents();
+            Assert.That(_hasInstalled);
+            Assert.That(!_hasResolved);
+            _hasResolved = true;
+
+            _container.LazyInstanceInjector.LazyInjectAll();
 
             Log.Debug("SceneContext: Resolving dependency roots...");
 
             Assert.That(_dependencyRoots.IsEmpty());
             _dependencyRoots.AddRange(_container.ResolveDependencyRoots());
 
-            DecoratedScenes.Clear();
-
             Log.Debug("SceneContext: Initialized successfully");
         }
 
-        void InstallBindings(InitialComponentsInjecter componentInjecter)
+        void InstallBindings()
         {
             if (_parentNewObjectsUnderRoot)
             {
@@ -210,7 +206,7 @@ namespace Zenject
             _container.Bind<Context>().FromInstance(this);
             _container.Bind<SceneContext>().FromInstance(this);
 
-            InstallSceneBindings(componentInjecter);
+            InstallSceneBindings();
 
             if (BeforeInstallHooks != null)
             {
