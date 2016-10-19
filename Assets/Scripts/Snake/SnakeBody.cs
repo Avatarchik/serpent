@@ -3,6 +3,7 @@ using Zenject;
 
 namespace Serpent {
 
+    // TODO: rename SnakeBody to SnakeFacade
     public class SnakeBody : MonoBehaviour {
 
         public float interval = 0.75f;

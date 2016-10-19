@@ -31,7 +31,7 @@ namespace Serpent {
                 IndexedTriangle triangle = triangles[i];
 
                 for (int j = 0; j < 3; ++j) {
-                    IndexedEdge edge = new IndexedEdge(
+                    var edge = new IndexedEdge(
                         triangle[j],
                         triangle[(j + 1) % 3]
                         );
