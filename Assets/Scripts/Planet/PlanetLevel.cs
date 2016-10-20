@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using Zenject;
 
 namespace Serpent {
@@ -12,7 +13,7 @@ namespace Serpent {
 
         [Inject]
         public void Init() {
-            Debug.Assert(transform.lossyScale == Vector3.one);
+            Assert.AreEqual(transform.lossyScale, Vector3.one);
 
             Builder.Result result = Builder.Build(config);
 

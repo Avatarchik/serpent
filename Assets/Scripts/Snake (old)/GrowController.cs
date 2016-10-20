@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections;
 using Zenject;
 
@@ -28,10 +29,10 @@ namespace Serpent {
         public void Init() {
             // Scale must be (1; 1; 1) because mesh normals depend on walker
             // transformation matrix and they need to be uniform
-            Debug.Assert(walker.localScale == Vector3.one);
+            Assert.AreEqual(walker.localScale, Vector3.one);
 
             growable = growable_ as IGrowablePath;
-            Debug.Assert(growable != null);
+            Assert.IsNotNull(growable);
             
             if (simulatedLag > 0)
                 StartCoroutine(UpdateCoroutine());

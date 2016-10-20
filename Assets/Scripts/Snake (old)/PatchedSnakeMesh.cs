@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using Zenject;
 
 namespace Serpent {
@@ -22,7 +23,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IGrowablePath {
     [Inject]
     public void Init() {
         snakeMesh = snakeMesh_ as ISnakeMesh;
-        Debug.Assert(snakeMesh != null);
+        Assert.IsNotNull(snakeMesh);
 
         headPatch = InitPatch("Head Patch");
         tailPatch = InitPatch("Tail Patch");
@@ -104,7 +105,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IGrowablePath {
     
     private ISnakeMesh InitPatch(string gameObjectName) {
         Transform patchTransform = transform.Find(gameObjectName);
-        Debug.Assert(patchTransform != null);
+        Assert.IsNotNull(patchTransform);
 
         ISnakeMesh patch = patchTransform.GetRequiredComponent<SnakeMesh>();
         return patch;
@@ -113,7 +114,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IGrowablePath {
     private float GetPatchLength(ISnakeMesh patch) {
         var path = patch.Kernel.Path;
         float result = (path[0].position - path[1].position).magnitude;
-        //Debug.Assert(result <= interval);
+        //Assert.IsTrue(result <= interval);
         return result;
     }
 

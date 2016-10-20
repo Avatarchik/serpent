@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using Zenject;
 
 namespace Serpent {
@@ -14,7 +15,7 @@ namespace Serpent {
         [Inject]
         public void Init() {
             movementController = transform.FindChild("Movement Controller");
-            Debug.Assert(movementController != null);
+            Assert.IsNotNull(movementController);
 
             path = new ContinuousPath(interval);
         }

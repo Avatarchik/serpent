@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.Assertions;
 
 namespace Serpent {
 
@@ -23,8 +23,9 @@ namespace Serpent {
         /// Like Mathf.Repeat, but works for negative values.
         public static float SaneRepeat(float value, float period) {
             float result = value - Mathf.Floor(value / period) * period;
-            Debug.Assert(result >= 0);
-            Debug.Assert(result < period);
+
+            Assert.IsTrue(result >= 0);
+            Assert.IsTrue(result < period);
             return result;
         }
 
