@@ -5,20 +5,17 @@ using Zenject;
 namespace Serpent {
     
     public class MeshIndex {
-
-        private readonly Mesh mesh;
+        
         private readonly Dictionary<IndexedEdge, int> edgeToTriangleMap = new Dictionary<IndexedEdge, int>();
 
         public MeshIndex(Mesh mesh) {
-            this.mesh = mesh;
-
-            GenerateIndex();
+            GenerateIndex(mesh);
         }
 
         public int FindTriangleByEdge(IndexedEdge edge) => edgeToTriangleMap[edge];
 
 
-        private void GenerateIndex() {
+        private void GenerateIndex(Mesh mesh) {
             TriangleArray triangles = mesh.GetSaneTriangles(0);
 
             for (int i = 0; i < triangles.Length; ++i) {
