@@ -18,8 +18,7 @@ namespace Serpent {
         void Start() {
             rectTransform = GetComponent<RectTransform>();
 
-            parentRectTransform = transform.parent.GetComponent<RectTransform>();
-            Debug.Assert(parentRectTransform != null);
+            parentRectTransform = transform.parent.GetRequiredComponent<RectTransform>();
 
             image = GetComponent<Image>();
             image.enabled = true;

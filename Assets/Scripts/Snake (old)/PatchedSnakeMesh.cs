@@ -27,7 +27,7 @@ public class PatchedSnakeMesh : MonoBehaviour, IGrowablePath {
         headPatch = InitPatch("Head Patch");
         tailPatch = InitPatch("Tail Patch");
         
-        tailMaterial = tail.GetChild(0).GetComponent<MeshRenderer>().material;
+        tailMaterial = tail.GetChild(0).GetRequiredComponent<MeshRenderer>().material;
 
         // Add first ring
         // TODO: replace by more sane mechanism (incorrect ring here)
@@ -103,10 +103,10 @@ public class PatchedSnakeMesh : MonoBehaviour, IGrowablePath {
         
     
     private ISnakeMesh InitPatch(string gameObjectName) {
-        Transform patchTransform = transform.FindChild(gameObjectName);
+        Transform patchTransform = transform.Find(gameObjectName);
         Debug.Assert(patchTransform != null);
-        ISnakeMesh patch = patchTransform.GetComponent<SnakeMesh>();
-        Debug.Assert(patch != null);
+
+        ISnakeMesh patch = patchTransform.GetRequiredComponent<SnakeMesh>();
         return patch;
     }
 

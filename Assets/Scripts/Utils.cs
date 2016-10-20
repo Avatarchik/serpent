@@ -5,6 +5,23 @@ namespace Serpent {
 
     public static class Utils {
 
+        // GameObject
+
+        public static T GetRequiredComponent<T>(this GameObject gameObject) where T : Component {
+            T component = gameObject.GetComponent<T>();
+            Assert.IsNotNull(component);
+
+            return component;
+        }
+
+
+        // Component
+
+        public static T GetRequiredComponent<T>(this Component component) where T : Component {
+            return component.gameObject.GetRequiredComponent<T>();
+        }
+
+
         // Transform
 
         public static void ResetTransform(this Transform transform) {
@@ -21,13 +38,6 @@ namespace Serpent {
             }
 
             return null;
-        }
-
-        public static T GetRequiredComponent<T>(this GameObject gameObject) where T : Component {
-            T component = gameObject.GetComponent<T>();
-            Assert.IsNotNull(component);
-
-            return component;
         }
 
 

@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace Serpent {
 
+    [RequireComponent(typeof(Renderer))]
     public class WaterAnimation : MonoBehaviour {
 
         public float speed1 = 0.05f;

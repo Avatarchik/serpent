@@ -17,8 +17,8 @@ namespace Serpent {
         private bool pauseStateNowChanging = false;
 
         void Start() {
-            pauseUICamera = GameObject.FindGameObjectWithTag("Pause UI Camera").GetComponent<Camera>();
-            pauseButton = GameObject.FindGameObjectWithTag("Pause button").GetComponent<Button>();
+            pauseUICamera = GameObject.FindGameObjectWithTag("Pause UI Camera").GetRequiredComponent<Camera>();
+            pauseButton = GameObject.FindGameObjectWithTag("Pause button").GetRequiredComponent<Button>();
         }
 
         public void PauseGame() {
@@ -38,7 +38,7 @@ namespace Serpent {
         private IEnumerator PauseCoroutine(bool pause) {
             pauseStateNowChanging = true;
 
-            //Blur blurComponent = Camera.main.GetComponent<Blur>();
+            //Blur blurComponent = Camera.main.GetRequiredComponent<Blur>();
 
             if (pause) {
                 pauseButton.interactable = false;

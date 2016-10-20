@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Zenject;
 
 namespace Serpent {
 
+    [RequireComponent(typeof(Image))]
     public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler {
 
         // Value's magnitude is <= 1 and == (0, 0) when joystick is not pressed
@@ -22,14 +24,14 @@ namespace Serpent {
         public Delegate OnDown;
         public Delegate OnUp;
 
-        private UnityEngine.UI.Image joystickBackground;
-        private UnityEngine.UI.Image joystickCenter;
+        private Image joystickBackground;
+        private Image joystickCenter;
         private Camera myCamera;
 
         [Inject]
         public void Init() {
-            joystickBackground = GetComponent<UnityEngine.UI.Image>();
-            joystickCenter = transform.Find("Joystick Center").GetComponent<UnityEngine.UI.Image>();
+            joystickBackground = GetComponent<Image>();
+            joystickCenter = transform.Find("Joystick Center").GetRequiredComponent<Image>();
 
             // What camera to use?
             Canvas canvas = Utils.FindNearestParentWithComponent<Canvas>(transform);
@@ -40,7 +42,7 @@ namespace Serpent {
         }
 
         public void OnPointerDown(PointerEventData eventData) {
-            // Checks if click is out of joystick area
+            // Check whether click is out of joystick area
             Vector2 stickPosition = new Vector2();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 joystickBackground.rectTransform,
@@ -48,10 +50,9 @@ namespace Serpent {
                 myCamera,
                 out stickPosition
             );
-            if (stickPosition.magnitude > joystickBackground.rectTransform.rect.width / 2) {
+            if (stickPosition.magnitude > joystickBackground.rectTransform.rect.width / 2)
                 // Ignore event
                 return;
-            }
 
             UpdateValues(eventData.position);
 
@@ -98,5 +99,3 @@ namespace Serpent {
     }
 
 } // namespace Serpent
-
-

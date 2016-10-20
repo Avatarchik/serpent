@@ -182,7 +182,7 @@ namespace Serpent {
             vertexLabels = new Transform[verticesNum];
             for (int i = 0; i < verticesNum; ++i) {
                 GameObject label = Instantiate<GameObject>(vertexLabelPrefab);
-                label.GetComponent<TextMesh>().text = i.ToString();
+                label.GetRequiredComponent<TextMesh>().text = i.ToString();
                 vertexLabels[i] = label.transform;
             }
         }
