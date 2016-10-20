@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Assertions;
 using Zenject;
 
 namespace Serpent {
 
     public class LevelLogic : MonoBehaviour {
-
-        [NotNull] public MeshFilter levelMeshFilter;
 
         public int Score {
             get { return score; }
@@ -15,20 +14,14 @@ namespace Serpent {
                 scoreText.text = value.ToString();
             }
         }
-
-        public Mesh LevelMesh { get; private set; }
-
+        
         private Text scoreText;
         private int score;
-
-        [Inject]
-        private void Init() {
-            scoreText = GameObject.Find("Score text").GetComponent<Text>();
-            Debug.Assert(scoreText != null);
+        
+        void Start() {
+            scoreText = GameObject.Find("Score text").GetRequiredComponent<Text>();
 
             AdjustUiScale();
-
-            LevelMesh = levelMeshFilter.mesh;
         }
 
         public void ExitGame() {
@@ -37,10 +30,10 @@ namespace Serpent {
 
 
         private void AdjustUiScale() {
-#if !UNITY_EDITOR
-            CanvasScaler scaler = GameObject.Find("Play Canvas").GetComponent<CanvasScaler>();
-            scaler.scaleFactor = 1;
-#endif
+            CanvasScaler scaler = GameObject.Find("Play Canvas").GetRequiredComponent<CanvasScaler>();
+
+            if (!Application.isEditor)
+                scaler.scaleFactor = 1;
         }
     }
 

@@ -1,24 +1,35 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using Zenject;
 
 namespace Serpent {
 
     [RequireComponent(typeof(RectTransform), typeof(Image))]
     public class FoodPointer : MonoBehaviour {
 
-        public Transform food;
         public float margin = 48;
 
         private RectTransform rectTransform;
         private RectTransform parentRectTransform;
         private Behaviour image;
 
+        private Transform food;
+
         void Start() {
             rectTransform = GetComponent<RectTransform>();
+
             parentRectTransform = transform.parent.GetComponent<RectTransform>();
             Debug.Assert(parentRectTransform != null);
+
             image = GetComponent<Image>();
+            image.enabled = true;
+        }
+
+        [Inject]
+        private void Init(FoodSpawner spawner) {
+            spawner.OnFoodSpawned += (GameObject food) => {
+                this.food = food.transform;
+            };
         }
 
         void Update() {

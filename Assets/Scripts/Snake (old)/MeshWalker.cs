@@ -40,6 +40,9 @@ namespace Serpent {
 
 
         public MeshWalker(Mesh mesh, MeshIndex meshIndex) {
+            if (mesh == null || meshIndex == null)
+                throw new System.ArgumentNullException();
+
             this.mesh = mesh;
             this.meshIndex = meshIndex;
 

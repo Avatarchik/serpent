@@ -6,7 +6,6 @@ namespace Serpent {
     public class MovementController : MonoBehaviour {
 
         [NotNull] public Joystick joystick;
-        [NotNull] public MeshFilter meshFilter;
 
         public float rotationSpeed = 240; // Degrees per second
         public float moveSpeed = 10; // Meters per second
@@ -20,8 +19,8 @@ namespace Serpent {
         private float targetAngle;
         
         [Inject]
-        private void Init(MeshIndex meshIndex) {
-            walker = new MeshWalker(meshFilter.mesh, meshIndex);
+        private void Init(LevelSurface levelSurface) {
+            walker = levelSurface.createWalker();
             //walker.RespawnAtDefaultPlace();
             walker.RespawnNearPoint(transform.position);
 

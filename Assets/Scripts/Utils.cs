@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Serpent {
 
     public static class Utils {
+
+        // Transform
 
         public static void ResetTransform(this Transform transform) {
             transform.localPosition = Vector3.zero;
@@ -19,6 +22,16 @@ namespace Serpent {
 
             return null;
         }
+
+        public static T GetRequiredComponent<T>(this GameObject gameObject) where T : Component {
+            T component = gameObject.GetComponent<T>();
+            Assert.IsNotNull(component);
+
+            return component;
+        }
+
+
+        // Material
 
         public static Vector2 GetUnscaledTextureOffset(this Material material) {
             Vector2 result = material.mainTextureOffset;

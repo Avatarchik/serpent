@@ -1,32 +1,42 @@
 ﻿using UnityEngine;
 using Zenject;
+using System;
 
 namespace Serpent {
 
-    public class FoodSpawner : MonoBehaviour {
+    public class FoodSpawner : IInitializable {
 
-        [NotNull] public GameObject foodPrefab;
-        [NotNull] public FoodPointer foodPointer;
+        [Serializable]
+        public class Config {
+            public GameObject foodPrefab;
+        }
 
+        public delegate void FoodSpawnedDelegate(GameObject food);
+        public FoodSpawnedDelegate OnFoodSpawned;
+        
         private MeshWalker walker;
 
-        // Enable editor deactivation
-        void Update() { }
+        // Dependencies
+        private GameObject foodPrefab;
+        
+        public FoodSpawner(Config config, LevelSurface levelSurface) {
+            foodPrefab = config.foodPrefab;
 
-        [Inject]
-        private void Init(LevelLogic levelLogic, MeshIndex meshIndex) {
+            walker = levelSurface.createWalker();
+        }
 
-            walker = new MeshWalker(levelLogic.LevelMesh, meshIndex);
-
+        public void Initialize() {
+            // Postpone this call so that OnFoodSpawned listeners
+            // can register themselves in dependency injection phase
             SpawnNewFood();
         }
 
         public void SpawnNewFood() {
-            var gameObject = Instantiate(foodPrefab) as GameObject;
+            GameObject food = UnityEngine.Object.Instantiate(foodPrefab);
             walker.RespawnRandomly();
-            walker.WriteToTransform(gameObject.transform);
+            walker.WriteToTransform(food.transform);
 
-            foodPointer.food = gameObject.transform;
+            OnFoodSpawned?.Invoke(food);
         }
     }
 

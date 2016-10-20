@@ -486,38 +486,6 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 3300000, guid: 24c9af8836f02114487e361c5f169c13,
     type: 3}
   m_PrefabInternal: {fileID: 85961043}
---- !u!1 &85961046 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 100000, guid: 24c9af8836f02114487e361c5f169c13, type: 3}
-  m_PrefabInternal: {fileID: 85961043}
---- !u!114 &85961047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 85961046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3abc660a967ec984daa611236891ae7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshFilter: {fileID: 85961045}
---- !u!114 &85961048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 85961046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _components:
-  - {fileID: 85961047}
-  _identifier: 
-  _context: {fileID: 0}
-  _bindType: 0
 --- !u!1001 &88275791
 Prefab:
   m_ObjectHideFlags: 0
@@ -1366,21 +1334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15564d87bf0e8fa4a9a6ee27c3b5e5b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelMeshFilter: {fileID: 85961045}
---- !u!114 &469205865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114000012105884546, guid: 333d59282963c5345a6e31ea81cac97c,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 769574008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6be4b4af1547b0e4fb91fd126e1b6ba3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foodPrefab: {fileID: 1000011474794474, guid: c84b33d191d9b6f4890a641caa028957, type: 2}
-  foodPointer: {fileID: 1844521004}
 --- !u!1001 &471100160
 Prefab:
   m_ObjectHideFlags: 0
@@ -2902,6 +2855,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8b59857662f29048847a949a864ffd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  foodSpawnerConfig:
+    foodPrefab: {fileID: 1000011474794474, guid: c84b33d191d9b6f4890a641caa028957,
+      type: 2}
+  levelSurfaceConfig:
+    meshFilter: {fileID: 85961045}
 --- !u!1 &757254395
 GameObject:
   m_ObjectHideFlags: 0
@@ -2947,7 +2905,6 @@ GameObject:
   - 114: {fileID: 769574009}
   - 114: {fileID: 769574012}
   - 82: {fileID: 769574011}
-  - 114: {fileID: 469205865}
   - 114: {fileID: 469205864}
   - 114: {fileID: 769574010}
   m_Layer: 0
@@ -2981,7 +2938,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _components:
-  - {fileID: 469205865}
   - {fileID: 469205864}
   _identifier: 
   _context: {fileID: 0}
@@ -3918,7 +3874,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joystick: {fileID: 469205861}
-  meshFilter: {fileID: 85961045}
   rotationSpeed: 250
   moveSpeed: 15
   offsetFromSurface: 1
@@ -6794,6 +6749,7 @@ GameObject:
   - 222: {fileID: 1844521006}
   - 114: {fileID: 1844521005}
   - 114: {fileID: 1844521004}
+  - 114: {fileID: 1844521008}
   m_Layer: 9
   m_Name: Food pointer
   m_TagString: Untagged
@@ -6813,7 +6769,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694bc2245ff949946802cd55e9a38817, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  food: {fileID: 0}
   margin: 48
 --- !u!114 &1844521005
 MonoBehaviour:
@@ -6822,7 +6777,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1844521003}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -6869,6 +6824,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1844521008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1844521003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _components:
+  - {fileID: 1844521004}
+  _identifier: 
+  _context: {fileID: 0}
+  _bindType: 0
 --- !u!1001 &1886808314
 Prefab:
   m_ObjectHideFlags: 0
