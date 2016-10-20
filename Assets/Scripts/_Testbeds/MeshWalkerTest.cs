@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 
 using UnityEngine;
-using System.Collections;
+using Zenject;
 
 namespace Serpent {
     
@@ -9,8 +9,6 @@ namespace Serpent {
 
         [NotNull] public Transform intersectionMarker;
         [NotNull] public Transform startMarker;
-        [NotNull] public MeshFilter surfaceMeshFilter;
-        [NotNull] public MeshIndex meshIndex;
 
         public float maxDistance = 64;
 
@@ -19,8 +17,10 @@ namespace Serpent {
         private Vector2 coords;
         private int steps;
 
-        void Start() {
-            walker = new MeshWalker(surfaceMeshFilter.mesh, meshIndex);
+        [Inject]
+        private void Init(LevelSurface levelSurface) {
+            walker = levelSurface.createWalker();
+
             walker.debugDrawEnabled = true;
             walker.RespawnNearPoint(startMarker.position + transform.position);
         }
