@@ -3,7 +3,8 @@ using UnityEngine.Assertions;
 
 namespace Serpent {
 
-    public static class Utils {
+    // Utility extension methods for Unity classes
+    public static class UnityUtils {
 
         // GameObject
 
@@ -30,7 +31,7 @@ namespace Serpent {
             transform.localScale = Vector3.one;
         }
 
-        public static T FindNearestParentWithComponent<T>(Transform trans) where T : Component {
+        public static T FindNearestParentWithComponent<T>(this Transform trans) where T : Component {
             for (; trans != null; trans = trans.parent) {
                 T component = trans.GetComponent<T>();
                 if (component != null)

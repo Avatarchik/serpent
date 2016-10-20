@@ -34,7 +34,7 @@ namespace Serpent {
             joystickCenter = transform.Find("Joystick Center").GetRequiredComponent<Image>();
 
             // What camera to use?
-            Canvas canvas = Utils.FindNearestParentWithComponent<Canvas>(transform);
+            Canvas canvas = transform.FindNearestParentWithComponent<Canvas>();
             if (canvas.renderMode == RenderMode.WorldSpace || canvas.renderMode == RenderMode.ScreenSpaceCamera)
                 myCamera = canvas.worldCamera;
             else
