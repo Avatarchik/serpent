@@ -130,23 +130,31 @@ public enum DisconnectCause
 {
     /// <summary>Server actively disconnected this client.
     /// Possible cause: The server's user limit was hit and client was forced to disconnect (on connect).</summary>
-    DisconnectByServerUserLimit,
+    DisconnectByServerUserLimit = StatusCode.DisconnectByServerUserLimit,
+
     /// <summary>Connection could not be established.
     /// Possible cause: Local server not running.</summary>
-    ExceptionOnConnect,
+    ExceptionOnConnect = StatusCode.ExceptionOnConnect,
+
     /// <summary>Timeout disconnect by server (which decided an ACK was missing for too long).</summary>
-    DisconnectByServerTimeout,
+    DisconnectByServerTimeout = StatusCode.DisconnectByServer,
+
     /// <summary>Server actively disconnected this client.
     /// Possible cause: Server's send buffer full (too much data for client).</summary>
-    DisconnectByServerLogic,
+    DisconnectByServerLogic = StatusCode.DisconnectByServerLogic,
+
     /// <summary>Some exception caused the connection to close.</summary>
-    Exception,
-    /// <summary>The Photon Cloud rejected the sent AppId. Check your Dashboard and make sure the AppId you use is complete and correct.</summary>
-    InvalidAuthentication,
-    /// <summary>Authorization on the Photon Cloud failed because the concurrent users (CCU) limit of the app's subscription is reached.</summary>
-    MaxCcuReached,
-    /// <summary>Authorization on the Photon Cloud failed because the app's subscription does not allow to use a particular region's server.</summary>
-    InvalidRegion,
+    Exception = StatusCode.Exception,
+
+    /// <summary>(32767) The Photon Cloud rejected the sent AppId. Check your Dashboard and make sure the AppId you use is complete and correct.</summary>
+    InvalidAuthentication = ErrorCode.InvalidAuthentication,
+
+    /// <summary>(32757) Authorization on the Photon Cloud failed because the concurrent users (CCU) limit of the app's subscription is reached.</summary>
+    MaxCcuReached = ErrorCode.MaxCcuReached,
+
+    /// <summary>(32756) Authorization on the Photon Cloud failed because the app's subscription does not allow to use a particular region's server.</summary>
+    InvalidRegion = ErrorCode.InvalidRegion,
+
     /// <summary>The security settings for client or server don't allow a connection (see remarks).</summary>
     /// <remarks>
     /// A common cause for this is that browser clients read a "crossdomain" file from the server.
@@ -155,14 +163,17 @@ public enum DisconnectCause
     /// If it fails, read:
     /// http://doc.exitgames.com/photon-server/PolicyApp
     /// </remarks>
-    SecurityExceptionOnConnect,
+    SecurityExceptionOnConnect = StatusCode.SecurityExceptionOnConnect,
+
     /// <summary>Timeout disconnect by client (which decided an ACK was missing for too long).</summary>
-    DisconnectByClientTimeout,
+    DisconnectByClientTimeout = StatusCode.TimeoutDisconnect,
+
     /// <summary>Exception in the receive-loop.
     /// Possible cause: Socket failure.</summary>
-    InternalReceiveException,
-    /// <summary>The Authentication ticket expired. Handle this by connecting again (which includes an authenticate to get a fresh ticket).</summary>
-    AuthenticationTicketExpired,
+    InternalReceiveException = StatusCode.ExceptionOnReceive,
+
+    /// <summary>(32753) The Authentication ticket expired. Handle this by connecting again (which includes an authenticate to get a fresh ticket).</summary>
+    AuthenticationTicketExpired = 32753,
 }
 
 /// <summary>Available server (types) for internally used field: server.</summary>
@@ -408,19 +419,20 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
     private HashSet<int> blockSendingGroups = new HashSet<int>();
 
-    internal protected Dictionary<int, PhotonView> photonViewList = new Dictionary<int, PhotonView>(); //TODO: make private again
+    protected internal Dictionary<int, PhotonView> photonViewList = new Dictionary<int, PhotonView>(); //TODO: make private again
 
-    private readonly PhotonStream pStream = new PhotonStream(true, null);                                            // only used in OnSerializeWrite()
+    private readonly PhotonStream readStream = new PhotonStream(false, null);    // only used in OnSerializeRead()
+    private readonly PhotonStream pStream = new PhotonStream(true, null);        // only used in OnSerializeWrite()
     private readonly Dictionary<int, Hashtable> dataPerGroupReliable = new Dictionary<int, Hashtable>();    // only used in RunViewUpdate()
     private readonly Dictionary<int, Hashtable> dataPerGroupUnreliable = new Dictionary<int, Hashtable>();  // only used in RunViewUpdate()
 
-    internal protected short currentLevelPrefix = 0;
+    protected internal short currentLevelPrefix = 0;
 
     /// <summary>Internally used to flag if the message queue was disabled by a "scene sync" situation (to re-enable it).</summary>
-    internal protected bool loadingLevelAndPausedNetwork = false;
+    protected internal bool loadingLevelAndPausedNetwork = false;
 
     /// <summary>For automatic scene syncing, the loaded scene is put into a room property. This is the name of said prop.</summary>
-    internal protected const string CurrentSceneProperty = "curScn";
+    protected internal const string CurrentSceneProperty = "curScn";
 
     public static bool UsePrefabCache = true;
 
@@ -433,7 +445,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     private readonly Dictionary<string, int> rpcShortcuts;  // lookup "table" for the index (shortcut) of an RPC name
 
     /// <summary>Caches PhotonNetworkingMessage.OnPhotonInstantiate.ToString(), because DoInstantiate calls it often (and ToString() on the enum is astonishingly expensive).</summary>
-    private static readonly string onPhotonInstantiateString = PhotonNetworkingMessage.OnPhotonInstantiate.ToString();
+    private static readonly string OnPhotonInstantiateString = PhotonNetworkingMessage.OnPhotonInstantiate.ToString();
 
 
     // TODO: CAS must be implemented for OfflineMode
@@ -552,6 +564,8 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             return false;
         }
 
+        this.SetupProtocol(type);
+
         // connect might fail, if the DNS name can't be resolved or if no network connection is available
         bool connecting = base.Connect(serverAddress, "", this.TokenForInit);
 
@@ -639,7 +653,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     protected internal void SetupProtocol(ServerConnection serverType)
     {
         ConnectionProtocol protocolOverride = this.TransportProtocol;
-        
+
         if (this.AuthMode == AuthModeOption.AuthOnceWss)
         {
             if (serverType != ServerConnection.NameServer)
@@ -649,7 +663,6 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     Debug.LogWarning("Using PhotonServerSettings.Protocol when leaving the NameServer (AuthMode is AuthOnceWss): " + PhotonNetwork.PhotonServerSettings.Protocol);
                 }
                 protocolOverride = PhotonNetwork.PhotonServerSettings.Protocol;
-                this.SocketImplementation = null;
             }
             else
             {
@@ -658,52 +671,62 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     Debug.LogWarning("Using WebSocket to connect NameServer (AuthMode is AuthOnceWss).");
                 }
                 protocolOverride = ConnectionProtocol.WebSocketSecure;
-                #if UNITY_XBOXONE
-                this.SocketImplementation = typeof(SocketWebTcp);
-                #endif
             }
         }
+
+        // to support WebGL export in Unity, we find and assign the SocketWebTcp class (if it's in the project).
+        // alternatively class SocketWebTcp might be in the Photon3Unity3D.dll
+        Type socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp", false);
+        if (socketTcp == null)
+        {
+            socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp-firstpass", false);
+        }
+        if (socketTcp != null)
+        {
+            this.SocketImplementationConfig[ConnectionProtocol.WebSocket] = socketTcp;
+            this.SocketImplementationConfig[ConnectionProtocol.WebSocketSecure] = socketTcp;
+        }
+
 
         #if UNITY_WEBGL
         if (this.TransportProtocol != ConnectionProtocol.WebSocket && this.TransportProtocol != ConnectionProtocol.WebSocketSecure)
         {
 			Debug.Log("WebGL only supports WebSocket protocol. Overriding PhotonServerSettings.");
 	        protocolOverride = ConnectionProtocol.WebSocketSecure;
-            this.SocketImplementation = typeof(SocketWebTcp);
 		}
         #endif
-
 
 
         #if !UNITY_EDITOR && (UNITY_WINRT)
         // this automatically uses a separate assembly-file with Win8-style Socket usage (not possible in Editor)
         Debug.LogWarning("Using PingWindowsStore");
         PhotonHandler.PingImplementation = typeof(PingWindowsStore);    // but for ping, we have to set the implementation explicitly to Win 8 Store/Phone
-#endif
+        #endif
 
 
-#pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
+        #pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
         if (PhotonPeer.NoSocket)
         {
-            Debug.Log("This Photon3Unity3d.dll only allows UDP. TransportProtocol was: " + this.TransportProtocol + ". SocketImplementation: " + this.SocketImplementation);
+            if (this.TransportProtocol != ConnectionProtocol.Udp)
+            {
+                Debug.Log("This Photon3Unity3d.dll only allows UDP. TransportProtocol was: " + this.TransportProtocol + ". SocketImplementation: " + this.SocketImplementation);
+            }
             protocolOverride = ConnectionProtocol.Udp;
 
             #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
-            Debug.Log("Using class SocketUdpNativeDynamic");
-            this.SocketImplementation = typeof(SocketUdpNativeDynamic);
+            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
             PhotonHandler.PingImplementation = typeof(PingNativeDynamic);
             #elif !UNITY_EDITOR && UNITY_IPHONE
-            Debug.Log("Using class SocketUdpNativeStatic");
-            this.SocketImplementation = typeof(SocketUdpNativeStatic);
+            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeStatic);
             PhotonHandler.PingImplementation = typeof(PingNativeStatic);
             #elif !UNITY_EDITOR && UNITY_WINRT
             // this automatically uses a separate assembly-file with Win8-style Socket usage (not possible in Editor)
             #else
-            this.SocketImplementation = typeof(SocketUdp);
+            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdp);
             PhotonHandler.PingImplementation = typeof(PingMonoEditor);
             #endif
 
-            if (this.SocketImplementation == null)
+            if (this.SocketImplementationConfig[ConnectionProtocol.Udp] == null)
             {
                 Debug.Log("No socket implementation set for 'NoSocket' assembly. Please check your settings.");
             }
@@ -728,11 +751,6 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         }
 
         this.TransportProtocol = protocolOverride;
-
-        if (this.EncryptionMode == EncryptionMode.DatagramEncryption && this.TransportProtocol != ConnectionProtocol.Udp)
-        {
-            Debug.LogError("EncryptionMode is DatagramEncryption but TransportProtocol is not UDP! Fix your PhotonServerSettings.");
-        }
     }
 
     /// <summary>
@@ -2088,6 +2106,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     this.AuthValues.Token = null;  // invalidate any custom auth secrets
                 }
 
+				/* JF: we need this when reconnecting and joining.
                 if (this.ServerAddress.Equals(this.GameServerAddress))
                 {
                     this.GameServerAddress = null;
@@ -2096,6 +2115,8 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 {
                     this.ServerAddress = null;
                 }
+                */
+
                 this.Disconnect();
                 break;
 
@@ -3000,7 +3021,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
             // Send OnPhotonInstantiate callback to newly created GO.
             // GO will be enabled when instantiated from Prefab and it does not matter if the script is enabled or disabled.
-            go.SendMessage(onPhotonInstantiateString, new PhotonMessageInfo(photonPlayer, serverTime, null), SendMessageOptions.DontRequireReceiver);
+            go.SendMessage(OnPhotonInstantiateString, new PhotonMessageInfo(photonPlayer, serverTime, null), SendMessageOptions.DontRequireReceiver);
             return go;
         }
         else
@@ -3061,11 +3082,11 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
             // Send OnPhotonInstantiate callback to newly created GO.
             // GO will be enabled when instantiated from Prefab and it does not matter if the script is enabled or disabled.
-            go.SendMessage(onPhotonInstantiateString, new PhotonMessageInfo(photonPlayer, serverTime, null), SendMessageOptions.DontRequireReceiver);
+            go.SendMessage(OnPhotonInstantiateString, new PhotonMessageInfo(photonPlayer, serverTime, null), SendMessageOptions.DontRequireReceiver);
             return go;
         }
     }
-    
+
     private Dictionary<int, object[]> tempInstantiationData = new Dictionary<int, object[]>();
 
     private void StoreInstantiationData(int instantiationId, object[] instantiationData)
@@ -4075,12 +4096,12 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         //    }
         //}
 
-        PhotonStream pStream = new PhotonStream(false, data);
-        pStream.currentItem = 3;
+        this.readStream.SetReadStream(data, 3);
         PhotonMessageInfo info = new PhotonMessageInfo(sender, networkTime, view);
 
-        view.DeserializeView(pStream, info);
+        view.DeserializeView(this.readStream, info);
     }
+
 
     private bool AlmostEquals(object[] lastData, object[] currentContent)
     {

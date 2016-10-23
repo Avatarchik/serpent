@@ -4,15 +4,22 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-#if UNITY_3_5 || UNITY_4 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5 || UNITY_5_0
+#if UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_6_0
 #define UNITY
 #endif
 
 namespace ExitGames.Client.Photon.Chat
 {
     using System;
+    using System.Diagnostics;
     using System.Collections.Generic;
     using ExitGames.Client.Photon;
+
+    #if UNITY || NETFX_CORE
+    using Hashtable = ExitGames.Client.Photon.Hashtable;
+    using SupportClass = ExitGames.Client.Photon.SupportClass;
+    #endif
+
 
     /// <summary>
     /// Provides basic operations of the Photon Chat server. This internal class is used by public ChatClient.
@@ -33,69 +40,89 @@ namespace ExitGames.Client.Photon.Chat
 
         virtual internal bool IsProtocolSecure { get { return this.UsedProtocol == ConnectionProtocol.WebSocketSecure; } }
 
+
         public ChatPeer(IPhotonPeerListener listener, ConnectionProtocol protocol) : base(listener, protocol)
         {
-#if UNITY
-#pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
+            this.ConfigUnitySockets();
+        }
+
+
+        [Conditional("UNITY")]
+        private void ConfigUnitySockets()
+        {
+            #pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
             if (PhotonPeer.NoSocket)
             {
-#if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
-                UnityEngine.Debug.Log("Using class SocketUdpNativeDynamic");
-                this.SocketImplementation = typeof(SocketUdpNativeDynamic);
-#elif !UNITY_EDITOR && UNITY_IPHONE
-                UnityEngine.Debug.Log("Using class SocketUdpNativeStatic");
-                this.SocketImplementation = typeof(SocketUdpNativeStatic);
-#elif !UNITY_EDITOR && (UNITY_WINRT)
+                #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
+                this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
+                #elif !UNITY_EDITOR && UNITY_IPHONE
+                this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeStatic);
+                #elif !UNITY_EDITOR && (UNITY_WINRT)
                 // this automatically uses a separate assembly-file with Win8-style Socket usage (not possible in Editor)
-#else
+                #else
                 Type udpSocket = Type.GetType("ExitGames.Client.Photon.SocketUdp, Assembly-CSharp");
-                this.SocketImplementation = udpSocket;
+                this.SocketImplementationConfig[ConnectionProtocol.Udp] = udpSocket;
                 if (udpSocket == null)
                 {
-                    UnityEngine.Debug.Log("ChatClient could not find a suitable C# socket class. The Photon3Unity3D.dll only supports native socket plugins.");
+                    #if UNITY
+                    UnityEngine.Debug.Log("Could not find a suitable C# socket class. This Photon3Unity3D.dll only supports native socket plugins.");
+                    #endif
                 }
-#endif
-                if (this.SocketImplementation == null)
-                {
-                    UnityEngine.Debug.Log("No socket implementation set for 'NoSocket' assembly. Please contact Exit Games.");
-                }
+                #endif
             }
-#pragma warning restore 0162
-			if (protocol == ConnectionProtocol.WebSocket || protocol == ConnectionProtocol.WebSocketSecure) {
-            	UnityEngine.Debug.Log("Using SocketWebTcp");
-            	this.SocketImplementation = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp");//typeof(SocketWebTcp);
-			}
-#endif
+            #pragma warning restore 0162
+
+
+            #if UNITY_WEBGL
+            if (this.TransportProtocol != ConnectionProtocol.WebSocket && this.TransportProtocol != ConnectionProtocol.WebSocketSecure)
+            {
+                UnityEngine.Debug.Log("For UNITY_WEBGL, use protocol WebSocketSecure. Overriding currently set protcol " + this.TransportProtocol + ".");
+                this.TransportProtocol = ConnectionProtocol.WebSocketSecure;
+            }
+            #endif
+
+
+            // to support WebGL export in Unity, we find and assign the SocketWebTcp class (if it's in the project).
+            // alternatively class SocketWebTcp might be in the Photon3Unity3D.dll
+            Type socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp", false);
+            if (socketTcp == null)
+            {
+                socketTcp = Type.GetType("ExitGames.Client.Photon.SocketWebTcp, Assembly-CSharp-firstpass", false);
+            }
+            if (socketTcp != null)
+            {
+                this.SocketImplementationConfig[ConnectionProtocol.WebSocket] = socketTcp;
+                this.SocketImplementationConfig[ConnectionProtocol.WebSocketSecure] = socketTcp;
+            }
         }
-		/// <summary>
-		/// Gets the NameServer Address (with prefix and port), based on the set protocol (this.UsedProtocol).
-		/// </summary>
-		/// <returns>NameServer Address (with prefix and port).</returns>
-		private string GetNameServerAddress()
-		{
-			#if RHTTP
-			if (this.UsedProtocol == ConnectionProtocol.RHttp)
-			{
-				return NameServerHttp;
-			}
-			#endif
 
-			ConnectionProtocol currentProtocol = this.UsedProtocol;
-			int protocolPort = 0;
-			ProtocolToNameServerPort.TryGetValue(currentProtocol, out protocolPort);
 
-			string protocolPrefix = string.Empty;
-			if (currentProtocol == ConnectionProtocol.WebSocket)
-			{
-				protocolPrefix = "ws://";
-			}
-			else if (currentProtocol == ConnectionProtocol.WebSocketSecure)
-			{
-				protocolPrefix = "wss://";
-			}
+        /// <summary>
+        /// Gets the NameServer Address (with prefix and port), based on the set protocol (this.UsedProtocol).
+        /// </summary>
+        /// <returns>NameServer Address (with prefix and port).</returns>
+        private string GetNameServerAddress()
+        {
+            var protocolPort = 0;
+            ProtocolToNameServerPort.TryGetValue(this.TransportProtocol, out protocolPort);
 
-			return string.Format("{0}{1}:{2}", protocolPrefix, NameServerHost, protocolPort);
-		}
+            switch (this.TransportProtocol)
+            {
+                case ConnectionProtocol.Udp:
+                case ConnectionProtocol.Tcp:
+                    return string.Format("{0}:{1}", NameServerHost, protocolPort);
+                #if RHTTP
+                case ConnectionProtocol.RHttp:
+                    return NameServerHttp;
+                #endif
+                case ConnectionProtocol.WebSocket:
+                    return string.Format("ws://{0}:{1}", NameServerHost, protocolPort);
+                case ConnectionProtocol.WebSocketSecure:
+                    return string.Format("wss://{0}:{1}", NameServerHost, protocolPort);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         public bool Connect()
         {

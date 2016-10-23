@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-#if UNITY_3_5 || UNITY_4 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5 || UNITY_5_0
+#if UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_6_0
 #define UNITY
 #endif
 
@@ -14,6 +14,12 @@ namespace ExitGames.Client.Photon.Chat
     using System.Diagnostics;
     using System.Collections.Generic;
     using ExitGames.Client.Photon;
+
+    #if UNITY || NETFX_CORE
+    using Hashtable = ExitGames.Client.Photon.Hashtable;
+    using SupportClass = ExitGames.Client.Photon.SupportClass;
+    #endif
+
 
     /// <summary>Central class of the Photon Chat API to connect, handle channels and messages.</summary>
     /// <remarks>
@@ -86,7 +92,7 @@ namespace ExitGames.Client.Photon.Chat
         /// <remarks>
         /// This can be useful to limit the amount of memory used by chats.
         /// You can set a MessageLimit per channel but this value gets applied to new ones.
-        /// 
+        ///
         /// Note:
         /// Changing this value, does not affect ChatChannels that are already in use!
         /// </remarks>
@@ -104,31 +110,12 @@ namespace ExitGames.Client.Photon.Chat
 
         private const string ChatApppName = "chat";
 
-        public ChatClient(IChatClientListener listener, ConnectionProtocol protocol =
-#if UNITY_WEBGL
-    ConnectionProtocol.WebSocketSecure
-#else
-    ConnectionProtocol.Udp
-#endif
-        )
+        public ChatClient(IChatClientListener listener, ConnectionProtocol protocol = ConnectionProtocol.Udp)
         {
-#if UNITY_WEBGL
-	        if (protocol != ConnectionProtocol.WebSocket && protocol != ConnectionProtocol.WebSocketSecure) {
-				UnityEngine.Debug.Log("WebGL only supports WebSocket protocol. Overriding ChatClient.Connect() 'protocol' parameter");
-				protocol = ConnectionProtocol.WebSocketSecure;
-			}
-#endif
-
             this.listener = listener;
             this.State = ChatState.Uninitialized;
 
             this.chatPeer = new ChatPeer(this, protocol);
-            
-#if UNITY_WEBGL
-            if (protocol == ConnectionProtocol.WebSocket || protocol == ConnectionProtocol.WebSocketSecure) {
-                this.chatPeer.SocketImplementation = typeof(SocketWebTcp);
-            }
-#endif
 
             this.PublicChannels = new Dictionary<string, ChatChannel>();
             this.PrivateChannels = new Dictionary<string, ChatChannel>();

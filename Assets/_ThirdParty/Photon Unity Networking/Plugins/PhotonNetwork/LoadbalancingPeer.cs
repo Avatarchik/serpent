@@ -139,10 +139,11 @@ using ExitGames.Client.Photon;
                 op[ParameterCode.EmptyRoomTTL] = roomOptions.PlayerTtl;
             }
 
-            //if (roomOptions.EmptyRoomTtl > 0)
-            //{
-            //    op[ParameterCode.EmptyRoomTTL] = roomOptions.EmptyRoomTtl;   //TURNBASED
-            //}
+            if (roomOptions.EmptyRoomTtl > 0)
+            {
+                op[ParameterCode.EmptyRoomTTL] = roomOptions.EmptyRoomTtl;   //TURNBASED
+            }
+
             if (roomOptions.SuppressRoomEvents)
             {
                 op[ParameterCode.SuppressRoomEvents] = true;
@@ -1478,7 +1479,7 @@ using ExitGames.Client.Photon;
 
 
         /// <summary>Time To Live (TTL) for a room when the last player leaves. Keeps room in memory for case a player re-joins soon. In milliseconds.</summary>
-        //public int EmptyRoomTtl;
+        public int EmptyRoomTtl;
 
         ///// <summary>Activates UserId checks on joining - allowing a users to be only once in the room.</summary>
         ///// <remarks>
