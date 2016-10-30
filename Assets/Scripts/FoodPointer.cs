@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Assertions;
 using Zenject;
 
 namespace Serpent {
@@ -37,6 +38,7 @@ namespace Serpent {
 
             // Get food position in screen space
             Camera camera = Camera.main;
+            Assert.IsNotNull(camera);
             Vector2 position = camera.WorldToScreenPoint(food.position);
 
             // Should food pointer be visible now?
