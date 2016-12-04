@@ -88,9 +88,9 @@ namespace Serpent {
             Vector2 direction = stickPosition.normalized;
             float magnitude = stickPosition.magnitude;
 
-            if (magnitude > maxStickDistance) {
+            if (magnitude > maxStickDistance)
                 magnitude = maxStickDistance;
-            }
+
             joystickCenter.rectTransform.anchoredPosition = direction * magnitude;
             Value = direction * magnitude / maxStickDistance;
 
