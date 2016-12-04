@@ -20,7 +20,7 @@ namespace Serpent {
         
         [Inject]
         private void Init(LevelSurface levelSurface) {
-            walker = levelSurface.createWalker();
+            walker = levelSurface.CreateWalker();
             //walker.RespawnAtDefaultPlace();
             walker.RespawnNearPoint(transform.position);
 

@@ -22,7 +22,7 @@ namespace Serpent {
         public FoodSpawner(Config config, LevelSurface levelSurface) {
             foodPrefab = config.foodPrefab;
 
-            walker = levelSurface.createWalker();
+            walker = levelSurface.CreateWalker();
         }
 
         public void Initialize() {

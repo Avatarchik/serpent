@@ -21,7 +21,7 @@ namespace Serpent {
             meshIndex = new MeshIndex(mesh);
         }
 
-        public MeshWalker createWalker() {
+        public MeshWalker CreateWalker() {
             return new MeshWalker(mesh, meshIndex);
         }
     }
