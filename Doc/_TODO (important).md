@@ -10,7 +10,7 @@
             - Настроить уход в спящий режим при простое инстанса в течение 10 минут
             - Использовать managed DB
 - Поискать музыку
-    - На last.fm: outer echo, utkowski, enjoii
+    - На last.fm: outer echo, dead priest (из песни CREATION OF EARTH), utkowski, enjoii
 
 # Минимальный мультиплеер
 - ~~Закоммитить, что есть~~
