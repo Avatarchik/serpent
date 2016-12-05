@@ -204,7 +204,8 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 834195099}
-  m_Text: Build and run this. Start a second client or playmode in Editor.
+  m_Text: "Build and run this. Start a second client or playmode in Editor.\r\n <Color=Red>This
+    scene is obsolete,\r\n  please use DemoHub-Scene-V2</color>"
   m_OffsetZ: 0
   m_CharacterSize: 0.25
   m_LineSpacing: 1
