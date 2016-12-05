@@ -6,10 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/Main UI.unity
+    path: Assets/_Scenes/Main menu.unity
   - enabled: 1
     path: Assets/_Scenes/Terrain.unity
   - enabled: 0
     path: Assets/_Scenes/Planet.unity
-  - enabled: 0
-    path: Assets/_Scenes/Loading screen.unity
