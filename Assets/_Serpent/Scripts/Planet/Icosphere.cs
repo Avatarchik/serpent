@@ -99,7 +99,6 @@ namespace Serpent {
             mesh.normals = normals;
 
             mesh.RecalculateBounds();
-            mesh.Optimize();
 
             return mesh;
         }

@@ -79,7 +79,6 @@ namespace Serpent {
             mesh.vertices = vertices;
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
-            mesh.Optimize();
         }
 
         private static Cubemap GenerateHeightmap(Config cfg) {

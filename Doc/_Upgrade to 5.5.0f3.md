@@ -1,0 +1,13 @@
+- Обновить до Unity 5.5.0f3
+    - Создать новую feature ветку
+    - Удалить старую ветку вместе с коммитами
+    - Убрать баг, не позволяющий запустить игру
+- Переместить собственные ассеты из /Assets в `/Assets/_Serpent`,
+    3rd party из `/Assets/_ThirdParty` в дефолтные папки
+    - ~~PUN~~
+    - Console Enhanced
+    - Reorder My Components
+    - Flat icoon n UI
+    - NotNullAttribute
+    - XTUtilities
+    - Zenject
