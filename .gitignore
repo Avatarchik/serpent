@@ -4,7 +4,7 @@
 /*.sln
 /Temp
 /Build
-/CSharp60Support/compilation.log
+/CSharp70Support/compilation.log
 /Library_*
 
 *.swp
